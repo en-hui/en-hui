@@ -1,4 +1,3 @@
-@[TOC](JVM简介)
 # JVM简介
 
 ## JVM架构图
@@ -11,16 +10,26 @@
 ### 什么是类装载器
 负责加载class文件，class文件在 **文件开头有特定的文件标识** ，将class文件字节码内容加载到内存中，
 并将这些内容转换成方法区中的运行时数据结构并且ClassLoader只负责class文件的加载，
-至于它是否可以运行，则由Execution Engine决定
+至于它是否可以运行，则由Execution Engine决定  
 ![Alt](../classLoader.png)
 
 ### 类加载器种类
 - 虚拟机自带的加载器
-1. 启动类加载器（Bootstrap）C++写的
-2. 扩展类加载器（Extension）Java写的
-3. 应用程序类加载器（AppClassLoader）Java也叫系统类加载器，加载当前应用的classpath的所有类
+1. 启动类加载器（Bootstrap）C++写的，加载jdk自带的类，$JAVAHOME/jre/lib/rt.jar
+2. 扩展类加载器（Extension）Java写的,加载扩展的类，$JAVAHOME/jre/lib/ext/*.jar
+3. 应用程序类加载器（AppClassLoader）Java写的，也叫系统类加载器，加载当前应用的classpath的所有类     
 - 用户自定义加载器  
 1. Java.lang.ClassLoader的子类，用户可以定制类的加载方式
+> **例子** MyObject是自定义的类    
+`MyObject obj = new MyObject();
+System.out.println(obj.getClass().getClassLoader().getParent().getParent());
+System.out.println(obj.getClass().getClassLoader().getParent());
+System.out.println(obj.getClass().getClassLoader());`
+输出结果为：   // sun.misc.Launcher是一个java虚拟机的入口应用
+null        启动类加载器，在java中输出为null
+sun.misc.Launcher$ExtClassLoader@1540e19d    扩展类加载器
+sun.misc.Launcher$AppClassLoader@18b4aac2    应用程序类加载器
+
 
 ### 双亲委派机制
 当一个类收到了类加载请求，他首先不会尝试自己去加载这个类，而是把这个请求委派给父类去完成，
