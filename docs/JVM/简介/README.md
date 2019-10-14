@@ -1,8 +1,8 @@
 # JVM简介
 
 ## JVM架构图
-灰色部分是线程私有的，占用内存很小，没有GC情况
-橘色部分是线程共享的，存在GC情况
+灰色部分是线程私有的，占用内存很小，没有GC情况        
+橘色部分是线程共享的，存在GC情况       
 ![Alt](../jvmJiaGou.jpg)
 
 ## 类装载器
@@ -10,36 +10,36 @@
 ### 什么是类装载器
 负责加载class文件，class文件在 **文件开头有特定的文件标识** ，将class文件字节码内容加载到内存中，
 并将这些内容转换成方法区中的运行时数据结构并且ClassLoader只负责class文件的加载，
-至于它是否可以运行，则由Execution Engine决定  
+至于它是否可以运行，则由Execution Engine决定       
 ![Alt](../classLoader.png)
 
 ### 类加载器种类
-- 虚拟机自带的加载器
-1. 启动类加载器（Bootstrap）C++写的，加载jdk自带的类，$JAVAHOME/jre/lib/rt.jar
-2. 扩展类加载器（Extension）Java写的,加载扩展的类，$JAVAHOME/jre/lib/ext/*.jar
-3. 应用程序类加载器（AppClassLoader）Java写的，也叫系统类加载器，加载当前应用的classpath的所有类     
-- 用户自定义加载器  
-1. Java.lang.ClassLoader的子类，用户可以定制类的加载方式
-> **例子** MyObject是自定义的类    
-`MyObject obj = new MyObject();
-System.out.println(obj.getClass().getClassLoader().getParent().getParent());
-System.out.println(obj.getClass().getClassLoader().getParent());
-System.out.println(obj.getClass().getClassLoader());`
-输出结果为：   // sun.misc.Launcher是一个java虚拟机的入口应用
-null        启动类加载器，在java中输出为null
-sun.misc.Launcher$ExtClassLoader@1540e19d    扩展类加载器
-sun.misc.Launcher$AppClassLoader@18b4aac2    应用程序类加载器
+- 虚拟机自带的加载器     
+1. 启动类加载器（Bootstrap）C++写的，加载jdk自带的类，$JAVAHOME/jre/lib/rt.jar        
+2. 扩展类加载器（Extension）Java写的,加载扩展的类，$JAVAHOME/jre/lib/ext/*.jar       
+3. 应用程序类加载器（AppClassLoader）Java写的，也叫系统类加载器，加载当前应用的classpath的所有类          
+- 用户自定义加载器          
+1. Java.lang.ClassLoader的子类，用户可以定制类的加载方式        
+> **例子** MyObject是自定义的类     
+`MyObject obj = new MyObject();     
+System.out.println(obj.getClass().getClassLoader().getParent().getParent());        
+System.out.println(obj.getClass().getClassLoader().getParent());        
+System.out.println(obj.getClass().getClassLoader());`       
+输出结果为：   // sun.misc.Launcher是一个java虚拟机的入口应用        
+null        启动类加载器，在java中输出为null        
+sun.misc.Launcher$ExtClassLoader@1540e19d    扩展类加载器     
+sun.misc.Launcher$AppClassLoader@18b4aac2    应用程序类加载器       
 
 
-### 双亲委派机制
+### 双亲委派机制 
 当一个类收到了类加载请求，他首先不会尝试自己去加载这个类，而是把这个请求委派给父类去完成，
 每一个层次类加载器都是如此，因此所有的加载请求都应该传送到启动类加载器中，
 只有当父类加载器反馈自己无法完成这个请求的时候（在它的加载路径下没有找到所需加载的Class），
-子类加载器才会尝试自己去加载。 
+子类加载器才会尝试自己去加载。         
 
 采用双亲委派的一个好处是比如加载位于 rt.jar 包中的类 java.lang.Object，
 不管是哪个加载器加载这个类，最终都是委托给顶层的启动类加载器进行加载，
-这样就保证了使用不同的类加载器最终得到的都是同样一个 Object对象。 
+这样就保证了使用不同的类加载器最终得到的都是同样一个 Object对象。        
 ![Alt](../双亲委派机制.png)
 
 ## 本地方法接口 Native Interface
@@ -47,7 +47,7 @@ sun.misc.Launcher$AppClassLoader@18b4aac2    应用程序类加载器
 它的初衷是融合 C/C++程序，Java 诞生的时候是 C/C++横行的时候，要想立足，必须有调用 C/C++程序，
 于是就在内存中专门开辟了一块区域处理标记为native的代码，
 它的具体做法是 Native Method Stack中登记 native方法，
-在Execution Engine 执行时加载native libraies。
+在Execution Engine 执行时加载native libraies。         
 
 目前该方法使用的越来越少了，除非是与硬件有关的应用，
 比如通过Java程序驱动打印机或者Java系统管理生产设备，在企业级应用中已经比较少见。
@@ -71,7 +71,7 @@ sun.misc.Launcher$AppClassLoader@18b4aac2    应用程序类加载器
  不会发生内存溢出(OutOfMemory=OOM)错误
  
 ## 方法区
-供各线程共享的运行时内存区域。 **它存储了每一个类的结构信息** ，
+供各线程共享的运行时内存区域。 **它存储了每一个类的结构信息** ，     
 例如运行时常量池（Runtime Constant Pool）、字段和方法数据、构造函数和普通方法的字节码内容。
 方法区是一个规范，在不同虚拟机里实现是不一样的，最典型的就是永久代(PermGen space)和元空间(Metaspace)。    
 但是  **实例变量存在堆内存中,和方法区无关**
@@ -102,14 +102,61 @@ sun.misc.Launcher$AppClassLoader@18b4aac2    应用程序类加载器
 帧 2 处于栈底，执行完毕后，依次弹出栈帧 1和栈帧 2，线程结束，栈释放。 
 
 ### java.lang.StackOverflowError 栈溢出是错误
-Exception in thread "main" java.lang.StackOverflowError 栈溢出是错误，不是异常
+Exception in thread "main" java.lang.StackOverflowError 栈溢出是错误，不是异常           
 ![Alt](../栈溢出.png)
 
 ### 栈+堆+方法区的交互关系
-![Alt](../交互关系.png)
+![Alt](../交互关系.png)         
 HotSpot（日常使用jdk的JVM）是使用指针的方式来访问对象：
 Java堆中会存放访问**类元数据**(即Class对象)的地址，
 reference存储的就直接是对象的地址
+
+## 堆 Heap
+
+### 堆的分类
+一个JVM实例只存在一个堆内存，堆内存的大小是可以调节的。
+类加载器读取了类文件后，需要把类、方法、常变量放到堆内存中，保存所有引用类型的真实信息，
+以方便执行器执行，物理概念上分为新生区、老年区;堆内存逻辑概念上分为三部分：
+- java7以前 **新生区、老年区、永久区**         
+- java8     **新生区、老年区、元空间**         
+![Alt](../堆内存.png)    
+
+### 堆内存  
+
+#### GC内存回收的大致过程
+新生区是类的诞生、成长、消亡的区域，
+一个类在这里产生，应用，最后被垃圾回收器收集，结束生命。
+新生区又分为两部分： 伊甸区（Eden space）和幸存者区（Survivor pace），
+所有的类都是在伊甸区被new出来的。
+幸存区有两个： 0区（Survivor 0 space）和1区（Survivor 1 space）。
+当伊甸园的空间用完时，程序又需要创建对象，JVM的垃圾回收器将对伊甸园区进行垃圾回收(Minor GC)，
+将伊甸园区中的不再被其他对象所引用的对象进行销毁。
+然后将伊甸园中的剩余对象移动到幸存 0区。
+若幸存 0区也满了，再对该区进行垃圾回收，然后移动到 1 区。
+那如果1 区也满了呢？再移动到养老区。
+若养老区也满了，那么这个时候将产生MajorGC（FullGC），进行养老区的内存清理。
+若养老区执行了Full GC之后发现依然无法进行对象的保存，
+就会产生OOM异常“OutOfMemoryError”。
+
+> 如果出现java.lang.OutOfMemoryError: Java heap space异常，说明Java虚拟机的堆内存不够。原因有二：
+（1）Java虚拟机的堆内存设置不够，可以通过参数-Xms、-Xmx来调整。
+（2）代码中创建了大量大对象，并且长时间不能被垃圾收集器收集（存在被引用）。
+
+#### MinorGC的过程
+![Alt](../新生老年代.png)        
+-  MinorGC的过程（复制->清空->互换） 
+1. eden、SurvivorFrom 复制到 SurvivorTo，年龄+1             
+首先，当Eden区满的时候会触发第一次GC,把还活着的对象拷贝到SurvivorFrom区，
+当Eden区再次触发GC的时候会扫描Eden区和From区域,对这两个区域进行垃圾回收，
+经过这次回收后还存活的对象,则直接复制到To区域
+（如果有对象的年龄已经达到了老年的标准，则赋值到老年代区），同时把这些对象的年龄+1
+2. 清空 eden、SurvivorFrom                 
+然后，清空Eden和SurvivorFrom中的对象，也即复制之后有交换，谁空谁是to
+3. SurvivorTo和 SurvivorFrom 互换                
+最后，SurvivorTo和SurvivorFrom互换，原SurvivorTo成为下一次GC时的SurvivorFrom区。
+部分对象会在From和To区域中复制来复制去,如此交换15次(由JVM参数MaxTenuringThreshold决定,这个参数默认是15),
+最终如果还是存活,就存入到老年代
+
 
 
 
