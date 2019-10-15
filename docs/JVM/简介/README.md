@@ -1,4 +1,4 @@
-# JVM简介
+# JVM快速入门
 
 ## JVM架构图
 灰色部分是线程私有的，占用内存很小，没有GC情况        
@@ -126,7 +126,7 @@ reference存储的就直接是对象的地址
 #### GC内存回收的大致过程
 新生区是类的诞生、成长、消亡的区域，
 一个类在这里产生，应用，最后被垃圾回收器收集，结束生命。
-新生区又分为两部分： 伊甸区（Eden space）和幸存者区（Survivor pace），
+新生区又分为两部分： 伊甸区（Eden space）和幸存者区（Survivor space），
 所有的类都是在伊甸区被new出来的。
 幸存区有两个： 0区（Survivor 0 space）和1区（Survivor 1 space）。
 当伊甸园的空间用完时，程序又需要创建对象，JVM的垃圾回收器将对伊甸园区进行垃圾回收(Minor GC)，
@@ -149,13 +149,54 @@ reference存储的就直接是对象的地址
 首先，当Eden区满的时候会触发第一次GC,把还活着的对象拷贝到SurvivorFrom区，
 当Eden区再次触发GC的时候会扫描Eden区和From区域,对这两个区域进行垃圾回收，
 经过这次回收后还存活的对象,则直接复制到To区域
-（如果有对象的年龄已经达到了老年的标准，则赋值到老年代区），同时把这些对象的年龄+1
+（如果有对象的年龄已经达到了老年的标准，则复制到老年代区），同时把这些对象的年龄+1
 2. 清空 eden、SurvivorFrom                 
 然后，清空Eden和SurvivorFrom中的对象，也即复制之后有交换，谁空谁是to
 3. SurvivorTo和 SurvivorFrom 互换                
 最后，SurvivorTo和SurvivorFrom互换，原SurvivorTo成为下一次GC时的SurvivorFrom区。
 部分对象会在From和To区域中复制来复制去,如此交换15次(由JVM参数MaxTenuringThreshold决定,这个参数默认是15),
 最终如果还是存活,就存入到老年代
+
+#### 永久代（java8改为元空间）
+![Alt](../HotSpot内存管理.png)          
+实际而言，方法区（Method Area）和堆一样，是各个线程共享的内存区域，
+它用于存储虚拟机加载的：类信息+普通常量+静态常量+编译器编译后的代码等等，
+**虽然JVM规范将方法区描述为堆的一个逻辑部分，但它却还有一个别名叫做Non-Heap(非堆)，目的就是要和堆分开。**       
+对于HotSpot虚拟机，很多开发者习惯将方法区称之为“永久代(Parmanent Gen)” ，
+但严格本质上说两者不同，或者说使用永久代来实现方法区而已，
+永久代是方法区(相当于是一个接口interface)的一个实现，jdk1.7的版本中，已经将原本放在永久代的字符串常量池移到堆中。
+
+#### 堆参数调整
+- **Java7**
+![Alt](../Java7.png)        
+- **Java8**     
+JDK 1.8之后将最初的永久代取消了，由元空间取代。
+![Alt](../Java8.png)          
+> 在Java8中，永久代已经被移除，被一个称为元空间的区域所取代。元空间的本质和永久代类似。             
+  元空间与永久代之间最大的区别在于：             
+  永久带使用的JVM的堆内存，但是java8以后的 元空间并不在虚拟机中而是使用本机物理内存。             
+  因此，默认情况下，元空间的大小仅受本地内存限制。类的元数据放入 native memory, 
+  字符串池和类的静态变量放入 java 堆中，这样可以加载多少类的元数据就不再由MaxPermSize 控制,
+  而由系统的实际可用空间来控制。   
+  
+![Alt](../参数表格.png)         
+使用程序查询参数        
+`public static void main(String[] args){                
+ long maxMemory = Runtime.getRuntime().maxMemory() ;//返回 Java 虚拟机试图使用的最大内存量。                          
+ long totalMemory = Runtime.getRuntime().totalMemory() ;//返回 Java 虚拟机中的内存总量。               
+ System.out.println("-Xmx:MAX_MEMORY = " + maxMemory + "（字节）、" + (maxMemory / (double)1024 / 1024) + "MB");      
+ System.out.println("-Xms:TOTAL_MEMORY = " + totalMemory + "（字节）、" + (totalMemory / (double)1024 / 1024) + "MB");        
+ }
+`   
+**发现默认的情况下分配的内存是总内存的“1 / 4”、而初始化的内存为“1 / 64”**
+- Idea中，调整参数的方式见下图
+![Alt](../Idea修改参数.png)
+- 参数修改后重新查看，可在下图验证堆内存结构
+![Alt](../修改后的参数.png)
+- 内存溢出的过程
+![Alt](../内存溢出的过程.png)
+     
+
 
 
 
