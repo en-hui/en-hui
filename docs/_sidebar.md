@@ -1,4 +1,3 @@
-- **JUC**
-    - [可重入锁](JUC/reentrantlock/)
-- **JVM**
+- **JUC & JVM**
+    - [JUC快速入门](JUC/简介/)
     - [JVM快速入门](JVM/简介/)
