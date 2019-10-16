@@ -36,12 +36,12 @@ B线程：若number为0，则一直循环；
 A线程：将number的值改为10   
 若number变量未加volatile关键字，则没有可见性，以上程序将一直运行，因为A线程修改number后，B线程不可见       
 若number变量加了volatile关键字，则有可见性，以上程序将会终止运行，因为A线程修改number后，B线程会立即知道          
-程序示例：[volatile保证可见性程序演示](../../../../src/main/java/fun/enhui/interview/VolatileDemo.java)
+程序示例：[volatile保证可见性程序演示](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/VolatileDemo.java)
 
 ## 原子性
 ### volatile不保证原子性的代码演示
 > number由volatile修饰，且初始值为0，创建20个线程，每个线程循环1000次，对number变量执行i++操作
-程序示例：[volatile不保证原子性程序演示](../../../../src/main/java/fun/enhui/interview/VolatileDemo.java)
+程序示例：[volatile不保证原子性程序演示](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/VolatileDemo.java)
 ### volatile不保证原子性理论解释    
 原子性：1.不可分割，完整性，也即某个线程正在做某个具体业务时，中间不可以被加塞或者分割，需要整体完整
 2.要么同时成功，要么同时失败        
@@ -50,7 +50,7 @@ i++实际由三步组成
 1. 执行getfield拿到原始n
 2. 执行iadd进行加1操作
 3. 执行putfield把值写会主内存    
->代码：[i++操作](../../../../src/main/java/fun/enhui/interview/IPlusPlusByteCode.java)  
+>代码：[i++操作](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/IPlusPlusByteCode.java)  
 javap执行结果:
 ![Alt](../../大厂高频面试题img/volatile简介img/i++字节码.png) 
 
@@ -59,7 +59,7 @@ javap执行结果:
 ### volatile不保证原子性问题解决
 - 加synchronized关键字，（大材小用）
 - 使用juc下的AtomicInteger代替volatile int n 
-> 代码：[使用AtomicInteger解决原子性问题](../../../../src/main/java/fun/enhui/interview/VolatileDemo.java)  
+> 代码：[使用AtomicInteger解决原子性问题](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/VolatileDemo.java)  
 
 ## 有序性（禁止指令重排）
 ### 指令重排
