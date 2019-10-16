@@ -1,0 +1,2 @@
+# CAS简介
+cas是compareAndSet的缩写，指的是juc.Atomic包下类的compareAndSet方法
