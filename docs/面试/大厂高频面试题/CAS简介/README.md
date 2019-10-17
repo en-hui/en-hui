@@ -1,3 +1,4 @@
+# CAS(Compare And Swap)
 # CAS(Compare And Swap)简介
  > 在计算机科学中，比较和交换（Compare And Swap）是用于实现多线程同步的原子指令。 
  它将内存位置的内容与给定值进行比较，只有在相同的情况下，将该内存位置的内容修改为新的给定值。 

@@ -1,3 +1,4 @@
+# volatile
 # volatile简介
 volatile是一个轻量级的同步机制
 1. 保证可见性
