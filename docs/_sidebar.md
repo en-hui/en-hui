@@ -6,3 +6,4 @@
     - [CAS简介](面试/大厂高频面试题/CAS简介/)
     - [锁](面试/大厂高频面试题/锁/)
     - [JUC下CountDownLatch、CyclicBarrier、Semaphore](面试/大厂高频面试题/CountDownLatch等/)
+    - [阻塞队列](面试/大厂高频面试题/阻塞队列/)
