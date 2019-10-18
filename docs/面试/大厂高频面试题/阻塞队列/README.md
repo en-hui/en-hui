@@ -41,15 +41,45 @@ BlockingQueue是和List同级的接口，只需要重点掌握三个实现类即
 代码示例:[以抛出异常组为例理解上面表格](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/BlockingQueueDemo.java)
 
 # 阻塞队列之同步SynchronousQueue队列
-
+> 创建一个SynchronousQueue对象，两个线程同时操作此对象，一个线程往队列里塞值，另一个队列从队列里取值。    
+这个类的特点:每一次塞值只能塞一个，当队列里有元素，塞值线程就会阻塞，同理，如果队列里没有值，取值线程也会阻塞   
 代码示例:[只能有一个元素的阻塞队列SynchronousQueue](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/SynchronousQueueDemo.java)
   
 # 使用场景
-- 生产者消费者模式
+- 生产者消费者模式（原理东西，掌握）
 - 线程池
 - 消息中间件
 
 # 生产者消费者模式
 ## 传统版
-
+- 用 synchronized 加锁，wait 和 notify 操作
+- 用 ReentrantLock 加锁，await 和 signal 操作      
+代码示例:[生产者消费者传统版](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/juc/ProduceConsumerDemo.java)
 ## 阻塞队列版
+代码示例：[生产者消费者阻塞队列版](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/ProduceConsumer_BlockQueueDemo.java)
+
+# synchronized 和 lock 有什么区别，用新的lock有什么好处？
+1.原始构成
+- synchronized 是关键字 属于JVM层面，    
+    monitorenter（底层是通过monitor对象来完成，其实wait/notify等方法也依赖于monitor对象，只有在同步块或同步方法中才能调用wait/notify等方法）    
+    monitorexit
+- Lock是具体类（java.util.concurrent.locks.lock）是api层面的锁         
+
+2.使用方法     
+- synchronized 不需要用户手动释放锁，当synchronized代码执行完后系统会自动让线程释放对锁的占用      
+- ReentrantLock则需要去手动释放锁，若没有手动释放锁，就有可能导致出现死锁的现象，
+需要lock()和unLock()方法配合try/finally语句块来完成  
+
+3.等待是否可中断
+- synchronized不可中断，除非抛出异常或者正常运行完成
+- ReentrantLock可中断，     
+①设置超时方法trylock(long time,TimeUnit unit)     
+②lockInterruptibly() 放代码块中，调用interrupt()方法可中断     
+
+4.加锁是否公平
+- synchronized 是非公平锁
+- ReentrantLock两者都可以，默认是非公平锁，构造方法可以传入boolean值，true为公平锁，false为非公平锁
+
+5.锁绑定多个条件Condition准确唤醒
+- synchronized没有
+- ReentrantLock 可以精确唤醒，而不是像synchronized要么随机唤醒一个线程，要么唤醒全部线程。
