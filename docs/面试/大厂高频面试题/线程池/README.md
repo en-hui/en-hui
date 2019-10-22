@@ -109,7 +109,7 @@ ExecutorService,ThreadPoolExecutor这几个类.
 ```
 
 1. int corePoolSize:线程池中的常驻核心线程数
->1.在创建了线程池后,当有请求任务来之后,就会安排池中的线程去执行请求任务,近似理解为今日当值线程
+>1.在创建了线程池后,当有请求任务来之后,就会安排池中的线程去执行请求任务,近似理解为今日当值线程      
  2.当线程池中的线程数目达到corePoolSize后,就会把到达的任务放入到缓存队列当中.
 2. int maximumPoolSize:线程池能够容纳同时执行的最大线程数,此值大于等于1
 
@@ -124,9 +124,65 @@ ExecutorService,ThreadPoolExecutor这几个类.
 
 7. RejectedExecutionHandler handler:拒绝策略,表示当线程队列满了并且工作线程大于等于线程池的最大线程数(maximumPoolSize)时如何拒绝.
 
+# 线程池工作原理
 
+![Alt](../../大厂高频面试题img/线程池img/线程池原理.png)   
+1. 在创建了线程池后，等待提交过来的任务请求
+2. 当调用execute()方法添加一个请求任务时，线程池会做如下判断：   
+2.1 如果正在运行的线程数量小于 corePoolSize，那么马上创建线程运行这个任务    
+2.2 如果正在运行的线程数量大于或等于 corePoolSize ，那么将这个任务放入队列  
+2.3 如果这时候队列满了且正在运行的线程数量还小于 maximumPoolSize ,那么还是要创建非核心线程立刻运行这个任务    
+2.4 如果队列满了且正在运行的线程数量大于或等于 maximumPoolSize，那么线程池会启动饱和拒绝策略来执行 
+3. 当一个线程完成任务时，他会从队列中取下一个任务来执行   
+4. 当一个线程无事可做超过一定的时间 （keepAliveTime）时，线程池会判断：    
+如果当前运行的线程数量大于 corePoolSize，那么这个线程就会被停掉  
+所以线程池的所有任务完成后，数量最后会减小到corePoolSize
 
+# 拒绝策略
 
+## 什么是拒绝策略
+当线程池的等待队列（BlockingQueue<Runnable> workQueue）满了，
+且线程数量达到了最大值（maximumPoolSize），这时就会使用拒绝策略来处理问题
 
+## JDK内置的拒绝策略
+以下内置策略均实现了RejectExecutionHandler接口
+1. AbortPolicy(默认):直接抛出RejectedException异常阻止系统正常运行
 
+2. CallerRunPolicy:"调用者运行"一种调节机制,该策略既不会抛弃任务,也不会抛出异常,而是将某些任务回退到调用者
 
+3. DiscardOldestPolicy:抛弃队列中等待最久的任务,然后把当前任务加入队列中尝试再次提交
+
+4. DiscardPolicy:直接丢弃任务,不予任何处理也不抛出异常.如果允许任务丢失,这是最好的拒绝策略
+
+# 工作中使用线程池
+线程池不允许使用Executors去创建，而是通过ThreadPoolExecutor的方式，因为Executors中     
+1）FixedThreadPool和SingleThreadPool:允许的请求队列长度为Integer.MAX_VALUE，可能会堆积大量的请求，从而导致OOM。      
+2）CachedThreadPool和ScheduledThreadPool:允许的创建线程数量为Integer.MAX_VALUE，可能会创建大量的线程，从而导致OOM。   
+代码示例:[自己new ThreadPoolExecutor创建线程池](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/MyThreadPoolDemo.java)   
+
+# 如何合理配置线程池的最大数量
+使用System.out.println(Runtime.getRuntime().availableProcessors());查看本机的硬件，核数
+
+## cpu密集型业务
+CPU密集的意思是该任务需要大量的运算，而没有阻塞，CPU一直全速运行     
+CPU密集任务只有在真正多核CPU上才可能通过多线程实现加速，单核CPU不能得到加速，因为CPU总运算能力就这些
+
+CPU密集型任务配置尽可能少的线程数量，参考公式：（CPU核数+1）个线程的线程池
+## IO密集型业务
+IO密集型，即该任务需要大量的IO，即大量的阻塞。   
+在单线程上运行IO密集型的任务会导致浪费大量的CPU运算能力浪费在等待。    
+所以在IO密集型任务中使用多线程可以大大的加速程序运行，即使在单核CPU上，这种加速主要就是利用浪费掉的阻塞时间        
+
+IO密集型应多配置线程数
+1. CPU核数*2
+
+2. CPU核数/(1-阻塞系数) **阻塞系数在0.8~0.9之间**
+
+# 死锁
+![Alt](../../大厂高频面试题img/线程池img/死锁.png)  
+代码示例:[一个死锁程序](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/DeadLockDemo.java)   
+- 故障定位：   
+使用```jps -l```查看进程号     
+![Alt](../../大厂高频面试题img/线程池img/jps.png)      
+使用```jstack 进程号```查看进程信息
+![Alt](../../大厂高频面试题img/线程池img/jstack.png) 
