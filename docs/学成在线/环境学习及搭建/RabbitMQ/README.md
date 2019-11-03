@@ -157,3 +157,24 @@ public class Consumer01 {
 }
 ```
 
+## 工作模式
+1. 工作队列模式（work queues）    
+![Alt](./RabbitMQimg/工作队列模式.png)        
+一个生产者将消息发送给队列，多个消费者监听这个队列，消息不能被重复消费，rabbit采用轮询的方式将消息平均发送给消费者
+2. 发布/订阅模式（publish/subscribe）   
+![Alt](./RabbitMQimg/发布订阅模式.png)        
+一个生产者将消息发给交换机，交换机将消息转发到绑定此交换机的每个队列 
+3. 路由模式（routing）     
+![Alt](./RabbitMQimg/路由模式.png)      
+一个交换机绑定多个队列，每个队列设置routingkey，一个队列可以设置多个routingkey。
+生产者将消息发送给交换机，发送消息时需要指定routingkey，交换机根据routingkey的值判定将消息转发到哪个队列
+4. 通配符模式（Topics）    
+![Alt](./RabbitMQimg/通配符模式.png)          
+【#】：可以匹配一个或多个词        
+【*】：只能匹配一个词           
+一个交换机可以绑定多个队列，每个队列可以设置一个或多个带通配符的routingkey。
+生产者将消息发送给交换机，交换机根据routingkey的值来匹配队列，匹配时采用通配符方式，匹配成功将消息转发到指定队列
+5. header模式
+header模式取消routingkey，使用key/value（键值对匹配队列）
+6. RPC模式
+
