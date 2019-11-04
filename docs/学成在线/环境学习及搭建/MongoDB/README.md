@@ -4,12 +4,14 @@
 
 安装步骤：
 1. 创建仓库文件: ```vi /etc/yum.repos.d/mongodb-org-3.4.repo```   
-2. 复制下面配置，保存退出： ```[mongodb-org-3.4]       
+2. 复制下面配置，保存退出： 
+                ```[mongodb-org-3.4]       
                 name=MongoDB Repository     
                 baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.4/x86_64/     
                 gpgcheck=1      
                 enabled=1       
-                gpgkey=https://www.mongodb.org/static/pgp/server-3.4.asc```          
+                gpgkey=https://www.mongodb.org/static/pgp/server-3.4.asc```   
+                       
 3. yum安装：  ```yum install -y mongodb-org```     
 4. 安装完毕后修改配置文件： ```vi /etc/mongod.conf```      
 **修改配置文件的 bind_ip, 默认是 127.0.0.1 只限于本机连接。必须把这个修改为 0.0.0.0 ,否则通过别的机器是没法连接的!**        
