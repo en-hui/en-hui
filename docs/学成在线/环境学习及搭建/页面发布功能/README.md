@@ -11,7 +11,7 @@
 
 ## 功能实现
 - CMS服务端（生产者）
-```
+```text
         /**
          *  页面发布
          * @param pageId 页面id
@@ -182,19 +182,17 @@
             // 从页面信息中取出站点id
             String siteId = cmsPage.getSiteId();
             rabbitTemplate.convertAndSend(RabbitmqConfig.EX_ROUTING_CMS_POSTPAGE,siteId,jsonString);
-        }
-        
+        }    
 ```
 
 - CMS Client服务端（消费者）
-```
+```java
 /**
  *  监听MQ
  */
 @Component
 @Slf4j
 public class ConsumerPostPage {
-
     @Autowired
     private PageService pageService;
     @RabbitListener(queues = {"${xuecheng.mq.queue}"})
@@ -267,9 +265,7 @@ public class PageService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
-
     }
 
     /**
@@ -284,7 +280,6 @@ public class PageService {
         GridFSDownloadStream gridFSDownloadStream = gridFSBucket.openDownloadStream(file.getObjectId());
         //创建GridFsResource对象，获取流
         GridFsResource gridFsResource = new GridFsResource(file,gridFSDownloadStream);
-
         try {
             return gridFsResource.getInputStream();
         } catch (IOException e) {
