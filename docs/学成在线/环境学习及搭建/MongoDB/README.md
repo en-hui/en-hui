@@ -49,4 +49,72 @@
 | primary key | primary key | 主键，MongoDB自动在每个集合中添加_id的主键 |
 |             |             |                                            |
 
+## 使用GridFS进行文件存取
+GridFS是MongoDB提供的用于持久化存储文件的模块。      
+它将文件分块存储，文件会按照256KB的大小分割成多个块进行存储，GridFS使用两个集合 （collection）存储文件，
+一个集合是chunks, 用于存储文件的二进制数据；一个集合是ﬁles，用于存储文件的元数据信息（文件名称、块大小、上传时间等信息）。     
+从GridFS中读取文件要对文件的各各块进行组装、合并。
+- 配置
+```$xslt
+@Configuration
+public class MongoConfig {
+
+    @Value("${spring.data.mongodb.database}")
+    String db;
+
+    @Bean
+    public GridFSBucket getGridFSBucket(MongoClient mongoClient) {
+        MongoDatabase database = mongoClient.getDatabase(db);
+        GridFSBucket bucket = GridFSBuckets.create(database);
+        return bucket;
+    }
+}
+```
+- 基本操作
+```$xslt
+    @SpringBootTest(classes = ManageCmsApplication.class)
+    @RunWith(SpringRunner.class)
+    public class GridFsTest {
+    
+        @Autowired
+        GridFsTemplate gridFsTemplate;
+    
+        @Autowired
+        GridFSBucket gridFSBucket;
+    
+        //存文件
+        @Test
+        public void testStore() throws FileNotFoundException {
+            //定义file
+            File file =new File("d:/test.ftl");
+            //定义fileInputStream
+            FileInputStream fileInputStream = new FileInputStream(file);
+            ObjectId objectId = gridFsTemplate.store(fileInputStream, "fileName_test");
+            System.out.println(objectId);
+        }
+    
+        //取文件
+        @Test
+        public void queryFile() throws IOException {
+            //根据文件id查询文件
+            GridFSFile gridFSFile = gridFsTemplate.findOne(Query.query(Criteria.where("_id").is("5db983fd44b9c240540b3fc1")));
+    
+            //打开一个下载流对象
+            GridFSDownloadStream gridFSDownloadStream = gridFSBucket.openDownloadStream(gridFSFile.getObjectId());
+            //创建GridFsResource对象，获取流
+            GridFsResource gridFsResource = new GridFsResource(gridFSFile,gridFSDownloadStream);
+            //从流中取数据
+            String content = IOUtils.toString(gridFsResource.getInputStream(), "utf-8");
+            System.out.println(content);
+    
+        }
+    
+        //删除文件
+        public void testDelFile() {
+            gridFsTemplate.delete(Query.query(Criteria.where("_id").is("5db983fd44b9c240540b3fc1")));
+        }
+    }
+```
+
+
 
