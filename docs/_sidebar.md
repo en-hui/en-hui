@@ -12,3 +12,4 @@
     - [MongoDB](学成在线/环境学习及搭建/MongoDB/)
     - [RabbitMQ](学成在线/环境学习及搭建/RabbitMQ/)
     - [页面发布功能](学成在线/环境学习及搭建/页面发布功能/)
+    - [SpringCloud环境搭建](学成在线/环境学习及搭建/SpringCloud/)
