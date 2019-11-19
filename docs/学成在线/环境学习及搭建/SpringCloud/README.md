@@ -31,11 +31,9 @@
 @EnableEurekaServer
 ```
 > - Eureka服务工程配置文件
-```yml
+```yml  
 server:
-  port: ${PORT:50101}
-  # 设置VM options环境变量：-DPORT=50101 -DEUREKA_SERVER=http://localhost:50102/eureka/ -DEUREKA_DOMAIN=eureka01
-  # ${PORT:50101}   如果没有传入参数，则用50101端口
+  port: ${PORT:50101}  # 如果没有传入参数，则用50101端口 传入参数的方式：设置VM options环境变量：-DPORT=50101 -DEUREKA_SERVER=http://localhost:50102/eureka/ -DEUREKA_DOMAIN=eureka01 
 spring:
   application:
     name: xc-govern-center
