@@ -29,7 +29,14 @@ Github:[https://github.com/elastic/elasticsearch](https://github.com/elastic/ela
 3. 每个词和document都有关联
 
 ## 在Windows环境安装 ElasticSearch7.4.2
-ElasticSearch7.4.2要求Java环境为jdk11。从官网下载windows环境的zip压缩包，解压即可             
+Elasticsearch是使用Java构建的，并且在每个发行版中都包含来自JDK维护者（GPLv2 + CE）的捆绑版本的 OpenJDK。
+捆绑的JVM是推荐的JVM，位于Elasticsearch主目录的jdk目录内。        
+要使用自己的Java版本，请设置JAVA_HOME环境变量。如果必须使用与捆绑的JVM不同的Java版本，
+则建议使用受支持 的Java LTS版本。如果使用已知的Java错误版本，Elasticsearch将拒绝启动。
+使用您自己的JVM时，可以删除捆绑的JVM目录。        
+
+ElasticSearch7.4.2要求Java环境为jdk11。       
+从官网下载windows环境的zip压缩包，解压即可             
 下载地址:[https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.4.2-windows-x86_64.zip](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.4.2-windows-x86_64.zip)   
 
 配置文件(zip方式安装，配置文件在ES目录下的config中)：       
