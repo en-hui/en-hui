@@ -19,7 +19,7 @@ Github:[https://github.com/elastic/elasticsearch](https://github.com/elastic/ela
 2. 近实时的去索引数据，搜索数据
 
 ## 原理了解
-下图是ElasticSearch的索引结构，下边黑色部分是屋里结构，上面黄色部分是逻辑结构，
+下图是ElasticSearch的索引结构，下边黑色部分是物理结构，上面黄色部分是逻辑结构，
 逻辑结构也是为了更好的去描述ElasticSearch的工作原理及去使用物理结构中的索引文件。     
 ![Alt](./ElasticSearchimg/es原理图.png)        
 
@@ -45,15 +45,100 @@ ElasticSearch7.4.2要求Java环境为jdk11。
 - log4j2.properties： 用于配置Elasticsearch日志      
 
 启动：直接双击bin目录下的[elasticsearch.bat] 脚本文件，然后浏览器访问9200端口
+## 使用docker安装ES7.4.2
+```
+# 拉取镜像
+docker pull elasticsearch:7.4.2
+
+# 运行容器，注意设置内存，默认分配jvm空间大小为2g
+docker run -e ES_JAVA_OPTS="-Xms128m -Xmx128m" -d -p 9200:9200 -p 9300:9300 --name docker_es elasticsearch:7.4.2
+
+# 运行失败，查看日志命令：docker logs -f -t --tail 100 容器名称  
+
+# 报错信息： max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+# 解决方案：  使用命令：sudo sysctl -w vm.max_map_count=262144   设置后可用命令查看：sysctl -a
+docker run -d -e ES_JAVA_POTS="-Xms128m -Xmx128m"  -e "discovery.type=single-node" -p 9200:9200 -p 9300:9300 --name docker_es elasticsearch:7.4.2
+```
 ## ElasticSearch Head插件
 最简单的方式，可以在谷歌商店搜索 ElasticSearch Head ，然后添加扩展程序       
 ![Alt](./ElasticSearchimg/esHead插件.png)  
 
 ## ElasticSearch 快速入门
-### 创建索引库
+### restful
+- GET: 获取资源
+- POST： 新建资源
+- PUT：在服务器更新资源（向客户端提供改变后的所有资源）
+- DELETE：删除资源
+### 概念理解
+1. Elasticsearch是面向文档型数据库，一条数据在这里就是一个文档，用JSON作为文档序列化的格式    
+2. 将Elasticsearch和关系型数据术语对照表           
+关系数据库     ⇒ 数据库 ⇒ 表    ⇒ 行    ⇒ 列(Columns)      
+Elasticsearch  ⇒ 索引库(Index)   ⇒ 类型(type)  ⇒ 文档(Docments)  ⇒ 字段(Fields)  
+注意：ES7.x版本已经移除type这个概念    
+3. ES官方建议，在一个索引库中只存储相同类型的文档。
+4. 分片和副本        
+副本是分片的副本。分片有主分片和副本分片之分。（主从）     
+一个index数据在物理上被分布在多个主分片上，每个主分片只存放部分数据。    
+每个主分片可以有多个副本，叫副本分片，是主分片的复制。
 
-### 创建映射
+### 创建索引库（理解为创建数据库）
+ES的索引库是一个逻辑概念，它包括了分词列表及文档列表，同一个索引库中存储了相同类型的文档。     
+ 
+>  可以使用head插件创建       
+>  也可以使用 postman 工具创建  
+put http://localhost:9200/索引名称
+例子：put http://localhost:9200/test_index
+```$xslt
+{
+    "settings":{
+        "index":{
+            "number_of_shards":1,
+            "number_of_replicas":0
+        }       
+    }
+}
 
-### 创建文档
+```
+number_of_shards：设置分片的数量，在集群中通常设置多个分片，表示一个索引库将拆分成多片分别存储不同的结点，
+提高了ES的处理能力和高可用性，入门程序使用单机环境，这里设置为1。      
+number_of_replicas：设置副本的数量，设置副本是为了提高ES的高可靠性，单机环境设置为0.
+### 创建映射（理解为表结构）
+在索引中每个文档都包括了一个或多个field，创建映射就是向索引库中创建field的过程
+> 使用 postman 工具
+post http://localhost:9200/索引库名称/_mapping
+例子：http://localhost:9200/test_index/_mapping
+包含三个字段  name description studymodel
+```
+{
+    "properties": {
+        "name": {
+            "type": "text"
+        },
+        "description": {
+            "type": "text"
+        },
+        "studymodel": {
+            "type": "keyword"
+        }
+    }
+}
 
-### 搜索文档
+```
+
+
+### 创建文档（理解为添加一条数据）
+> 使用 postman 工具 
+post http://localhost:9200/索引库名称/默认类型名称/文档编号
+例子：http://localhost:9200/test_index/_doc/1
+```
+{
+	"name":"胡",
+	"description":"学习",
+	"studymodel":"java"
+}
+
+```
+### 搜索文档（理解为查询数据）
+> 使用 postman 工具 
+get http://localhost:9200/索引库名称/默认类型名称/文档编号
+例子：http://localhost:9200/test_index/_doc/1
