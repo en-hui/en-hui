@@ -124,11 +124,12 @@ post http://localhost:9200/索引库名称/_mapping
 }
 
 ```
-
+> 查询所有索引的映射 ```get http://localhost:9200/_mapping ```       
+更新操作与新增一致：有就修改，没有就添加。但是字段类型不能被修改，字段也不能被删除。也就是只能添加(字段)
 
 ### 创建文档（理解为添加一条数据）
 > 使用 postman 工具 
-post http://localhost:9200/索引库名称/默认类型名称/文档编号
+post或put http://localhost:9200/索引库名称/默认类型名称/文档编号
 例子：http://localhost:9200/test_index/_doc/1
 ```
 {
@@ -138,7 +139,130 @@ post http://localhost:9200/索引库名称/默认类型名称/文档编号
 }
 
 ```
+更新文档也可以用这种方式：先删除后创建
 ### 搜索文档（理解为查询数据）
 > 使用 postman 工具 
 get http://localhost:9200/索引库名称/默认类型名称/文档编号
 例子：http://localhost:9200/test_index/_doc/1
+get http://localhost:9200/索引库名称/_doc/_search
+例子：http://localhost:9200/test_index/_doc/_search        
+带条件：get http://localhost:9200/test_index/_search?q=字段:条件
+例如：get http://localhost:9200/test_index/_search?q=name:胡
+
+
+## 分词器的使用
+
+### 使用es的默认分词
+> post  localhost:9200/_analyze
+```
+{"text":"测试分词器，后边是测试内容：SpringCloud实战"}
+```
+默认分词对中文效果不好，分为单字为一词
+
+### 使用IK分词器
+下载ik分词器：https://github.com/medcl/elasticsearch-analysis-ik/releases     
+选择对应版本，下载zip压缩包，解压后放入es安装目录的plugin下     
+重启es后测试是否成功
+> post  localhost:9200/_analyze
+```
+{"text":"测试分词器，后边是测试内容：SpringCloud实战","analyzer":"ik_max_word"}
+```
+1. ik_max_word
+会将文本做最细粒度的拆分。比如 "人民大会堂"：人民、大会、大会堂、会堂等词语
+2. ik_smart
+会做最粗力度的拆分。比如 "中华人民共和国人民大会堂"：中华人民共和国、人民大会堂
+
+### 自定义词库
+如果要让分词器支持一些专有名词，可以自定义词库。        
+IK分词器自带一个main.dic的文件，此文件为系统自带的词库文件（在插件ik分词器的config目录下）   
+    
+在config目录下，有一个 IKAnalyzer.cfg.xml 的配置文件，打开配置文件，可以在对应位置填写自定义文件目录     
+例如：mymain.dic  然后在config目录下创建名为 mymain.dic 的文件，文件中写入关键词，一词一行。（注意：保存为utf-8编码格式）
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>IK Analyzer 扩展配置</comment>
+	<!--用户可以在这里配置自己的扩展字典 -->
+	<entry key="ext_dict">mymain.dic</entry>
+	 <!--用户可以在这里配置自己的扩展停止词字典-->
+	<entry key="ext_stopwords"></entry>
+	<!--用户可以在这里配置远程扩展字典 -->
+	<!-- <entry key="remote_ext_dict">words_location</entry> -->
+	<!--用户可以在这里配置远程扩展停止词字典-->
+	<!-- <entry key="remote_ext_stopwords">words_location</entry> -->
+</properties>
+
+```
+
+### 常用的映射类型
+- String(字符串)
+```puml
+{
+    "properties": {
+        "name": {
+            "type": "text",
+            "analyzer":"ik_max_word", 
+            "search_analyzer":"ik_smart", 
+            "index":"false",
+            "store":""
+         
+        }
+    }
+}
+```
+1. analyzer属性
+如果单独指定 analyzer 属性，则索引和搜索都使用此分词器;如果单独定义搜索时使用的分词器，可以通过 search_analyzer 属性        
+对于ik分词器使用建议：索引时使用 ik_max_word将搜索内容进行细粒度分词（分词内容）;搜索时使用 ik_smart 提高搜索精确性（分词搜索内容）
+
+2. index属性
+通过index属性指定是否索引，默认 index=true，只有进行索引才可以从索引库搜索到
+
+3. store
+是否在source之外存储，每个文档索引后会在ES中保存一份原始文档，存放在"_source"中，
+默认为false,一般情况下不需要设置store为true，因为在_source中已经有一份原始文档了
+
+- keyword(关键字)
+```puml
+{
+    "studymodel": {
+         "type": "keyword"
+    }
+}
+```
+不进行分词，精准匹配
+
+- format(日期格式)
+```puml
+{ 
+     "timestamp":{
+        "type":"date",
+        "format":"yyyy-MM-dd HH:mm:ss||yyyy-MM-dd"
+     }   
+}
+```
+插入文档
+> post http://localhost:9200/test_index/_doc/3
+```puml
+{
+    "name":"java开发",
+    "timestamp":"2018-07-04 18:28:58"
+}
+```
+
+- 数值类型
+1. 尽量选择范围小的类型，提高搜索效率
+2. 对于浮点数尽量用比例因子，比如一个价格字段，单位为元，我们将比例因子设置为100，这在ES中会按 分 保存，映射如下
+```puml
+{
+    "price":{
+        "type":"scaled_float",
+        "scaling_factor":100
+    }
+}
+```
+由于比例因子为100，如果我们输入的价格是23.45，则ES会将23.45乘以100存储在ES中        
+如果输入的价格是23.456，ES会将23.456乘以100在取一个接近原始值的数，得到2345        
+使用比例因子的好处是整形比浮点型更容易压缩，节省磁盘空间        
+
