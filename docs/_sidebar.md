@@ -15,5 +15,5 @@
     - [SpringCloud环境搭建](学成在线/环境学习及搭建/SpringCloud/)
     - [ElasticSearch](学成在线/环境学习及搭建/ElasticSearch/)
 - **内功修炼**     
-    - [数据结构和算法](数据结构与算法/README.md)
+    - [数据结构和算法](数据结构与算法/)
     - [设计模式](设计模式/)
