@@ -1,0 +1,39 @@
+@startuml
+
+
+
+class A{
+}
+class C{
+}
+
+interface Interface1{
+void method1();
+void method2();
+void method3();
+void method4();
+void method5();
+}
+
+class B{
+void method1();
+void method2();
+void method3();
+void method4();
+void method5();
+}
+class D{
+void method1();
+void method2();
+void method3();
+void method4();
+void method5();
+}
+
+
+B ..|> Interface1
+D ..|> Interface1
+
+A..>Interface1
+C..>Interface1
+@enduml

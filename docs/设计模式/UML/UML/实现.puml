@@ -1,0 +1,12 @@
+@startuml
+
+interface PersonService{
+    void delete(Object id)
+}
+class PersonServiceBean{
+    void delete(Object id)
+}
+
+
+PersonService<|..PersonServiceBean
+@enduml

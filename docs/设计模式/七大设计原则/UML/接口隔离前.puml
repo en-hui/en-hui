@@ -1,39 +1,36 @@
 @startuml
-
-
-
-class A{
+class ProjectController{
 }
-class C{
+class OrderController{
 }
 
-interface Interface1{
-void method1();
-void method2();
-void method3();
-void method4();
-void method5();
+interface InfoService{
+void getUser();
+void addProject();
+void delProject();
+void addOrder();
+void delOrder();
 }
 
-class B{
-void method1();
-void method2();
-void method3();
-void method4();
-void method5();
+class ProjectServiceImpl{
+void getUser();
+void addProject();
+void delProject();
+void addOrder();
+void delOrder();
 }
-class D{
-void method1();
-void method2();
-void method3();
-void method4();
-void method5();
+class OrderServiceImpl{
+void getUser();
+void addProject();
+void delProject();
+void addOrder();
+void delOrder();
 }
 
 
-B ..|> Interface1
-D ..|> Interface1
+ProjectController ..|> InfoService
+OrderController ..|> InfoService
 
-A..>Interface1
-C..>Interface1
+ProjectServiceImpl..>InfoService
+OrderServiceImpl..>InfoService
 @enduml
