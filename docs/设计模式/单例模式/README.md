@@ -246,6 +246,7 @@ enum Singleton8{
 ```
 
 ## JDK中使用单例模式的案例
+
 ```puml
 package fun.enhui.design.singleton;
 public class TestJDKRuntime {
