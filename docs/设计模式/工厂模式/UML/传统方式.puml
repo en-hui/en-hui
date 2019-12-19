@@ -1,0 +1,33 @@
+@startuml
+
+abstract class Pizza{
+    abstract void prepare()
+    void bake()
+    void cut()
+    void box()
+}
+class CheessPizza{
+    void prepare()
+}
+class GreekPizza{
+    void prepare()
+}
+class PepperPizz{
+    void prepare()
+}
+
+class OrderPizza{
+    + void traditionWay()
+    - String getType()
+
+}
+
+Pizza <|-- CheessPizza
+Pizza <|-- GreekPizza
+Pizza <|-- PepperPizz
+
+CheessPizza --o OrderPizza
+GreekPizza --o OrderPizza
+PepperPizz --o OrderPizza
+
+@enduml
