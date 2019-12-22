@@ -1,5 +1,6 @@
 package fun.enhui.design.factory.simplefactory.pizzastroe.order;
 
+import fun.enhui.design.factory.simplefactory.pizzastroe.factory.SimpleFactory;
 import fun.enhui.design.factory.simplefactory.pizzastroe.pizza.CheesePizza;
 import fun.enhui.design.factory.simplefactory.pizzastroe.pizza.GreekPizza;
 import fun.enhui.design.factory.simplefactory.pizzastroe.pizza.PepperPizza;
@@ -23,8 +24,9 @@ public class OrderPizza {
 	 */
 	public void traditionWay(){
 		Pizza pizza = null;
-		String orderType; // 订购披萨的类型
+		String orderType; //
 		do {
+			// 获取用户订购披萨的类型
 			orderType = getType();
 			if (orderType.equals("greek")) {
 				pizza = new GreekPizza();
@@ -54,10 +56,10 @@ public class OrderPizza {
 	 */
 	public void simpleFactory(SimpleFactory simpleFactory) {
 		Pizza pizza = null;
-		//用户输入的
 		String orderType = "";
 
 		do {
+			// 获取订购披萨的类型
 			orderType = getType();
 			pizza = simpleFactory.createPizza(orderType);
 

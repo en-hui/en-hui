@@ -26,8 +26,8 @@ Pizza <|-- CheessPizza
 Pizza <|-- GreekPizza
 Pizza <|-- PepperPizz
 
-CheessPizza --o OrderPizza
-GreekPizza --o OrderPizza
-PepperPizz --o OrderPizza
+CheessPizza <.. OrderPizza
+GreekPizza <.. OrderPizza
+PepperPizz <.. OrderPizza
 
 @enduml

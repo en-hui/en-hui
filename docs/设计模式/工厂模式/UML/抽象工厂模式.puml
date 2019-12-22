@@ -1,0 +1,60 @@
+@startuml
+
+abstract class Pizza{
+    abstract void prepare()
+    void bake()
+    void cut()
+    void box()
+}
+class BJCheessPizza{
+    void prepare()
+}
+class BJPepperPizz{
+    void prepare()
+}
+class BJGreekPizza{
+    void prepare()
+}
+class LDCheessPizza{
+    void prepare()
+}
+class LDPepperPizz{
+    void prepare()
+}
+class LDGreekPizza{
+    void prepare()
+}
+class CheessPizzaFactory{
+    + Pizza createBJPizza()
+    + Pizza createLDPizza()
+}
+class PepperPizzFactory{
+    + Pizza createBJPizza()
+    + Pizza createLDPizza()
+}
+class GreekPizzaFactory{
+    + Pizza createBJPizza()
+    + Pizza createLDPizza()
+}
+abstract class AbsFactory{
+   + abstract Pizza createBJPizza()
+   + abstract Pizza createLDPizza()
+}
+Pizza <|-- BJCheessPizza
+Pizza <|-- BJPepperPizz
+Pizza <|-- BJGreekPizza
+Pizza <|-- LDCheessPizza
+Pizza <|-- LDPepperPizz
+Pizza <|-- LDGreekPizza
+BJCheessPizza <.. CheessPizzaFactory
+LDCheessPizza <.. CheessPizzaFactory
+BJPepperPizz <.. PepperPizzFactory
+LDPepperPizz <.. PepperPizzFactory
+BJGreekPizza <.. GreekPizzaFactory
+LDGreekPizza <.. GreekPizzaFactory
+
+CheessPizzaFactory --|> AbsFactory
+PepperPizzFactory --|> AbsFactory
+GreekPizzaFactory --|> AbsFactory
+
+@enduml

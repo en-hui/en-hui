@@ -26,10 +26,10 @@ Pizza <|-- CheessPizza
 Pizza <|-- GreekPizza
 Pizza <|-- PepperPizz
 
-CheessPizza --o SimpleFactory
-GreekPizza --o SimpleFactory
-PepperPizz --o SimpleFactory
+CheessPizza <.. SimpleFactory
+GreekPizza <.. SimpleFactory
+PepperPizz <.. SimpleFactory
 
-SimpleFactory --o OrderPizza
+SimpleFactory <.. OrderPizza
 
 @enduml
