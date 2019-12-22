@@ -67,6 +67,7 @@
 
 ## JDK中使用工厂模式的案例
 - 调用代码
+
 ```puml
 /** 
  * JDK 中的 Calendar 使用了简单工厂模式 
@@ -82,6 +83,7 @@ public class TestJDKCalendar {
 ```
 
 - 源码
+
 ```puml
 public static Calendar getInstance()
 {
