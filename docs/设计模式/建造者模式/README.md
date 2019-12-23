@@ -49,7 +49,8 @@
 
 ![Alt](./img/StringBuilder中的建造者.png)      
 
-- StringBuilder.java      
+- StringBuilder.java    
+
 ```puml
     @Override
     public StringBuilder append(boolean b) {
