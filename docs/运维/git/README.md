@@ -28,10 +28,10 @@ make prefix=/usr/local/git all
 make prefix=/usr/local/git install
 
 vim /etc/profile
-# 最后加上
+-- 最后加上
 GIT_HOME=/usr/local/git
 exprot PATH=$PATH:$GIT_HOME/bin
-# 生效
+-- 生效
 source /etc/profile
 ```
 
