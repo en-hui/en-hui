@@ -10,5 +10,6 @@ tomcat9下载地址：https://tomcat.apache.org/download-90.cgi
 ```mv apache-tomcat-9.0.30 jenkins-tomcat9```
 
 - 检查
-进入/usr/local/tomcat/jenkins-tomcat9/bin/下启动tomcat```sh startup.sh``
+进入/usr/local/tomcat/jenkins-tomcat9/bin/下启动tomcat
+```sh startup.sh```
 然后本地访问8080端口
