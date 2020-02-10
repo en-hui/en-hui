@@ -21,19 +21,19 @@ tar -zxvf git-2.9.5.tar.gz
 ```
 解压后的文件名称为 git-2.9.5
 
-- 编译安装      
-``` 
-cd git-2.9.5
-make prefix=/usr/local/git all
-make prefix=/usr/local/git install
-
-vim /etc/profile
--- 最后加上
-GIT_HOME=/usr/local/git
-exprot PATH=$PATH:$GIT_HOME/bin
--- 生效
-source /etc/profile
+- 编译安装   
 ```
+cd git-2.9.5        
+make prefix=/usr/local/git all      
+make prefix=/usr/local/git install      
+_配置环境变量
+vim /etc/profile        
+_文件末尾添加         
+GIT_HOME=/usr/local/git     
+exprot PATH=$PATH:$GIT_HOME/bin     
+_配置生效     
+source /etc/profile     
+```   
 
 - 检查        
 ``` git --version ```
