@@ -93,9 +93,9 @@ Transfers.Remote directory(远程服务器文件路径下的路径): manage-jar
 Transfers.Exec command(ssh传输完成后要执行的命令):             
 ```
 cd /usr/local/tomcat/manage-jar         
-chomd 777 *.sh      
-./stop.sh       
-./start.sh     
+chmod 777 *.sh      
+./stop.sh           
+./start.sh              
 ```        
 4.创建stop.sh脚本       
 ``` 
@@ -115,7 +115,7 @@ echo ${JAVA_HOME}
 chmod 777 /usr/local/tomcat/manage-jar/manage-0.0.1-SNAPSHOT.jar        
 echo "执行...."       
 cd /usr/local/tomcat/manage-jar/        
-nohup ${JAVA_HOME}/bin/java -jar manage-0.0.1-SNAPSHOT.jar > /dev/null &        
+nohup ${JAVA_HOME}/bin/java -jar manage-0.0.1-SNAPSHOT.jar > manage.log &        
 echo "启动成功"     
 ```    
 
