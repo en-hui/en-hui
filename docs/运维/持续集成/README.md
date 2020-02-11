@@ -110,7 +110,9 @@ fi
 ```     
 5.创建start.sh脚本           
 ```         
-#!/bin/bash     
+#!/bin/bash
+#必须要定义一下JAVA_HOME不然下面的java找不到，导致不执行
+export JAVA_HOME=/usr/local/java/jdk1.8     
 echo ${JAVA_HOME}       
 chmod 777 /usr/local/tomcat/manage-jar/manage-0.0.1-SNAPSHOT.jar        
 echo "执行...."       
