@@ -95,8 +95,29 @@ Transfers.Exec command(ssh传输完成后要执行的命令):
 cd /usr/local/tomcat/manage-jar         
 chomd 777 *.sh      
 ./stop.sh       
-./staart.sh     
+./start.sh     
 ```        
+4.创建stop.sh脚本       
+``` 
+#!/bin/bash     
+echo "stop SpringBoot manage"       
+pid=`ps -ef | grep manage-0.0.1-SNAPSHOT.jar | grep -v grep | awk '{print $2}'`     
+echo "旧应用进程id：$pid"     
+if [ -n "$pid" ]        
+then        
+kill -9 $pid        
+fi      
+```     
+5.创建start.sh脚本           
+```         
+#!/bin/bash     
+echo ${JAVA_HOME}       
+chmod 777 /usr/local/tomcat/manage-jar/manage-0.0.1-SNAPSHOT.jar        
+echo "执行...."       
+cd /usr/local/tomcat/manage-jar/        
+nohup ${JAVA_HOME}/bin/java -jar manage-0.0.1-SNAPSHOT.jar > /dev/null &        
+echo "启动成功"     
+```    
 
 6. 配置钩子函数，以达到git的push操作触发构建         
 此处不做，想用的可以百度下，很简单
