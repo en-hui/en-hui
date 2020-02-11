@@ -24,7 +24,7 @@ cp -rf ./dist/* /usr/local/tomcat/manage-vue
 
 ### nginx安装及配置
 
-### nginx安装
+#### nginx安装
 yum安装nginx非常简单，一条命令即可。这种方式安装，配置文件在/etc/nginx目录下。   
 ``` 
 # 安装 nginx      
