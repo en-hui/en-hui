@@ -85,4 +85,87 @@ cpu分不同的指令级别
 linux内核跑在ring0级，用户程序跑在ring3级，
 对于系统的关键访问，需要经过kernel（内核）的同意，保证系统健壮性   
 
-### 进程 线程 纤程 中断
+## 进程 线程 纤程
+面试高频：进程和线程有什么区别？   
+进程是OS分配资源的基本单位，线程是执行调度的基本单位。
+分配资源最重要的是：独立的内存空间，线程调度执行（线程共享进程的内存空间，没有自己独立的内存空间）
+### 进程
+linux中也称为task，是系统分配资源的基本单位    
+资源：独立的地址空间，内核数据结构（进程描述符..） 全局变量 数据段..   
+进程描述符：PCB（Process Control Block）  
+  
+#### 僵尸进程 & 孤儿进程
+进程的创建和启动：    
+![Alt](../img/进程的创建和启动.png)    
+僵尸进程：父进程产生子进程后，会维护子进程的一个PCB结构，子线程退出，由父进程释放PCB结构   
+如果父进程没有释放PCB结构，那么子进程成为一个僵尸进程（父进程中浪费了一个PCB的空间）   
+
+孤儿进程：子进程结束之前，父进程已经退出   
+孤儿进程会成为init进程的孩子，由1号进程维护
+
+### 线程
+线程在linux中的实现：
+就是一个普通的进程，只不过和其他进程共享资源    
+其他系统都有各自的所谓LWP的实现 Light Weight Process    
+高层面理解：线程就是一个进程中不同的执行路线
+
+### 纤程
+![Alt](../img/纤程.png)   
+用户空间级别的线程（用户态的线程，线程中的线程），切换和调度不需要经过OS   
+优势：   
+1：占有资源很少，OS的线程：1M; 纤程(Fiber)：4K   
+2：切换比较简单,不需要内核态与用户态的切换    
+3：可以启动很多个 10W+     
+纤程的应用场景：     
+1.只需要很短计算任务的时候   
+2.不需要和内核打交道的时候（无需系统调用）   
+3.并发量比较高的时候（可以启动很多纤程，比线程更轻量）   
+
+Java对纤程暂无内置支持，可以利用类库实现：   
+```
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/co.paralleluniverse/quasar-core -->
+        <dependency>
+            <groupId>co.paralleluniverse</groupId>
+            <artifactId>quasar-core</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+    </dependencies>
+```
+
+```java
+import co.paralleluniverse.fibers.Fiber;
+import co.paralleluniverse.fibers.SuspendExecution;
+import co.paralleluniverse.strands.SuspendableRunnable;
+public class HelloFiber {
+    public static void main(String[] args) throws  Exception {
+        long start = System.currentTimeMillis();
+        int size = 10000;
+        Fiber<Void>[] fibers = new Fiber[size];
+        for (int i = 0; i < fibers.length; i++) {
+            fibers[i] = new Fiber<Void>(new SuspendableRunnable() {
+                public void run() throws SuspendExecution, InterruptedException {
+                    calc();
+                }
+            });
+        }
+        for (int i = 0; i < fibers.length; i++) {
+            fibers[i].start();
+        }
+        for (int i = 0; i < fibers.length; i++) {
+            fibers[i].join();
+        }
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
+    }
+    static void calc() {
+        int result = 0;
+        for (int m = 0; m < 10000; m++) {
+            for (int i = 0; i < 200; i++) result += i;
+        }
+    }
+}
+```
+
+
+
