@@ -50,7 +50,7 @@ public class Day01_BinarySearch02 {
         int index = -1;
         int L = 0, R = sortedArr.length - 1;
         int mid = 0;
-        while (L < R) {
+        while (L <= R) {
             mid = R + ((L - R) >> 1);
             if (sortedArr[mid] >= random) {
                 index = mid;
@@ -58,12 +58,6 @@ public class Day01_BinarySearch02 {
             } else {
                 L = mid + 1;
             }
-        }
-        // 当 L == R 时，没有比较，所以最后要比较一次
-        // 极端右边情况：如果L=n-1 R=n mid=n-1.则L mid+1=n，不越界
-        // 极端左边情况：如果L=0 R=1 mid=0.则R mid-1=-1，越界了
-        if (sortedArr[L] >= random) {
-            index = L;
         }
         return index;
     }
