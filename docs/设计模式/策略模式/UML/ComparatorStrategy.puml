@@ -1,0 +1,28 @@
+@startuml
+
+interface Comparator<T>{
+    int compare(T o1, T o2)
+}
+
+class CatHeightComparator{
+    public int compare(Cat o1, Cat o2)
+}
+
+class CatWeightComparator{
+    public int compare(Cat o1, Cat o2)
+}
+class Sort<T> {
+    public void sort(T[] arr, Comparator<T> comparator)
+}
+Sort o-- Comparator
+Comparator <|.. CatHeightComparator
+Comparator <|.. CatWeightComparator
+
+note left of Sort : "排序：提供排序方法，根据不同策略进行排序"
+note left of Comparator : "比较器：该接口提供比较两个对象的方法"
+note left of CatHeightComparator : "高度比较器：根据高度比较"
+note left of CatWeightComparator : "重量比较器：根据重量比较"
+
+
+
+@enduml

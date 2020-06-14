@@ -1,0 +1,28 @@
+@startuml
+
+interface IBaseStrategy{
+    Long generationId()
+}
+
+class SnowflakeStrategy{
+    Long generationId()
+}
+
+class IncrementStrategy{
+    Long generationId()
+}
+class Context {
+    IBaseStrategy baseStrategy
+}
+Context o-- IBaseStrategy
+IBaseStrategy <|.. SnowflakeStrategy
+IBaseStrategy <|.. IncrementStrategy
+
+note left of Context : "环境类：持有【策略接口】"
+note left of IBaseStrategy : "策略接口：该接口提供生成id方法"
+note left of SnowflakeStrategy : "雪花策略：使用雪花算法生成id"
+note left of IncrementStrategy : "递增策略：使用递增数字生成id"
+
+
+
+@enduml

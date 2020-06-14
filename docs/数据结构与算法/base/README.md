@@ -1,5 +1,6 @@
 # 数据结构与算法-基础
 
+## 第一天学习
 ### 评估算法的核心指标
 1. 时间复杂度
 2. 额外空间复杂度
@@ -30,3 +31,16 @@ a=a^b;
 2.一个数组中有一个数出现了奇数次，其他数出现了偶数次，找出这个奇数次的数：[异或找到出现奇数次的一个数](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/data/structure/base/Day01_Xor01.java)   
 3.一个int类型的数，提取出二进制数最右侧的1:```num & ((~num) + 1)```       
 4.一个数组中有两个数出现了奇数次，其他数出现了偶数次，找出这两个奇数次的数：[异或找到出现奇数次的两个数](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/data/structure/base/Day01_Xor03.java)   
+
+### 链表
+1.反转单链表：[反转单链表](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/data/structure/base/Day01_ReverseList01.java)   
+2.反转双向链表：[反转双链表](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/data/structure/base/Day01_ReverseList02.java)    
+3.把链表中给定值删除：[链表删除给定值](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/data/structure/base/Day01_RemoveNode.java)     
+
+### 栈和队列
+1.双向链表实现栈
+2.双向链表实现队列
+3.数组实现栈
+4.数组实现队列
+
+## 第二天学习
