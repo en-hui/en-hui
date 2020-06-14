@@ -29,5 +29,9 @@ Pizza <|-- PepperPizz
 CheessPizza <.. OrderPizza
 GreekPizza <.. OrderPizza
 PepperPizz <.. OrderPizza
-
+note left of Pizza : "披萨抽象类：抽象准备食材方法，子类根据不同口味进行实现"
+note left of CheessPizza : "奶酪披萨"
+note left of GreekPizza : "希腊披萨"
+note left of PepperPizz : "胡椒披萨"
+note left of OrderPizza : "客户端"
 @enduml

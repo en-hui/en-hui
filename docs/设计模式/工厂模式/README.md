@@ -10,6 +10,39 @@
 - 不使用设计模式     
 直接在使用的地方创建对象，根据类型创建不同的披萨对象        
 ![Alt](./img/传统方式.png)        
+```	
+/**
+ * 传统方式获取对象 - 不使用设计模式
+ * @author: HuEnhui
+ * @date: 2019/12/19 17:45
+ */
+public void traditionWay(){
+    Pizza pizza = null;
+    String orderType; //
+    do {
+        // 获取用户订购披萨的类型
+        orderType = this.getType();
+        if (orderType.equals("greek")) {
+            pizza = new GreekPizza();
+            pizza.setName(" 希腊披萨 ");
+        } else if (orderType.equals("cheese")) {
+            pizza = new CheesePizza();
+            pizza.setName(" 奶酪披萨 ");
+        } else if (orderType.equals("pepper")) {
+            pizza = new PepperPizza();
+            pizza.setName("胡椒披萨");
+        } else {
+            break;
+        }
+        //输出pizza 制作过程
+        pizza.prepare();
+        pizza.bake();
+        pizza.cut();
+        pizza.box();
+
+    } while (true);
+}
+```
 
 > 优点：比较好理解，简单易操作        
 缺点：违反了开闭原则，当我们要增加新的披萨时，除了要增加披萨类，还要修改所有涉及创建Pizza的代码      
@@ -25,7 +58,31 @@
 2.抽象产品（Product）：定义了产品的规范，描述了产品的主要特性和功能。         
 3.具体产品（ConcreteProduct）：实现了抽象产品角色所定义的接口，由简单工厂来创建 
         
-![Alt](./img/简单工厂模式.png)        
+![Alt](./img/简单工厂模式.png)    
+``` 
+/**
+ * 根据下单类型 返回对应的 披萨 对象
+ * @author: HuEnhui
+ * @date: 2019/12/19 17:51
+ */
+public Pizza createPizza(String orderType) {
+
+    Pizza pizza = null;
+
+    System.out.println("使用简单工厂模式");
+    if (orderType.equals("greek")) {
+        pizza = new GreekPizza();
+        pizza.setName(" 希腊披萨 ");
+    } else if (orderType.equals("pepper")) {
+        pizza = new PepperPizza();
+        pizza.setName("胡椒披萨");
+    } else if (orderType.equals("cheese")) {
+        pizza = new CheesePizza();
+        pizza.setName(" 奶酪披萨 ");
+    }
+    return pizza;
+}
+```        
 完整代码地址：https://github.com/Hu-enhui/study-code/tree/master/src/main/java/fun/enhui/design/factory/simplefactory
 
 > 缺点：虽然一定程度上改善了开闭原则，但每次新增披萨种类，还是要修改工厂类      
@@ -35,7 +92,7 @@
 ## 工厂方法模式
 基本介绍：       
 工厂方法模式，又称工厂模式、多态工厂模式和虚拟构造器模式。       
-工厂方法模式中考虑的是一类产品的生产，如畜牧场只养动物、电视机厂只生产电视机、计算机软件学院只培养计算机软件专业的学生等。 
+工厂方法模式中考虑的是一类产品的生产，如希腊披萨工厂只生产希腊披萨、胡椒披萨工厂只生产胡椒披萨、奶酪披萨工厂只生产奶酪披萨等。 
 
 模式的结构：  
 1.抽象工厂（Abstract Factory）：提供了创建产品的接口，调用者通过它访问具体工厂的工厂方法 newProduct() 来创建产品。        
@@ -49,7 +106,7 @@
 ## 抽象工厂模式
 基本介绍：    
 1.前面介绍的工厂方法模式中考虑的是一类产品的生产，
-如畜牧场只养动物、电视机厂只生产电视机、计算机软件学院只培养计算机软件专业的学生等。      
+如希腊披萨工厂只生产希腊披萨、胡椒披萨工厂只生产胡椒披萨、奶酪披萨工厂只生产奶酪披萨等。      
 2.同种类称为同等级，也就是说：工厂方法模式只考虑生产同等级的产品     
 3.抽象工厂模式是工厂方法模式的升级版本，工厂方法模式只生产一个等级的产品，而抽象工厂模式可生产多个等级的产品。
 
