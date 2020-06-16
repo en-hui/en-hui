@@ -1,0 +1,46 @@
+@startuml
+
+abstract class GameObject{
+   protected int x, y;
+   public abstract void paint(Graphics g);
+}
+
+class Tank{
+    public void paint(Graphics g);
+    public Tank(int x, int y, Group group, Direction direction)
+}
+
+class Bullet{
+    public void paint(Graphics g);
+    public Bullet(int x, int y, Group group, Direction direction)
+}
+class GameObjectDecorator{
+    GameObject gameObject
+    GameObjectDecorator(GameObject gameObject)
+    public void paint(Graphics g)
+}
+class RectDecorator{
+    RectDecorator(GameObject gameObject)
+    public void paint(Graphics g)
+}
+class TailDecorator{
+    RectDecorator(GameObject gameObject)
+    public void paint(Graphics g)
+}
+GameObject --o GameObjectDecorator
+GameObject <|-- Tank
+GameObject <|-- Bullet
+GameObject <|-- GameObjectDecorator
+GameObjectDecorator <|-- RectDecorator
+GameObjectDecorator <|-- TailDecorator
+
+note left of GameObjectDecorator : "抽象装饰角色"
+note left of RectDecorator : "具体装饰角色:方形边框"
+note left of TailDecorator : "具体装饰角色：拖尾效果"
+note left of GameObject : "抽象构件角色"
+note left of Tank : "具体构件角色：坦克"
+note left of Bullet : "具体构件角色：子弹"
+
+
+
+@enduml
