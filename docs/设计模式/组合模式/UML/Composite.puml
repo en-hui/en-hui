@@ -1,0 +1,28 @@
+@startuml
+
+abstract class Node{
+void operation()
+}
+
+class Direction{
+List<Node> nodes
+void add(Node node)
+void remove(Node node)
+Node getChild(int i)
+void operation()
+}
+
+class File{
+void operation()
+}
+Node <|-- Direction
+Node <|-- File
+
+
+note left of Node : "节点"
+note left of Direction : "目录:包含节点集合"
+note left of File : "文件"
+
+
+
+@enduml
