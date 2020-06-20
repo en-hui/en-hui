@@ -1,0 +1,63 @@
+@startuml
+abstract class BaseSource{
+    List<BaseObserver> observers
+    public void add(BaseObserver observer)
+    public void remove(BaseObserver observer)
+    public abstract void notifyObserver()
+}
+class Child{
+    boolean cry;
+    boolean sleep ;
+    public void isCry()
+    public void isSleep()
+    public void notifyObserver()
+}
+
+
+class EventObject{
+    Object source;
+    Object getSource()
+}
+class ChildActionEvent{
+    public boolean childCry;
+    public boolean childSleep;
+    public ChildActionEvent(Object source,boolean childCry,boolean childSleep)
+}
+
+abstract class EventListener{
+}
+interface BaseObserver{
+    void actionOnEvent(ChildActionEvent event)
+}
+class DogObserver {
+    void actionOnEvent(Event event);
+}
+class FatherObserver {
+    void actionOnEvent(Event event);
+}
+EventListener <|-- BaseObserver
+BaseObserver <|.. DogObserver
+BaseObserver <|.. FatherObserver
+BaseSource <|-- Child
+EventObject <|-- ChildActionEvent
+BaseObserver --o BaseSource
+Child o-- ChildActionEvent
+
+
+note left of EventListener : "jdk的空接口"
+note left of BaseObserver : "抽象观察者:包含一个事件处理方法"
+note left of DogObserver : "具体观察者"
+note left of FatherObserver : "具体观察者"
+
+note left of EventObject : "jdk的顶级事件类：包含source"
+note left of ChildActionEvent : "孩子活动的事件"
+
+note left of BaseSource : "事件源抽象类：发出事件的类"
+note left of Child : "事件源对象"
+
+
+
+
+
+
+@enduml

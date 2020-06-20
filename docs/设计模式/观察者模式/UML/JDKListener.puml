@@ -1,0 +1,55 @@
+@startuml
+
+class EventObject{
+    protected transient Object  source;
+    public EventObject(Object source)
+    public Object getSource()
+}
+abstract class AWTEvent{
+    public void notifyObserver()
+}
+class ComponentEvent{
+}
+abstract class InputEvent{
+}
+class KeyEvent{
+}
+EventObject <|-- AWTEvent
+AWTEvent <|-- ComponentEvent
+ComponentEvent <|-- InputEvent
+InputEvent <|-- KeyEvent
+
+
+note left of EventObject : "事件"
+note left of AWTEvent : "AWT 事件"
+note left of ComponentEvent : "组件 事件"
+note left of InputEvent : "输入 事件"
+note left of KeyEvent : "键 事件"
+
+
+interface EventListener{
+
+}
+interface KeyListener{
+    public void keyTyped(KeyEvent e)
+    public void keyPressed(KeyEvent e)
+    public void keyReleased(KeyEvent e)
+}
+abstract class KeyAdapter{
+    public void keyTyped(KeyEvent e)
+    public void keyPressed(KeyEvent e)
+    public void keyReleased(KeyEvent e)
+}
+class MyKeyListener{
+}
+EventListener <|-- KeyListener
+KeyListener <|.. KeyAdapter
+KeyAdapter <|-- MyKeyListener
+note left of EventListener : "监听器"
+note left of KeyListener : "key 监听器接口"
+note left of KeyAdapter : "接口所有方法空实现（）"
+note left of MyKeyListener : "自己的真实监听器"
+
+
+
+@enduml
