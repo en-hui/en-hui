@@ -5,9 +5,9 @@
 具体处理者角色：实现抽象处理者的处理方法，判断能否处理本次请求，如果可以处理请求则处理，否则将该请求转给它的后继者。     
 客户类角色：创建处理链，并向链头的具体处理者对象提交请求，它不关心处理细节和请求的传递过程。      
 
-> Tank项目中的例子：    
-GameObject是一个抽象类      
-Tank，Bullet等物体继承GameObject   
+> Tank项目中的例子：      
+GameObject是一个抽象类        
+Tank，Bullet等物体继承GameObject    
 想要解决物体之间的碰撞（坦克和坦克，坦克和子弹等）      
  
 ![Alt](./img/ChainOfResponsibility.png)    

@@ -11,10 +11,81 @@ GameObject是一个抽象类
 Tank，Bullet等物体继承GameObject     
 现希望给Tank加边框，给Tank加拖尾效果，给Bullet加边框等    
 可以将拖尾，边框作为装饰器，分别与需要的物体进行组合     
-使用的时候：    
-new RectDecorator(new Tank(200, 400, Group.GOOD, Direction.UP))    
-new TailDecorator(new Tank(200, 400, Group.GOOD, Direction.UP))    
-上面两个还可以直接写成：new TailDecorator(new RectDecorator(new Tank(200, 400, Group.GOOD, Direction.UP)))         
-new RectDecorator(new Bullet(200, 400, Group.GOOD, Direction.UP))      
+简易代码如下：
+    
+抽象构件：     
+```java
+public abstract class GameObject {
+    public abstract void pagit();
+}
+```
+具体构件：    
+```java
+// 坦克类
+public class Tank extends GameObject {
+    @Override
+    public void pagit() {
+        System.out.println("坦克描绘自己方法");
+    }
+}
+// 子弹类
+public class Bullet extends GameObject {
+    @Override
+    public void pagit() {
+        System.out.println("子弹描绘自己的方法");
+    }
+}
+```
+抽象装饰：     
+```java
+/**
+ * 拖尾装饰
+ *
+ * @Author 胡恩会
+ * @Date 2020/6/25 10:33
+ **/
+public class TailDecorator extends GameObjectDecorator {
+    public TailDecorator(GameObject gameObject) {
+        super(gameObject);
+    }
+    @Override
+    public void pagit() {
+        super.pagit();
+        System.out.println("拖尾装饰加在后面");
+    }
+}
+
+/**
+ * 边框装饰
+ *
+ * @Author 胡恩会
+ * @Date 2020/6/25 10:33
+ **/
+public class RectDecorator extends GameObjectDecorator{
+    public RectDecorator(GameObject gameObject) {
+        super(gameObject);
+    }
+    @Override
+    public void pagit() {
+        System.out.println("边框装饰加在前");
+        super.pagit();
+        System.out.println("边框装饰加在后");
+    }
+}
+```
+程序入口：    
+```java
+public class Main {
+    public static void main(String[] args) {
+        TailDecorator tailDecorator = new TailDecorator(new Bullet());
+        TailDecorator rectDecorator = new TailDecorator(new RectDecorator(new Tank()));
+        rectDecorator.pagit();
+        System.out.println();
+        tailDecorator.pagit();
+    }
+}
+```
+
+
 
 ![Alt](./img/Decorator.png) 
