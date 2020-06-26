@@ -1,5 +1,10 @@
 package fun.enhui.design.builder;
 
+/**
+ * 具体建造者-高楼建造者
+ * @Author: 胡恩会
+ * @Date: 2020/6/26 15:30
+ **/
 public class HighBuildingBuilder extends HouseBuilder {
     @Override
     public void buildBasic() {

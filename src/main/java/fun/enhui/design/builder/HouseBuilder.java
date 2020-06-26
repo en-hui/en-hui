@@ -1,7 +1,7 @@
 package fun.enhui.design.builder;
 
 /**
- *  建造房子的抽象类
+ *  抽象建造者-建造房子的抽象类
  * @author: HuEnhui
  * @date: 2019/12/23 11:25
  */

@@ -1,5 +1,11 @@
 package fun.enhui.design.builder;
 
+/**
+ * 具体建造者-普通房子建造者
+ *
+ * @Author: 胡恩会
+ * @Date: 2020/6/26 15:30
+ **/
 public class CommonHouseBuilder extends HouseBuilder {
     @Override
     public void buildBasic() {
