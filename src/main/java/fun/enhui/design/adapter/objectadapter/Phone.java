@@ -1,7 +1,6 @@
 package fun.enhui.design.adapter.objectadapter;
 
 public class Phone {
-
     /**
      * 充电
      * @author: HuEnhui
@@ -13,6 +12,5 @@ public class Phone {
         }else {
             System.out.println("电压不符，无法充电");
         }
-
     }
 }

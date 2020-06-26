@@ -1,5 +1,11 @@
 package fun.enhui.design.adapter.classadapter;
 
+/**
+ * 适配者
+ *
+ * @Author: 胡恩会
+ * @Date: 2020/6/26 16:12
+ **/
 public class Voltage220V {
 
     public int output220V() {

@@ -1,0 +1,26 @@
+@startuml
+
+abstract class Subject{
+    Grade grade;
+    public Subject(Grade grade)
+}
+interface Grade
+class MathSubject
+class ChineseSubject
+class OneGrade
+class TwoGrade
+
+Subject <|-- MathSubject
+Subject <|-- ChineseSubject
+Grade <|.. OneGrade
+Grade <|.. TwoGrade
+
+Subject o-- Grade
+
+note left of Subject: "抽象化角色：学科"
+note left of MathSubject: "扩展抽象化角色：数学"
+note left of ChineseSubject: "扩展抽象化角色：语文"
+note left of Grade: "实现化角色：年级"
+note left of OneGrade: "具体实现化角色：一年级"
+note left of TwoGrade: "具体实现化角色：二年级"
+@enduml

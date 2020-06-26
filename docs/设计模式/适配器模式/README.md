@@ -1,18 +1,95 @@
 # 适配器模式
-基本介绍：       
-1. 适配器模式将某个类的接口转换成客户端期望的另一个接口表示，主要目的是兼容性，让原本因接口不匹配不能一起工作的两个类可以协同工作
-2. 适配器模式属于结构型模式
-3. 主要分为三类：类适配器模式、对象适配器模式、接口适配器模式
+>基本介绍：       
+1.适配器模式将某个类的接口转换成客户端期望的另一个接口表示，主要目的是兼容性，让原本因接口不匹配不能一起工作的两个类可以协同工作     
+2.适配器模式属于结构型模式     
+3.主要分为三类：类适配器模式、对象适配器模式、接口适配器模式     
 
-> 生活中的案例：你有一个普通安卓的数据线，但手机的插口是TypeC的，如果你想传输数据或者充电，就需要一个转接口（即适配器）
+>适配器模式的角色：    
+1.目标接口：当前系统业务所期待的接口，它可以是抽象类或接口。   
+2.适配者类：它是被访问和适配的现存组件库中的组件接口。    
+3.适配器类：它是一个转换器，通过继承或引用适配者的对象，把适配者接口转换成目标接口，让客户按目标接口的格式访问适配者   
+
+> 生活中的案例：你有一个普通安卓的数据线，但手机的插口是TypeC的，
+如果你想传输数据或者充电，就需要一个转接口（即适配器）。    
+下面例子中，src和dst分别指适配者和目标接口
 
 ## 类适配器 
 > 插座输出电压为220V            
 手机充电需要5V        
 使用类适配器，将输出电压由220V转换为5V供手机使用
 
+目标接口：     
+```java
+/**
+ * 目标接口
+ *
+ * @Author: 胡恩会
+ * @Date: 2020/6/26 16:11
+ **/
+public interface Voltage5V {
+    int output5V();
+}
+```
+适配器类：     
+```java
+/**
+ * 适配器类
+ *
+ * @Author: 胡恩会
+ * @Date: 2020/6/26 16:12
+ **/
+public class VoltageAdapter extends Voltage220V implements Voltage5V {
+    @Override
+    public int output5V() {
+        int srcV = output220V();
+        // 转换为 5V
+        int dstV = srcV / 40;
+        return dstV;
+    }
+}
+```
+适配者类：     
+```java
+/**
+ * 适配者
+ *
+ * @Author: 胡恩会
+ * @Date: 2020/6/26 16:12
+ **/
+public class Voltage220V {
+    public int output220V() {
+        int src = 220;
+        System.out.println("电压= " + src + "伏");
+        return src;
+    }
+}
+```
+程序入口：     
+```java
+public class Phone {
+    /**
+     * 充电
+     * @author: HuEnhui
+     * @date: 2019/12/23 15:47
+     */
+    public void charging(Voltage5V voltage5V) {
+        if (voltage5V.output5V() == 5) {
+            System.out.println("电压为5，充电中");
+        }else {
+            System.out.println("电压不符，无法充电");
+        }
+    }
+}
+
+public class Client {
+    public static void main(String[] args) {
+        System.out.println("===类适配器===");
+        Phone phone = new Phone();
+        phone.charging(new VoltageAdapter());
+    }
+}
+```
 ![Alt](./img/类适配器.png)      
-完整代码地址：https://github.com/Hu-enhui/study-code/tree/master/src/main/java/fun/enhui/design/adapter/classadapter/
 
 类适配器模式注意事项和细节：      
 1. java是单继承机制，所以类适配器需要继承src类这一点算是一个缺点，因为这要求dst必须是接口，有一定局限性
@@ -27,10 +104,83 @@
 
 > 由类适配器案例改造：VoltageAdapter不再继承Voltage220V，将Voltage220V做为成员变量，在构造器中初始化，其余不变
 
+目标接口：    
+```java
+/**
+ * 目标接口
+ *
+ * @Author: 胡恩会
+ * @Date: 2020/6/26 16:16
+ **/
+public interface Voltage5V {
+    int output5V();
+}
+```
+适配器：    
+```java
+/**
+ * 对象适配器
+ * @Author: 胡恩会
+ * @Date: 2020/6/26 16:16
+ **/
+public class VoltageAdapter implements Voltage5V {
+    Voltage220V voltage220V;
+    public VoltageAdapter(Voltage220V voltage220V) {
+        this.voltage220V = voltage220V;
+    }
+    @Override
+    public int output5V() {
+        int srcV = voltage220V.output220V();
+        // 转换为 5V
+        int dstV = srcV/40;
+        return dstV;
+    }
+}
+```
+适配者：    
+```java
+/**
+ * 适配者
+ *
+ * @Author: 胡恩会
+ * @Date: 2020/6/26 16:17
+ **/
+public class Voltage220V {
+    public int output220V() {
+        int src = 220;
+        System.out.println("电压= " + src + "伏");
+        return src;
+    }
+}
+```
+程序入口：   
+```java
+public class Phone {
+    /**
+     * 充电
+     * @author: HuEnhui
+     * @date: 2019/12/23 15:47
+     */
+    public void charging(Voltage5V voltage5V) {
+        if (voltage5V.output5V() == 5) {
+            System.out.println("电压为5，充电中");
+        }else {
+            System.out.println("电压不符，无法充电");
+        }
+    }
+}
+
+public class Client {
+    public static void main(String[] args) {
+        System.out.println("===对象适配器===");
+        Phone phone = new Phone();
+        VoltageAdapter adapter = new VoltageAdapter(new Voltage220V());
+        phone.charging(adapter);
+    }
+}
+```
 ![Alt](./img/类适配器.png)  
         
-完整代码地址：https://github.com/Hu-enhui/study-code/tree/master/src/main/java/fun/enhui/design/adapter/objectadapter/
-
 ## 接口适配器模式
 接口适配器模式又叫适配器模式或缺省适配器模式
 1. 当不需要全部实现接口提供的方法时，可先设计一个抽象类实现接口，并为该接口中每个方法提供一个默认实现（空方法），
