@@ -1,0 +1,48 @@
+@startuml
+
+abstract class IComputerElement{
+    public abstract void accept(IComputerVisitor visitor);
+}
+class Cpu{
+    public void accept(IComputerVisitor visitor)
+}
+class Memory{
+    public void accept(IComputerVisitor visitor)
+}
+class Computer{
+    IComputerElement cpu = new Cpu();
+    IComputerElement memory = new Memory();
+
+    public void accept(IComputerVisitor visitor)
+}
+
+interface IComputerVisitor{
+    void visitorCpu(Cpu cpu);
+    void visitorMemory(Memory memory);
+}
+class PersonVisitor{
+    void visitorCpu(Cpu cpu);
+    void visitorMemory(Memory memory);
+}
+class CompanyVisitor{
+    void visitorCpu(Cpu cpu);
+    void visitorMemory(Memory memory);
+}
+
+Computer o-- IComputerElement
+IComputerElement <-- Cpu
+IComputerElement <-- Memory
+
+Computer o-- IComputerVisitor
+
+IComputerVisitor <-- PersonVisitor
+IComputerVisitor <-- CompanyVisitor
+
+note left of Computer: "对象结构：电脑"
+note left of IComputerElement: "抽象元素：电脑组件"
+note left of Cpu: "具体元素：cpu"
+note left of Memory: "具体元素：内存"
+note left of IComputerVisitor: "抽象访问者"
+note left of PersonVisitor: "具体访问者：个人用户"
+note left of CompanyVisitor: "具体访问者：企业用户"
+@enduml

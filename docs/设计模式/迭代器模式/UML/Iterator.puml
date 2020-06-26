@@ -1,0 +1,39 @@
+@startuml
+
+
+interface MyCollection{
+    void add(Object o);
+    int size();
+    MyIterator iterator();
+}
+class MyArrayList{
+    private Object[] objects = new Object[10];
+    private int index = 0;
+    public void add(Object o)
+    public int size()
+    public MyIterator iterator()
+}
+interface MyIterator{
+    boolean hasNext();
+    Object next();
+}
+class MyListIterator{
+    private int currentIndex = 0
+    public boolean hasNext()
+    public Object next()
+}
+
+MyCollection <.. MyArrayList
+MyCollection <.. MyLinkedList
+MyCollection o.. MyIterator
+MyIterator <-- MyListIterator
+MyIterator <-- MyLinkedListIterator
+
+note left of MyCollection : "抽象容器"
+note left of MyArrayList : "具体容器:数组实现集合"
+note left of MyLinkedList : "具体容器：链表实现集合"
+note left of MyIterator : "抽象迭代器"
+note left of MyListIterator : "具体迭代器：数组集合迭代器"
+note left of MyLinkedListIterator : "具体迭代器：链表集合迭代器"
+
+@enduml
