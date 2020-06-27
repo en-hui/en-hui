@@ -1,0 +1,21 @@
+@startuml
+
+abstract class BasePageLoadTemplate{
+    public void templateMethod()
+    public abstract void init()
+    public abstract void loadContent()
+}
+class PageLoad{
+   public void init()
+   public void loadContent()
+}
+
+BasePageLoadTemplate <|-- PageLoad
+
+note left of BasePageLoadTemplate : "抽象类：包含一个模板方法"
+note right of BasePageLoadTemplate : "public void templateMethod(){ init(); loadContent();}"
+note left of PageLoad : "具体子类：实现了抽象方法"
+
+
+
+@enduml
