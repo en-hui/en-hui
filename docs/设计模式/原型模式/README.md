@@ -11,13 +11,12 @@
 ## 传统方案      
 先new出一个对象，然后根据第一个对象的属性来创建其他两个对象     
 
-```
+```java
 public class Client {
     public static void main(String[] args) {
         Sheep sheep = new Sheep("小红",2,"red");
         Sheep sheep1 = new Sheep(sheep.getName(),sheep.getAge(),sheep.getColor());
         Sheep sheep2 = new Sheep(sheep.getName(),sheep.getAge(),sheep.getColor());
-
         System.out.println(sheep);
         System.out.println(sheep1);
         System.out.println(sheep2);
@@ -48,12 +47,12 @@ Java中 Object 类是所有的类的基类，他提供了一个 clone() 方法�
 1. 实现 Cloneable 接口
 2. 重写 clone() 方法
 
-```puml
+```java
 public class Client {
     public static void main(String[] args) {
         Sheep sheep = new Sheep("小红",2,"red");
-        Sheep sheep1 = new Sheep(sheep.getName(),sheep.getAge(),sheep.getColor());
-        Sheep sheep2 = new Sheep(sheep.getName(),sheep.getAge(),sheep.getColor());
+        Sheep sheep1 = (Sheep) sheep.clone();
+        Sheep sheep2 = (Sheep)sheep.clone();
 
         System.out.println(sheep);
         System.out.println(sheep1);
@@ -61,20 +60,27 @@ public class Client {
     }
 }
 
+/**
+ * 实现Cloneable接口，重写clone方法实现克隆
+ *
+ * @Author: 胡恩会
+ * @Date: 2020/6/27 15:24
+ **/
 @Data
 @AllArgsConstructor
-public class Sheep implements Cloneable{
+public class Sheep implements Cloneable {
     private String name;
     private int age;
     private String color;
 
     /**
      * 重写clone
+     *
      * @author: HuEnhui
      * @date: 2019/12/22 18:46
      */
     @Override
-    protected Object clone(){
+    protected Object clone() {
         Sheep sheep = null;
         try {
             sheep = (Sheep) super.clone();
@@ -108,7 +114,7 @@ public class Sheep implements Cloneable{
 > 深拷贝的两种方式：1.重写 clone 方法 2.通过对象序列化
 ### 重写clone实现深拷贝
 
-```puml
+```java
 /**
  * 通过重写clone实现深拷贝
  * @author: HuEnhui
@@ -179,7 +185,7 @@ class SheepTarget implements Cloneable{
 
 ### 通过对象序列化实现深拷贝
 
-```puml
+```java
 /**
  * 通过对象序列化实现深拷贝
  * @author: HuEnhui
