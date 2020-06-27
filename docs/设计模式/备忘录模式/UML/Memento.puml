@@ -1,0 +1,28 @@
+@startuml
+
+class Player{
+    private String gameName
+    private int checkpoint
+    private int life
+    public Memento createMemento()
+    public void restoreMemento(Memento memento)
+}
+class Memento{
+    private String gameName
+    private int checkpoint
+    private int life
+}
+class Caretaker{
+    private Map<String,Memento> mementoMap
+    public void add(String name,Memento memento)
+    public Memento get(String name)
+}
+
+Player ..> Memento
+Caretaker ..> Memento
+
+note left of Player :"发起人：玩家"
+note left of Memento :"备忘录：玩家信息存档"
+note left of Caretaker :"管理者：管理全部存档"
+
+@enduml
