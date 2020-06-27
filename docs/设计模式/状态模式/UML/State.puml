@@ -1,0 +1,30 @@
+@startuml
+
+abstract class MoodState{
+    abstract void say()
+}
+class HappyState{
+    void say()
+}
+class SadState{
+    void say()
+}
+class People{
+    private MoodState state
+    public People(MoodState state)
+    public void say()
+    public void setState(MoodState state)
+    public MoodState getState()
+}
+
+
+People o-- MoodState
+MoodState <|-- SadState
+MoodState <|-- HappyState
+
+note left of MoodState:"抽象状态：心情状态"
+note left of HappyState:"具体状态：开心状态"
+note left of SadState:"具体状态：伤心状态"
+note left of People:"环境类"
+
+@enduml
