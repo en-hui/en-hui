@@ -1,0 +1,32 @@
+@startuml
+
+
+state New : 新建状态
+state Runnable {
+    state Ready : 就绪状态
+    state Running : 运行状态
+}
+state TimedWaiting : 等待一段时间状态
+state Waiting : 等待状态
+state Blocked : 阻塞状态
+state Teminated : 结束
+
+[*] -right-> New : new
+New -right-> Runnable : start()
+Runnable -right-> Teminated
+Teminated -right-> [*]
+
+Runnable -down-> TimedWaiting : Thread.sleep(time)
+TimedWaiting --> Runnable : 时间结束
+Runnable -down-> Waiting : o.wait()
+Waiting --> Runnable : o.notify()
+Runnable -up-> Blocked : 等待获得锁的线程执行完毕
+Blocked --> Runnable : 获得锁
+
+
+
+Ready -> Running : 线程被调度器选中执行
+Running -> Ready : 线程被挂起
+Running -> Ready : Thread.yield()
+
+@enduml

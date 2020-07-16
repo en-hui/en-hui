@@ -3,14 +3,7 @@
 - **JVM**
     - [JVM快速入门](JVM/JVM快速入门/)
 - **多线程与高并发编程**
-
-- **面试**    
-    - [volatile简介](面试/大厂高频面试题/volatile简介/)
-    - [CAS简介](面试/大厂高频面试题/CAS简介/)
-    - [锁](面试/大厂高频面试题/锁/)
-    - [JUC下CountDownLatch、CyclicBarrier、Semaphore](面试/大厂高频面试题/CountDownLatch等/)
-    - [阻塞队列](面试/大厂高频面试题/阻塞队列/)
-    - [线程池](面试/大厂高频面试题/线程池/)
+    - [多线程与高并发编程](多线程与高并发编程/)
 - **学成在线** 
     - [MongoDB](学成在线/环境学习及搭建/MongoDB/)
     - [RabbitMQ](学成在线/环境学习及搭建/RabbitMQ/)
