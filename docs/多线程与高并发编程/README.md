@@ -7,8 +7,8 @@
 ![Alt](http://assets.processon.com/chart_image/5ee0641607912929cb373be0.png?_=1594215914540) 
 
 - [线程基础知识](多线程与高并发编程/基础知识/)
-- [volatile关键字](多线程与高并发编程/volatile关键字/)
-- [synchronized和lock锁](多线程与高并发编程/synchronized关键字/)
+- [synchronized和lock锁](多线程与高并发编程/synchronized和lock锁/)
+- [volatile和JMM](多线程与高并发编程/volatile和JMM/)
 - [锁总结](多线程与高并发编程/锁总结/)
 - [JUC下的Atomic和CAS](多线程与高并发编程/AtomicXXX与CAS/)
 - [JUC下工具](多线程与高并发编程/JUC下工具/)

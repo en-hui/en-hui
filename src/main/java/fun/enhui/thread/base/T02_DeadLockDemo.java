@@ -3,13 +3,15 @@ package fun.enhui.thread.base;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 死锁是指两个或者以上的进程在执行过程中,
+ * 死锁
+ * 死锁是指两个或者以上的 进程/线程 在执行过程中,
  * 因争夺资源而造成的一种相互等待的现象,
  * 若无外力干涉那他们都将无法推进下去
+ *
  * @Author: HuEnhui
  * @Date: 2019/10/22 13:26
  */
-public class DeadLockDemo {
+public class T02_DeadLockDemo {
     public static void main(String[] args) {
         String lockA = "lockA";
         String lockB = "lockB";
@@ -17,7 +19,6 @@ public class DeadLockDemo {
         new Thread(new HoldThread(lockB,lockA),"threadB").start();
     }
 }
-
 class HoldThread implements Runnable{
 
     private String lockA;
@@ -38,7 +39,8 @@ class HoldThread implements Runnable{
                 e.printStackTrace();
             }
             synchronized (lockB){
-                System.out.println(Thread.currentThread().getName()+"\t 自己持有锁"+lockB+"尝试获取"+lockA);            }
+                System.out.println(Thread.currentThread().getName()+"\t 自己持有锁"+lockB+"尝试获取"+lockA);
+            }
         }
     }
 }

@@ -38,7 +38,7 @@ public final native boolean compareAndSwapInt(Object var1, long var2, int var4, 
 ```
 
 根据JMM模型理解   
-![Alt](../volatile关键字/img/JMM内存模型.png) 
+![Alt](../volatile和JMM/img/JMM内存模型.png) 
 - 假设线程A和线程B两个线程同时执行getAndAddInt操作(分别在不同的CPU上):
    
 1. AtomicInteger里面的value原始值为3,即主内存中AtomicInteger的value为3,根据JMM模型,

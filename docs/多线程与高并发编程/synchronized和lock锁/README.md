@@ -1,4 +1,4 @@
-# synchronized 关键字
+# synchronized 和 lock 锁
 
 ## synchronized 关键字
 synchronized是可重入锁    
@@ -10,9 +10,10 @@ synchronized是可重入锁
 3.对于静态同步方法，锁是当前类的Class对象   
 
 > synchronized 锁升级过程：    
-1.偏向锁    
-2.自旋锁   
-3.重量级锁（向系统内核申请）     
+1.无锁   
+2.偏向锁    
+3.自旋锁   
+4.重量级锁（向系统内核申请）     
 synchronized不存在锁降级    
 ```
 // 1.最初，只有一个线程访问该方法时，在this这个对象的头上(markword)记录这个线程的id
