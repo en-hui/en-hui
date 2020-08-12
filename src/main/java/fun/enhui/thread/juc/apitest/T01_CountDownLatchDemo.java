@@ -12,7 +12,7 @@ import java.util.concurrent.CountDownLatch;
  * @Author: 胡恩会
  * @Date: 2019/10/18 10:31
  */
-public class CountDownLatchDemo {
+public class T01_CountDownLatchDemo {
     public static final Integer NUMBER = 6;
 
     public static void main(String[] args) throws InterruptedException {

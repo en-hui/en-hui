@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
  * @Author: 胡恩会
  * @Date: 2019/10/18 11:14
  */
-public class SemaphoreDemo {
+public class T03_SemaphoreDemo {
     public static void main(String[] args) {
         // 三个车位（三个资源）
         Semaphore semaphore = new Semaphore(3);

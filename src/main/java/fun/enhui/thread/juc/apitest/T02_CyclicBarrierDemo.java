@@ -12,7 +12,7 @@ import java.util.concurrent.CyclicBarrier;
  * @Author: 胡恩会
  * @Date: 2019/10/18 10:12
  */
-public class CyclicBarrierDemo {
+public class T02_CyclicBarrierDemo {
     public static void main(String[] args) {
         // 1.初始化
         CyclicBarrier cyclicBarrier = new CyclicBarrier(7,() -> {

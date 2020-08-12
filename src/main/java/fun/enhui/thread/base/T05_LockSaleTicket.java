@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 使用 lock 锁实现卖票业务
  *
- * @Author HuEnhui
+ * @Author 胡恩会
  * @Date 2019/9/29 22:54
  **/
 public class T05_LockSaleTicket {
