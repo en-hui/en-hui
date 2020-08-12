@@ -5,6 +5,9 @@
 秦国派六支军队去灭敌，只有当六个军队全部胜利，才算统一六国。
 
 ```java
+package fun.enhui.thread.juc.apitest;
+import java.util.concurrent.CountDownLatch;
+
 /**
  * CountDownLatch演示：
  * 1.初始化传一个参数（整数值）
@@ -32,9 +35,51 @@ public class CountDownLatchDemo {
         countDownLatch.await();
         System.out.println(Thread.currentThread().getName() + "\t秦国统一");
     }
+    enum CountryEnum {
+
+        ONE(1,"齐"),
+        TWO(2,"楚"),
+        THREE(3,"燕"),
+        FOUR(4,"赵"),
+        FIVE(5,"魏"),
+        SIX(6,"韩");
+
+        private Integer retCode;
+        private String retMessage;
+
+        CountryEnum(Integer retCode, String retMessage) {
+            this.retCode = retCode;
+            this.retMessage = retMessage;
+        }
+
+        public Integer getRetCode() {
+            return retCode;
+        }
+
+        public String getRetMessage() {
+            return retMessage;
+        }
+
+        /**
+         *  根据retCode获取message
+         * @author: HuEnhui
+         * @date: 2019/10/18 10:42
+         * @param index
+         * @return: fun.enhui.interview.Enum.CountryEnum
+         */
+        public static CountryEnum forEach_CountryEnum(int index) {
+            CountryEnum[] myArray = CountryEnum.values();
+            for (CountryEnum element :myArray) {
+                if(index == element.retCode) {
+                    return element;
+                }
+            }
+            return null;
+        }
+    }
 }
+
 ```
-代码示例：[CountDownLatch演示](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/CountDownLatchDemo.java)
 
 # CyclicBarrier
 CyclicBarrier的字面意思是可循环(Cyclic)使用的屏障(barrier).
@@ -43,6 +88,11 @@ CyclicBarrier的字面意思是可循环(Cyclic)使用的屏障(barrier).
 > 与CountDownLatch类似，CountDownLatch做减法，初始值为n，减到0执行主方法    
 CyclicBarrier做加法，初始值为0，加到n执行主方法
 ```java
+package fun.enhui.thread.juc.apitest;
+
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
 /**
  * CyclicBarrier演示：
  * 1.初始化传递两个参数，屏障数量 和 要做的事
@@ -74,8 +124,8 @@ public class CyclicBarrierDemo {
         }
     }
 }
+
 ```
-代码示例：[CyclicBarrier演示](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/CyclicBarrierDemo.java)
 
 # Semaphore（信号量）
 信号量主要用于两个目的
@@ -89,7 +139,12 @@ public void acquire() throws InterruptedException
 // 每次调用相当于资源数+1     eg：车离开车位，车位数+1
 public void release()
 ```
+
 ```java
+package fun.enhui.thread.juc.apitest;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Semaphore，资源循环使用
  * @Author: 胡恩会
@@ -119,5 +174,5 @@ public class SemaphoreDemo {
         }
     }
 }
+
 ```
-代码示例：[Semaphore演示](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/SemaphoreDemo.java)

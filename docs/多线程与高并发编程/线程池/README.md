@@ -19,7 +19,87 @@ ExecutorService,ThreadPoolExecutor这几个类.
 
 # 线程池的使用
 
-代码示例:[三种重点的线程池基本使用](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/MyThreadPoolDemo.java)
+```java
+package fun.enhui.thread.juc.apitest;
+import java.util.concurrent.*;
+
+/**
+ * 线程池的使用，第四种使用线程的方式
+ * @Author HuEnhui
+ * @Date 2019/10/21 20:28
+ **/
+public class MyThreadPoolDemo {
+    public static void main(String[] args) {
+        // 查看本机电脑核数
+        System.out.println(Runtime.getRuntime().availableProcessors());
+    }
+
+    /**
+     *  自定义线程池，使用默认拒绝策略
+     * @author: HuEnhui
+     * @date: 2019/10/22 11:42
+     * @param
+     * @return: void
+     */
+    private static void abortPolicyWayPool() {
+
+        ExecutorService threadPool = new ThreadPoolExecutor(
+                2,
+                5,
+                1L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(3),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.AbortPolicy());
+        // 模拟十个用户来办理业务
+        try{
+            // 最大容纳请求数为8，因为线程数最大为5，等待队列长度为3，9则抛出异常，因为AbortPolicy默认拒绝策略的特点
+            for (int i = 1; i <= 8; i++) {
+                threadPool.execute(()->{
+                    System.out.println(Thread.currentThread().getName()+"\t办理业务");
+                });
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            threadPool.shutdown();
+        }
+    }
+
+
+    /**
+     *  三种Executors提供的线程池
+     * @author: HuEnhui
+     * @date: 2019/10/22 11:35
+     * @param
+     * @return: void
+     */
+    private static void threadPoolInit() {
+        // 一池有五个线程，假设银行有五个办理窗口
+        ExecutorService threadPool1 = Executors.newFixedThreadPool(5);
+
+        // 一池一个线程
+        ExecutorService threadPool2 = Executors.newSingleThreadExecutor();
+
+        // 一池N个线程，
+        ExecutorService threadPool3 = Executors.newCachedThreadPool();
+
+        // 模拟十个用户来办理业务
+        try{
+            for (int i = 1; i < 10; i++) {
+                threadPool3.execute(()->{
+                    System.out.println(Thread.currentThread().getName()+"\t办理业务");
+                });
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            threadPool3.shutdown();
+        }
+    }
+}
+
+```
 ## 了解
 -  Executors.newCachedThreadPool();
 -  Executors.newWorkStealingPool(int);——java8新增,使用目前机器上可用的处理器作为他的并行级别
@@ -158,7 +238,56 @@ ExecutorService,ThreadPoolExecutor这几个类.
 线程池不允许使用Executors去创建，而是通过ThreadPoolExecutor的方式，因为Executors中     
 1）FixedThreadPool和SingleThreadPool:允许的请求队列长度为Integer.MAX_VALUE，可能会堆积大量的请求，从而导致OOM。      
 2）CachedThreadPool和ScheduledThreadPool:允许的创建线程数量为Integer.MAX_VALUE，可能会创建大量的线程，从而导致OOM。   
-代码示例:[自己new ThreadPoolExecutor创建线程池](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/MyThreadPoolDemo.java)   
+
+```java
+package fun.enhui.thread.juc.apitest;
+import java.util.concurrent.*;
+
+/**
+ * 线程池的使用，第四种使用线程的方式
+ * @Author HuEnhui
+ * @Date 2019/10/21 20:28
+ **/
+public class MyThreadPoolDemo {
+    public static void main(String[] args) {
+        // 查看本机电脑核数
+        System.out.println(Runtime.getRuntime().availableProcessors());
+    }
+
+    /**
+     *  自定义线程池，使用默认拒绝策略
+     * @author: HuEnhui
+     * @date: 2019/10/22 11:42
+     * @param
+     * @return: void
+     */
+    private static void abortPolicyWayPool() {
+
+        ExecutorService threadPool = new ThreadPoolExecutor(
+                2,
+                5,
+                1L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(3),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.AbortPolicy());
+        // 模拟十个用户来办理业务
+        try{
+            // 最大容纳请求数为8，因为线程数最大为5，等待队列长度为3，9则抛出异常，因为AbortPolicy默认拒绝策略的特点
+            for (int i = 1; i <= 8; i++) {
+                threadPool.execute(()->{
+                    System.out.println(Thread.currentThread().getName()+"\t办理业务");
+                });
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            threadPool.shutdown();
+        }
+    }
+}
+
+```
 
 # 如何合理配置线程池的最大数量
 使用System.out.println(Runtime.getRuntime().availableProcessors());查看本机的硬件，核数
@@ -180,7 +309,57 @@ IO密集型应多配置线程数
 
 # 死锁
 ![Alt](img/死锁.png)  
-代码示例:[一个死锁程序](https://github.com/Hu-enhui/study-code/blob/master/src/main/java/fun/enhui/interview/DeadLockDemo.java)   
+
+```java
+package fun.enhui.thread.base;
+
+import java.util.concurrent.TimeUnit;
+
+/**
+ * 死锁
+ * 死锁是指两个或者以上的 进程/线程 在执行过程中,
+ * 因争夺资源而造成的一种相互等待的现象,
+ * 若无外力干涉那他们都将无法推进下去
+ *
+ * @Author: HuEnhui
+ * @Date: 2019/10/22 13:26
+ */
+public class T02_DeadLockDemo {
+    public static void main(String[] args) {
+        String lockA = "lockA";
+        String lockB = "lockB";
+        new Thread(new HoldThread(lockA,lockB),"threadA").start();
+        new Thread(new HoldThread(lockB,lockA),"threadB").start();
+    }
+}
+class HoldThread implements Runnable{
+
+    private String lockA;
+    private String lockB;
+
+    public HoldThread(String lockA, String lockB) {
+        this.lockA = lockA;
+        this.lockB = lockB;
+    }
+
+    @Override
+    public void run() {
+        synchronized (lockA){
+            System.out.println(Thread.currentThread().getName()+"\t 自己持有锁"+lockA+"尝试获取"+lockB);
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            synchronized (lockB){
+                System.out.println(Thread.currentThread().getName()+"\t 自己持有锁"+lockB+"尝试获取"+lockA);
+            }
+        }
+    }
+}
+
+```
+
 - 故障定位：   
 使用```jps -l```查看进程号     
 ![Alt](img/jps.png)      
