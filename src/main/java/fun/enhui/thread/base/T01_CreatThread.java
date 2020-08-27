@@ -36,11 +36,21 @@ public class T01_CreatThread {
         }
 
         // 4. 线程池
-        ExecutorService service = Executors.newCachedThreadPool();
-        service.execute(()->{
-            System.out.println("线程池创建线程");
-        });
-        service.shutdown();
+        // 自定义线程池，共 7 个参数
+        // 1.核心线程数 2.最大线程数 3.生存时间 4.生存时间的单位
+        // 5.任务队列 6.线程工厂 7.拒绝策略
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(2, 4,
+                60, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(4),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.DiscardOldestPolicy());
+
+        for (int i = 0; i < 10; i++) {
+            pool.execute(()->{
+                System.out.println(Thread.currentThread().getName() + "线程池执行任务");
+            });
+        }
+
     }
 }
 
