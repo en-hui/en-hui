@@ -17,9 +17,9 @@ public class JMHHelloTest {
      * @Date: 2020/8/31 22:31
      * @return: void
      **/
-    @Benchmark//加在要测试性能的方法上
-    @Warmup(iterations = 1, time = 3)//
-    @Fork(5)//开启五个线程运行
+    @Benchmark
+    @Warmup(iterations = 1, time = 3)
+    @Fork(5)
     @BenchmarkMode(Mode.Throughput)
     @Measurement(iterations = 1, time = 3)
     public void testForEach() {
