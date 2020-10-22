@@ -12,7 +12,7 @@ public class AQSDemo {
 
     public static void main(String[] args) {
         // 公平锁
-        Lock lock = new ReentrantLock(true);
+        Lock lock = new ReentrantLock();
         try {
             ThreadLocal threadLocal = new ThreadLocal();
             lock.lock();
