@@ -29,7 +29,7 @@ git add .
 # 将文件【a.txt】提交至本地仓库
 git commit -m "本次提交注释-本次提交a.txt" a.txt
 # 提交全部
-
+git commit -m "本次提交注释-提交全部"
 
 # 查看当前工作状态s
 git status
