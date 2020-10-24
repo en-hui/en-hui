@@ -11,7 +11,7 @@ git config --global user.name "胡恩会"
 git config --global user.email "717253212@qq.com"
 ```
 
-## 常用命令
+## 本地仓库常用命令
 
 > HEAD 可以看作当前版本索引
 
@@ -64,7 +64,6 @@ git diff
 git diff 【文件】
 # 对比暂存区和本地仓库的文件（HEAD可以看作当前版本索引）
 git diff 【历史版本索引或HEAD】 【文件】
-
 ```
 
 ## 分支相关命令
@@ -81,7 +80,35 @@ git checkout 【分支名称】
 
 # 合并分支：将【分支1】合并到【master】。在【master】分支中操作
 git merge 【分支1】
+```
 
+## 远程仓库相关命令
 
+```shell script
+# 查看远程仓库
+git remote -v
+
+# 关联远程仓库，并起别名【origin】（起别名的意义：远程库地址太长）
+git remote add origin 【远程仓库地址-使用https形式】
+
+# 推送
+# git push 【远程仓库别名】 【分支】
+git push origin master
+# 简单写法
+git push
+
+# 克隆
+git clone 【远程仓库下载地址】
+
+# 拉取(pull) git pull 【远程仓库别名】 【分支】
+git pull origin master
+
+# pull相当于 fetch(抓取) + merge(合并)
+# 抓取(fetch) git fetch【远程仓库别名】 【分支】
+# 抓取操作只会将远程仓库中的内容下载到本地origin/master分支，不会更新工作区内容
+git fetch origin master
+# 合并(merge) git merge 【远程仓库】
+# 将origin/master的内容合并到当前分支
+git merge origin/master
 
 ```
