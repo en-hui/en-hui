@@ -1,12 +1,12 @@
-package fun.enhui.data.structure.base;
+package fun.enhui.algorithm.base.d_linkedlist;
 
 /**
  * 反转双向链表
  *
- * @Author 胡恩会
- * @Date 2020/6/7 21:32
- **/
-public class Day01_ReverseList02 {
+ * @author 胡恩会
+ * @date 2020/11/16 0:16
+ */
+public class ReverseDoubleList {
     public static void main(String[] args) {
         DoubleNode node1 = new DoubleNode(1);
         DoubleNode node2 = new DoubleNode(2);
@@ -56,7 +56,9 @@ public class Day01_ReverseList02 {
      **/
     public static class DoubleNode {
         public int value;
+
         public DoubleNode next;
+
         public DoubleNode last;
 
         public DoubleNode(int value) {

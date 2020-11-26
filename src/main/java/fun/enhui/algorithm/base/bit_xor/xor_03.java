@@ -1,4 +1,4 @@
-package fun.enhui.data.structure.base;
+package fun.enhui.algorithm.base.bit_xor;
 
 /**
  * 异或运算
@@ -10,10 +10,10 @@ package fun.enhui.data.structure.base;
  * 3.所有R位置是1的数求异或，得到第一个奇数次数字 a。R位置是1的num：eor&num==0
  * 4.eor与第一个数字再次求异或，得到第二个奇数次数字 b。eor^a 就等于 a^b^a
  *
- * @Author 胡恩会
- * @Date 2020/6/7 20:36
- **/
-public class Day01_Xor03 {
+ * @author 胡恩会
+ * @date 2020/11/15 23:48
+ */
+public class xor_03 {
     public static void printOddTimesNum2(int[] arr) {
         int eor = 0;
         // 假设a,b出现奇次，所有的求异或，得到a^b

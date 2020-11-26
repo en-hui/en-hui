@@ -1,16 +1,15 @@
-package fun.enhui.data.structure.base;
+package fun.enhui.algorithm.base.a_binary;
 
-import fun.enhui.data.structure.utils.ArrayUtil;
+import fun.enhui.algorithm.sdk.ArrayUtil;
 
 /**
  * 二分查找
  * 在一个无序数组中，找出一个局部最小值,返回下标
  *
- * @Author 胡恩会
- * @Date 2020/6/7 19:42
- **/
-public class Day01_BinarySearch04 {
-
+ * @author 胡恩会
+ * @date 2020/11/15 23:50
+ */
+public class BinarySearch_04 {
     /**
      * 二分查找
      *

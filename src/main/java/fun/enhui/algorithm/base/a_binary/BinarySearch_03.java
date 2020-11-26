@@ -1,16 +1,17 @@
-package fun.enhui.data.structure.base;
+package fun.enhui.algorithm.base.a_binary;
 
-import fun.enhui.data.structure.utils.ArrayUtil;
+import fun.enhui.algorithm.base.a_sort.SelectionSort;
+import fun.enhui.algorithm.sdk.ArrayUtil;
+import fun.enhui.algorithm.sdk.BaseSort;
 
 /**
  * 二分查找
- * 有序数组中，找>=某个数最左侧的位置
+ * 有序数组中，找<=某个数最右侧的位置
  *
- * @Author 胡恩会
- * @Date 2020/6/6 12:54
- **/
-public class Day01_BinarySearch02 {
-
+ * @author 胡恩会
+ * @date 2020/11/15 23:50
+ */
+public class BinarySearch_03 {
     public static void main(String[] args) {
         int maxSize = 100;
         int maxValue = 100;
@@ -18,7 +19,8 @@ public class Day01_BinarySearch02 {
         boolean succed = true;
         for (int i = 0; i < testTimes; i++) {
             int[] arr = ArrayUtil.generateRandomArray(maxSize, maxValue);
-            new Day01_InsertSort().sort(arr);
+            BaseSort sort = new SelectionSort();
+            sort.sort(arr);
             int random = (int) (Math.random() * maxValue - Math.random() * maxValue);
             int positionByBinary = binarySearch(arr, random);
             int positionByCycle = cycleSearch(arr, random);
@@ -52,11 +54,11 @@ public class Day01_BinarySearch02 {
         int mid = 0;
         while (L <= R) {
             mid = R + ((L - R) >> 1);
-            if (sortedArr[mid] >= random) {
+            if (sortedArr[mid] <= random) {
                 index = mid;
-                R = mid - 1;
-            } else {
                 L = mid + 1;
+            } else {
+                R = mid - 1;
             }
         }
         return index;
@@ -76,8 +78,8 @@ public class Day01_BinarySearch02 {
             return -1;
         }
         int index = -1;
-        for (int i = 0; i < sortedArr.length; i++) {
-            if (sortedArr[i] >= random) {
+        for (int i = sortedArr.length - 1; i >= 0; i--) {
+            if (sortedArr[i] <= random) {
                 index = i;
                 break;
             }

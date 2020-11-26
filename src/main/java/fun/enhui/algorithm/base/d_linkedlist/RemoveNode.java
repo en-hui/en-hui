@@ -1,12 +1,12 @@
-package fun.enhui.data.structure.base;
+package fun.enhui.algorithm.base.d_linkedlist;
 
 /**
  * 删除链表中给定值
  *
- * @Author 胡恩会
- * @Date 2020/6/7 22:30
- **/
-public class Day01_RemoveNode {
+ * @author 胡恩会
+ * @date 2020/11/16 0:17
+ */
+public class RemoveNode {
     public static void main(String[] args) {
         Node node1 = new Node(1);
         Node node2 = new Node(2);
@@ -42,10 +42,10 @@ public class Day01_RemoveNode {
         }
         Node current = head.next;
         Node pre = head;
-        while(current != null){
-            if (current.value == value){
+        while (current != null) {
+            if (current.value == value) {
                 pre.next = current.next;
-            }else {
+            } else {
                 pre = current;
             }
             current = current.next;
@@ -61,6 +61,7 @@ public class Day01_RemoveNode {
      **/
     public static class Node {
         public int value;
+
         public Node next;
 
         public Node(int value) {

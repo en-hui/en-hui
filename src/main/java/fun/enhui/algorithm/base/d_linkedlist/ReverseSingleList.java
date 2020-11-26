@@ -1,12 +1,12 @@
-package fun.enhui.data.structure.base;
+package fun.enhui.algorithm.base.d_linkedlist;
 
 /**
  * 反转单链表
  *
- * @Author 胡恩会
- * @Date 2020/6/7 21:32
- **/
-public class Day01_ReverseList01 {
+ * @author 胡恩会
+ * @date 2020/11/16 0:15
+ */
+public class ReverseSingleList {
     public static void main(String[] args) {
         Node node1 = new Node(1);
         Node node2 = new Node(2);
@@ -16,11 +16,12 @@ public class Day01_ReverseList01 {
         node2.next = node3;
         node3.next = node4;
         Node node = reverseLindList(node1);
-        while (node != null){
+        while (node != null) {
             System.out.println(node.value);
             node = node.next;
         }
     }
+
     /**
      * 反转单链表
      *
@@ -49,6 +50,7 @@ public class Day01_ReverseList01 {
      **/
     public static class Node {
         public int value;
+
         public Node next;
 
         public Node(int value) {

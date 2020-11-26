@@ -1,21 +1,23 @@
-package fun.enhui.data.structure.utils;
+package fun.enhui.algorithm.sdk;
 
 /**
- * @Author 胡恩会
- * @Date 2020/6/2 21:42
- **/
+ * 数组的工具
+ *
+ * @author 胡恩会
+ * @date 2020/11/15 23:52
+ */
 public class ArrayUtil {
     /**
      * 随机样本生成器
      *
-     * @param maxSize:  最大长度
-     * @param maxValue: 最大值
-     * @Author: 胡恩会
-     * @Date: 2020/6/2 13:22
-     * @return: int[]
+     * @param maxSize  最大长度
+     * @param maxValue 最大值
+     * @return int[]
+     * @author 胡恩会
+     * @date 2020/11/15 22:18
      **/
     public static int[] generateRandomArray(int maxSize, int maxValue) {
-        int arr[] = new int[(int) ((maxSize + 1) * Math.random())];
+        int[] arr = new int[(int) ((maxSize + 1) * Math.random())];
         for (int i = 0; i < arr.length; i++) {
             arr[i] = (int) ((maxValue + 1) * Math.random()) - (int) ((maxValue + 1) * Math.random());
         }
@@ -25,30 +27,28 @@ public class ArrayUtil {
     /**
      * 复制数组
      *
-     * @param arr1:原数组
-     * @Author: 胡恩会
-     * @Date: 2020/6/2 13:26
-     * @return: int[] 复制出来的数组
+     * @param arr1 原数组
+     * @return int[] 复制出来的数组
+     * @author 胡恩会
+     * @date 2020/11/15 22:18
      **/
     public static int[] copyArray(int[] arr1) {
         if (arr1 == null) {
             return null;
         }
         int[] res = new int[arr1.length];
-        for (int i = 0; i < arr1.length; i++) {
-            res[i] = arr1[i];
-        }
+        System.arraycopy(arr1, 0, res, 0, arr1.length);
         return res;
     }
 
     /**
      * 判断两个数组是否相同
      *
-     * @param arr1:
-     * @param arr2:
-     * @Author: 胡恩会
-     * @Date: 2020/6/2 20:53
-     * @return: boolean
+     * @param arr1 数组1
+     * @param arr2 数组2
+     * @return boolean
+     * @author 胡恩会
+     * @date 2020/11/15 22:16
      **/
     public static boolean isEqual(int[] arr1, int[] arr2) {
         if ((arr1 == null && arr2 != null) || (arr1 != null && arr2 == null)) {
@@ -71,16 +71,14 @@ public class ArrayUtil {
     /**
      * 打印数组
      *
-     * @param arr1:
-     * @Author: 胡恩会
-     * @Date: 2020/6/2 20:53
-     * @return: void
+     * @param arr1 要打印的数组
+     * @author 胡恩会
+     * @date 2020/11/15 22:15
      **/
     public static void printArray(int[] arr1) {
-        for (int i = 0; i < arr1.length; i++) {
-            System.out.print(arr1[i] + "  ");
+        for (int j : arr1) {
+            System.out.print(j + "  ");
         }
         System.out.println();
     }
-
 }

@@ -1,15 +1,17 @@
-package fun.enhui.data.structure.base;
+package fun.enhui.algorithm.base.a_binary;
 
-import fun.enhui.data.structure.utils.ArrayUtil;
+import fun.enhui.algorithm.base.a_sort.SelectionSort;
+import fun.enhui.algorithm.sdk.ArrayUtil;
+import fun.enhui.algorithm.sdk.BaseSort;
 
 /**
  * 二分查找
  * 有序数组中找一个数是否存在
  *
- * @Author 胡恩会
- * @Date 2020/6/2 21:39
- **/
-public class Day01_BinarySearch01 {
+ * @author 胡恩会
+ * @date 2020/11/15 23:49
+ */
+public class BinarySearch_01 {
     public static void main(String[] args) {
         int maxSize = 100;
         int maxValue = 100;
@@ -17,7 +19,8 @@ public class Day01_BinarySearch01 {
         boolean succed = true;
         for (int i = 0; i < testTimes; i++) {
             int[] arr = ArrayUtil.generateRandomArray(maxSize, maxValue);
-            new Day01_InsertSort().sort(arr);
+            BaseSort sort = new SelectionSort();
+            sort.sort(arr);
             int random = (int) (Math.random() * maxValue - Math.random() * maxValue);
             boolean existByBinary = binarySearch(arr, random);
             boolean existByCycle = cycleSearch(arr, random);
