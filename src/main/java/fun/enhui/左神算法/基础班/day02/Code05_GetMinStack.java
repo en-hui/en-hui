@@ -3,11 +3,18 @@ package fun.enhui.左神算法.基础班.day02;
 import java.util.Stack;
 
 /**
+ * 能获取栈中最小值的栈
+ *
  * @author 胡恩会
  * @date 2021/1/1 21:33
  */
 public class Code05_GetMinStack {
 
+    /**
+     * 用两个栈存储数据 stackData 和 stackMin
+     * 每次存的时候，stackData都存，但只有存的值小于等于最小栈顶，才存入stackMin
+     * 每次取的时候，stackData正常取，但只有取得值等于最小栈顶，才从stackMin弹出
+     **/
     public static class MyStack1 {
         private Stack<Integer> stackData;
 

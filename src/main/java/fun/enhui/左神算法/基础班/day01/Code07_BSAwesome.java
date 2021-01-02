@@ -48,7 +48,6 @@ public class Code07_BSAwesome {
             }
         }
         System.out.println("查找次数：" + count);
-
         return L;
     }
 
