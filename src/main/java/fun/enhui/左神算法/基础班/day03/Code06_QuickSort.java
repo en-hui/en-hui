@@ -17,7 +17,8 @@ public class Code06_QuickSort {
         if (L >= R) {
             return;
         }
-        swap(arr, (int) (Math.random() * (R - L + 1)), R);
+        // 取 L ... R 中随机一个数换到R位置
+        swap(arr, L + (int) (Math.random() * (R - L + 1)), R);
         int[] equalArea = netherLandsFlag(arr, L, R);
         process3(arr, 0, equalArea[0] - 1);
         process3(arr, equalArea[1] + 1, R);
@@ -38,10 +39,10 @@ public class Code06_QuickSort {
         }
         int num = arr[R];
         // 小于区域 右边界
-        int minIndex = L-1;
+        int minIndex = L - 1;
         // 大于区域 左边界
         int maxIndex = R + 1;
-        for (int i = L; i<R && i < maxIndex; i++) {
+        for (int i = L; i < R && i < maxIndex; i++) {
             if (arr[i] == num) {
 
             } else if (arr[i] < num) {
