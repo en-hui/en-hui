@@ -20,9 +20,8 @@ https://www.codingapi.com/docs/txlcn-principle-control/
     3、通知事务组
     是指在发起方执行完业务代码以后，将发起方执行结果状态通知给TxManager,TxManager将根据事务最终状态和事务组的信息来通知相应的参与模块提交或回滚事务，并返回结果给事务发起方。
 
-## 实现
+## 案例实现
 > 3个库：lcn-order、lcn-pay、tx-manager(com.codingapi.txlcn txlcn-tm jar包中有sql脚本)   
 > 1个缓存：redis   
 > 3个项目：lcn-tm、lcn-order、lcn-pay    
-
-
+> 见SpringCloud-Taxi项目   
