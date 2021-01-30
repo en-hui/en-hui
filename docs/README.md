@@ -1,17 +1,10 @@
-# <i class="fa fa-hand-o-right"></i>  2021年，定下一个目标。进击互联网金融大厂
+# <i class="fa fa-hand-o-right"></i>  
 --- 
-> 算法入门，力扣300题   
-> Redis：8天课    
-> MySql及优化：18小时8天课-->     
-> Zookeeper：7.5小时3天课-->    
-> 微服务项目：网约车（微服务2期课）、商城（4期课）   
-> docker（有一定基础了）和K8S   
-> nginx      
+> JVM、多线程、设计模式、Redis、Zookeeper、MySQL调优    
+> 算法，力扣           
+> docker和K8S    
+> nginx       
 > 
-> 总结出容易理解的笔记，时刻备战    
-> JVM：   
-> 多线程-->已完成    
-> 设计模式-->已完成    
 
 
 
