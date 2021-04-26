@@ -1,3 +1,4 @@
-study-code.iml
+*.iml
+*/*.iml
 .idea
 target
