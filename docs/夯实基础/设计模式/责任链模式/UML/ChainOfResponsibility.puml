@@ -1,0 +1,39 @@
+@startuml
+
+interface Collider{
+    boolean collide(GameObject o1, GameObject o2)
+}
+class ColliderChain{
+    private List<Collider> colliders
+    public void add(Collider collider)
+    public boolean collide(GameObject o1, GameObject o2)
+}
+class TankTankCollider{
+    public boolean collide(GameObject o1, GameObject o2)
+}
+class BulletTankCollider{
+    public boolean collide(GameObject o1, GameObject o2)
+}
+class GameModel{
+    ColliderChain colliderChain
+    private List<GameObject> gameObjects
+    public void paint(Graphics g)
+}
+
+ColliderChain --o GameModel
+Collider <|.. ColliderChain
+Collider <|.. TankTankCollider
+Collider <|.. BulletTankCollider
+
+
+
+note left of Collider : "抽象处理者角色:碰撞器接口，包含一个碰撞方法，返回值决定是否执行链条中下一任务"
+note left of ColliderChain : "碰撞器的链条:包含一个List，存链条节点"
+note left of TankTankCollider : "具体处理者角色：坦克与坦克的碰撞器"
+note left of BulletTankCollider : "具体处理者角色：子弹和坦克的碰撞器"
+note left of GameModel : "客户端（调用者）"
+
+
+
+
+@enduml

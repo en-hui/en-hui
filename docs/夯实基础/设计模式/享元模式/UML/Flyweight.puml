@@ -1,0 +1,31 @@
+@startuml
+
+class AnimalPool{
+HashMap<String,Animal> pool
+Animal getFlyweight(String key)
+}
+
+class Animal{
+
+}
+
+class Cat{
+
+}
+class Dog{
+
+}
+
+AnimalPool o-- Animal
+Animal <|-- Cat
+Animal <|-- Dog
+
+
+note left of AnimalPool : "动物类的池"
+note left of Animal : "抽象享元类:动物"
+note left of Cat : "具体享元类：猫"
+note left of Dog : "具体享元类：狗"
+
+
+
+@enduml

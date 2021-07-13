@@ -1,0 +1,49 @@
+@startuml
+
+abstract class Pizza{
+    abstract void prepare()
+    void bake()
+    void cut()
+    void box()
+}
+class CheessPizza{
+    void prepare()
+}
+class PepperPizz{
+    void prepare()
+}
+class GreekPizza{
+    void prepare()
+}
+class CheessPizzaFactory{
+    Pizza createPizza()
+}
+class PepperPizzFactory{
+    Pizza createPizza()
+}
+class GreekPizzaFactory{
+    Pizza createPizza()
+}
+abstract class AbsFactoryMethod{
+   + abstract Pizza createPizza()
+}
+Pizza <|-- CheessPizza
+Pizza <|-- PepperPizz
+Pizza <|-- GreekPizza
+
+CheessPizza <.. CheessPizzaFactory
+PepperPizz <.. PepperPizzFactory
+GreekPizza <.. GreekPizzaFactory
+
+CheessPizzaFactory --|> AbsFactoryMethod
+PepperPizzFactory --|> AbsFactoryMethod
+GreekPizzaFactory --|> AbsFactoryMethod
+note left of Pizza : "披萨抽象类：抽象准备食材方法，子类根据不同口味进行实现"
+note left of CheessPizza : "奶酪披萨"
+note left of GreekPizza : "希腊披萨"
+note left of PepperPizz : "胡椒披萨"
+note left of AbsFactoryMethod : "抽象工厂：提供创建对象抽象方法"
+note left of CheessPizzaFactory : "奶酪披萨具体工厂"
+note left of PepperPizzFactory : "胡椒披萨具体工厂"
+note left of GreekPizzaFactory : "希腊披萨具体工厂"
+@enduml

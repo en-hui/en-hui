@@ -1,0 +1,43 @@
+@startuml
+
+
+class House{
+    String basic
+    String wall
+    String roofed
+}
+abstract class HouseBuilder{
+   House house
+   abstract void buildBasic()
+   abstract void buildWalls()
+   abstract void roofed()
+   void build()
+}
+class CommonHouseBuilder{
+    void buildBasic()
+    void buildWalls()
+    void roofed()
+}
+class HighBuildingBuilder{
+    void buildBasic()
+    void buildWalls()
+    void roofed()
+}
+class HouseDirector{
+    HouseBuilder houseBuilder
+    House constructHouse()
+}
+
+
+HouseBuilder o-- House
+HouseDirector o-- HouseBuilder
+HouseBuilder <|-- CommonHouseBuilder
+HouseBuilder <|-- HighBuildingBuilder
+
+note left of House:"产品：房子"
+note left of HouseDirector:"指挥者"
+note left of HouseBuilder:"抽象建造者"
+note left of CommonHouseBuilder:"具体建造者：普通房子建造者"
+note left of HighBuildingBuilder:"具体建造者：高楼建造者"
+
+@enduml

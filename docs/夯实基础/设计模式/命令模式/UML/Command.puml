@@ -1,0 +1,39 @@
+@startuml
+
+class Invoke{
+    private ICommand command
+    public Invoke(ICommand command)
+    public void setCommand(ICommand command)
+}
+interface ICommand{
+    void execute()
+    void undo()
+}
+class LightOnCommand{
+    LightReceiver receiver
+    public void execute()
+    public void undo()
+}
+class LightOffCommand{
+    LightReceiver receiver
+    public void execute()
+    public void undo()
+}
+class LightReceiver{
+    void on()
+    void off()
+}
+
+Invoke o-- ICommand
+LightOnCommand o-- LightReceiver
+LightOffCommand o-- LightReceiver
+ICommand <.. LightOnCommand
+ICommand <.. LightOffCommand
+
+note left of Invoke :"调用者"
+note left of ICommand :"抽象命令类"
+note left of LightOnCommand :"具体命令:打开电灯"
+note left of LightOffCommand :"具体命令：关闭电灯"
+note left of LightReceiver :"接收者"
+
+@enduml

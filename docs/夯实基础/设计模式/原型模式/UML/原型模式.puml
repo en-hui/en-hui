@@ -1,0 +1,15 @@
+@startuml
+
+interface Cloneable{
+    + clone()
+}
+
+class Sheep{
+    + clone()
+}
+
+Cloneable <.. Sheep
+
+Sheep <-- Clint
+
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+
+interface Movable{
+void move()
+}
+
+class Tank{
+void move()
+}
+
+class LogTankProxy{
+Movable movable
+void move()
+}
+Movable <|.. Tank
+Movable <|.. LogTankProxy
+
+
+note left of Movable : "共同接口"
+note left of Tank : "被代理类"
+note left of LogTankProxy : "代理类：持有被代理类或被代理类实现的接口"
+
+
+
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+
+interface Interface1{
+    void method1()
+    void method2()
+    void method3()
+    void method4()
+    void method5()
+}
+
+abstract AbsAdapter{
+    void method1()
+    void method2()
+    void method3()
+    void method4()
+    void method5()
+}
+Client --> AbsAdapter
+Interface1 <|.. AbsAdapter
+
+note left of AbsAdapter : "该抽象类实现接口中所有的方法，并进行空实现"
+note left of Client : "使用 AbsAdapter 只需重写实际需要的方法"
+
+
+
+@enduml

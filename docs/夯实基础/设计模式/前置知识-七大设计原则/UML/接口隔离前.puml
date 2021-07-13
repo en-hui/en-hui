@@ -1,0 +1,36 @@
+@startuml
+class ProjectController{
+}
+class OrderController{
+}
+
+interface InfoService{
+void getUser();
+void addProject();
+void delProject();
+void addOrder();
+void delOrder();
+}
+
+class ProjectServiceImpl{
+void getUser();
+void addProject();
+void delProject();
+void addOrder();
+void delOrder();
+}
+class OrderServiceImpl{
+void getUser();
+void addProject();
+void delProject();
+void addOrder();
+void delOrder();
+}
+
+
+ProjectController ..|> InfoService
+OrderController ..|> InfoService
+
+ProjectServiceImpl..>InfoService
+OrderServiceImpl..>InfoService
+@enduml

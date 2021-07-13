@@ -1,0 +1,34 @@
+@startuml
+
+abstract class GameObject{
+   protected int x, y;
+   public abstract void paint(Graphics g);
+}
+
+class Tank{
+    public void paint(Graphics g);
+}
+
+class Bullet{
+    public void paint(Graphics g);
+}
+class Explode {
+    public void paint(Graphics g);
+}
+class GameModel {
+    private List<GameObject> gameObjects = new ArrayList();
+}
+GameModel --o GameObject
+GameObject <|-- Tank
+GameObject <|-- Bullet
+GameObject <|-- Explode
+
+note left of GameModel : "调停者：list存所有同时类，管理同事之间交互（此处交互使用了责任链模式）"
+note left of GameObject : "抽象同事类"
+note left of Tank : "具体同事类：坦克"
+note left of Bullet : "具体同事类：子弹"
+note left of Explode : "具体同事类：爆炸"
+
+
+
+@enduml
