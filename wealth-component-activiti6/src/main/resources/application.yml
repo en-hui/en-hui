@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: ali
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  activiti:
+    # false：activiti在启动时，会对比数据库表中保存的版本，如果有表或者版本不匹配，将抛出异常（生产环境常用）
+    # true：activiti会对数据库中所有表进行更新操作，如果表不存在，则自动创建（开发常用）
+    # create-drop:在activiti启动时创建表，在关闭时删除表（必须手动关闭引擎，才能删除表）（单元测试常用）
+    # drop-create:在activiti启动时删除原来的旧表，然后再创建新表（不需要手动关闭引擎）
+    # 上线使用false，本地自己玩使用true
+    database-schema-update: true
+    # 启动时是否自动部署流程
+    check-process-definitions: false
+    # 历史数据保存粒度
+    history-level: audit
