@@ -30,7 +30,7 @@ public class Code02_DeleteGivenValue {
      *
      * @param head 头节点
      * @param num  要删除的值
-     * @return fun.enhui.左神算法.基础班.day02.Code01_ReverseList.Node
+     * @return com.enhui.左神算法.基础班.day02.Code01_ReverseList.Node
      * @author 胡恩会
      * @date 2020/12/30 23:47
      **/

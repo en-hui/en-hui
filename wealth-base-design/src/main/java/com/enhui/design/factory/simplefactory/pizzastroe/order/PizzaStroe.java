@@ -1,6 +1,6 @@
 package com.enhui.design.factory.simplefactory.pizzastroe.order;
 
-import fun.enhui.design.factory.simplefactory.pizzastroe.factory.SimpleFactory;
+import com.enhui.design.factory.simplefactory.pizzastroe.factory.SimpleFactory;
 
 /**
  * 相当于一个客户端，发出订购

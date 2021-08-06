@@ -1,7 +1,7 @@
 package com.enhui.design.factory.factorymethod.pizzastroe.factory;
 
-import fun.enhui.design.factory.factorymethod.pizzastroe.pizza.CheesePizza;
-import fun.enhui.design.factory.factorymethod.pizzastroe.pizza.Pizza;
+import com.enhui.design.factory.factorymethod.pizzastroe.pizza.CheesePizza;
+import com.enhui.design.factory.factorymethod.pizzastroe.pizza.Pizza;
 
 public class CheesePizzaFactory extends AbsFactoryMethod{
     @Override

@@ -28,7 +28,7 @@ JMH主要用于测试方法的性能
 
 4.准备需要测试的类
 ```java
-package fun.enhui.thread.jmh;
+package com.enhui.thread.jmh;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +93,7 @@ public class JMHHello {
 
 5.写单元测试(必须在test package下面)
 ```java
- package fun.enhui.thread.jmh;
+ package com.enhui.thread.jmh;
  
  import org.openjdk.jmh.annotations.*;
  

@@ -225,7 +225,7 @@ class Singleton7{
 2.一个属性      
 
 ```puml
-package fun.enhui.design.singleton;
+package com.enhui.design.singleton;
 
 public class Type8 {
     public static void main(String[] args) {
@@ -254,7 +254,7 @@ enum Singleton8{
 ## JDK中使用单例模式的案例
 
 ```puml
-package fun.enhui.design.singleton;
+package com.enhui.design.singleton;
 public class TestJDKRuntime {
     public static void main(String[] args) {
         // 使用了单例模式，饿汉式

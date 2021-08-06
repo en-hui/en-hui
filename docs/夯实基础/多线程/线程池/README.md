@@ -20,7 +20,7 @@ ExecutorService,ThreadPoolExecutor这几个类.
 # 线程池的使用
 
 ```java
-package fun.enhui.thread.pool;
+package com.enhui.thread.pool;
 import java.util.concurrent.*;
 
 /**
@@ -240,7 +240,7 @@ public class T06_02_ThreadPool {
 2）CachedThreadPool和ScheduledThreadPool:允许的创建线程数量为Integer.MAX_VALUE，可能会创建大量的线程，从而导致OOM。   
 
 ```java
-package fun.enhui.thread.pool;
+package com.enhui.thread.pool;
 import java.util.concurrent.*;
 
 /**
@@ -311,7 +311,7 @@ IO密集型应多配置线程数
 ![Alt](img/死锁.png)  
 
 ```java
-package fun.enhui.thread.base;
+package com.enhui.thread.base;
 
 import java.util.concurrent.TimeUnit;
 

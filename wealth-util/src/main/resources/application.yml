@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://rm-2zeh852fk06h86sa35o.mysql.rds.aliyuncs.com:3306/cafebabe?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true
+    username: huenhui
+    password: Heh@0101

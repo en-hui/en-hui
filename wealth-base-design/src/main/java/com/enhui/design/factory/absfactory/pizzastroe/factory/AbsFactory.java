@@ -1,6 +1,6 @@
 package com.enhui.design.factory.absfactory.pizzastroe.factory;
 
-import fun.enhui.design.factory.absfactory.pizzastroe.pizza.Pizza;
+import com.enhui.design.factory.absfactory.pizzastroe.pizza.Pizza;
 
 public abstract class AbsFactory {
     /**

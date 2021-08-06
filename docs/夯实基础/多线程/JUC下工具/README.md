@@ -5,7 +5,7 @@
 秦国派六支军队去灭敌，只有当六个军队全部胜利，才算统一六国。
 
 ```java
-package fun.enhui.thread.juc.apitest;
+package com.enhui.thread.juc.apitest;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -65,7 +65,7 @@ public class CountDownLatchDemo {
          * @author: HuEnhui
          * @date: 2019/10/18 10:42
          * @param index
-         * @return: fun.enhui.interview.Enum.CountryEnum
+         * @return: com.enhui.interview.Enum.CountryEnum
          */
         public static CountryEnum forEach_CountryEnum(int index) {
             CountryEnum[] myArray = CountryEnum.values();
@@ -88,7 +88,7 @@ CyclicBarrier的字面意思是可循环(Cyclic)使用的屏障(barrier).
 > 与CountDownLatch类似，CountDownLatch做减法，初始值为n，减到0执行主方法    
 CyclicBarrier做加法，初始值为0，加到n执行主方法
 ```java
-package fun.enhui.thread.juc.apitest;
+package com.enhui.thread.juc.apitest;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -141,7 +141,7 @@ public void release()
 ```
 
 ```java
-package fun.enhui.thread.juc.apitest;
+package com.enhui.thread.juc.apitest;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 

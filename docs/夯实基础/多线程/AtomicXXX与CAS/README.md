@@ -71,7 +71,7 @@ CAS算法实现的一个重要前提是需要取出内存中某时刻的数据�
 ## 原子引用 AtomicReference
 jdk中提供了基本数据类型的原子包装类，但是如果想将自己定义的类使用原子包装，就需要使用AtomicReference来操作      
 ```java
-package fun.enhui.thread.juc.atomic;
+package com.enhui.thread.juc.atomic;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -125,7 +125,7 @@ java.util.concurrent.atomic包下提供了  AtomicStampedReference类
 在存储的时候，指定版本号，在每次修改都将版本号一并修改。
 修改操作时，即使值相等，但版本号不同，仍不能修改成功，避免了ABA问题
 ```java
-package fun.enhui.thread.juc.atomic;
+package com.enhui.thread.juc.atomic;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;

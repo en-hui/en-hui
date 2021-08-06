@@ -1,8 +1,8 @@
 package com.enhui.design.factory.absfactory.pizzastroe.factory;
 
-import fun.enhui.design.factory.absfactory.pizzastroe.pizza.BJCheesePizza;
-import fun.enhui.design.factory.absfactory.pizzastroe.pizza.LDCheesePizza;
-import fun.enhui.design.factory.absfactory.pizzastroe.pizza.Pizza;
+import com.enhui.design.factory.absfactory.pizzastroe.pizza.BJCheesePizza;
+import com.enhui.design.factory.absfactory.pizzastroe.pizza.LDCheesePizza;
+import com.enhui.design.factory.absfactory.pizzastroe.pizza.Pizza;
 
 public class CheesePizzaFactory extends AbsFactory {
 

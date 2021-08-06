@@ -39,7 +39,7 @@ BlockingQueue是和List同级的接口，只需要重点掌握三个实现类即
 | 超时退出 | 当阻塞队列满时,队列会阻塞生产者线程一定时间,超过后限时后生产者线程就会退出 |
 
 ```java
-package fun.enhui.thread.juc.apitest;
+package com.enhui.thread.juc.apitest;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -77,7 +77,7 @@ public class BlockingQueueDemo {
 > 创建一个SynchronousQueue对象，两个线程同时操作此对象，一个线程往队列里塞值，另一个队列从队列里取值。    
 这个类的特点:每一次塞值只能塞一个，当队列里有元素，塞值线程就会阻塞，同理，如果队列里没有值，取值线程也会阻塞   
 ```java
-package fun.enhui.thread.juc.apitest;
+package com.enhui.thread.juc.apitest;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.SynchronousQueue;
@@ -141,7 +141,7 @@ public class SynchronousQueueDemo {
 - 用 ReentrantLock 加锁，await 和 signal 操作      
 
 ```java
-package fun.enhui.thread.juc.interview;
+package com.enhui.thread.juc.interview;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -273,7 +273,7 @@ class Aircondition{
 ```
 ## 阻塞队列版
 ```java
-package fun.enhui.thread.juc.handwriting;
+package com.enhui.thread.juc.handwriting;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;

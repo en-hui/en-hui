@@ -60,7 +60,7 @@ public class Main {
      * 构造模拟数据
      * @Author: 胡恩会
      * @Date: 2020/7/7 21:10
-    * @return: java.util.List<fun.enhui.design.combination.BaseObject>
+    * @return: java.util.List<com.enhui.design.combination.BaseObject>
      **/
     private static List<BaseObject> initData() {
         List<BaseObject> objects = new ArrayList<>();

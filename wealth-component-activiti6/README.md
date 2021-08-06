@@ -10,11 +10,11 @@
 
 -- 系统属性表-存有next.dbid   
 select * from  act_re_procdef ;   
--- 资源表，相当于附近表   
+-- 资源表，相当于附件表   
 select * from act_ge_bytearray;   
 -- 部署对象表   
 select * from act_re_deployment ;   
--- 部署对象表   
+-- 流程定义表   
 select * from act_re_procdef ;   
 
 

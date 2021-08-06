@@ -1,10 +1,10 @@
 package com.enhui.design.factory.simplefactory.pizzastroe.factory;
 
 
-import fun.enhui.design.factory.simplefactory.pizzastroe.pizza.CheesePizza;
-import fun.enhui.design.factory.simplefactory.pizzastroe.pizza.GreekPizza;
-import fun.enhui.design.factory.simplefactory.pizzastroe.pizza.PepperPizza;
-import fun.enhui.design.factory.simplefactory.pizzastroe.pizza.Pizza;
+import com.enhui.design.factory.simplefactory.pizzastroe.pizza.CheesePizza;
+import com.enhui.design.factory.simplefactory.pizzastroe.pizza.GreekPizza;
+import com.enhui.design.factory.simplefactory.pizzastroe.pizza.PepperPizza;
+import com.enhui.design.factory.simplefactory.pizzastroe.pizza.Pizza;
 
 /**
  * 简单工厂类

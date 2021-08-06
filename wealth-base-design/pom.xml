@@ -13,4 +13,16 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.sisu.inject</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+    </dependencies>
 </project>

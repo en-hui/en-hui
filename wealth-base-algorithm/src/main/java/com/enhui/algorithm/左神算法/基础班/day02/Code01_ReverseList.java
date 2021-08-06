@@ -41,7 +41,7 @@ public class Code01_ReverseList {
      * 以三个为一组考虑，
      *
      * @param head 头节点
-     * @return fun.enhui.左神算法.基础班.day02.Code01_ReverseList.SinlgNode
+     * @return com.enhui.左神算法.基础班.day02.Code01_ReverseList.SinlgNode
      * @author 胡恩会
      * @date 2020/12/31 0:24
      **/
@@ -68,7 +68,7 @@ public class Code01_ReverseList {
      * null<-4<->3<->2<-1->null
      *
      * @param head 头节点
-     * @return fun.enhui.左神算法.基础班.day02.Code01_ReverseList.DoubleNode
+     * @return com.enhui.左神算法.基础班.day02.Code01_ReverseList.DoubleNode
      * @author 胡恩会
      * @date 2020/12/31 0:24
      **/
