@@ -2,7 +2,7 @@
 
 多线程知识是初级迈向中高级的必经之路。
 
-[在线画图工具链接](https://www.processon.com/i/5e0d9502e4b02086237ce4f8)       
+[在线画图工具ProcessOn新人注册](https://www.processon.com/i/5e0d9502e4b02086237ce4f8)       
 [多线程思维导图](https://www.processon.com/view/link/5f05cdff5653bb2925d4c8bb)      
 ![Alt](http://assets.processon.com/chart_image/5ee0641607912929cb373be0.png?_=1594215914540) 
 

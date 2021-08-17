@@ -1,5 +1,6 @@
 package com.enhui.util.excel.upload;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 import java.util.Date;
@@ -7,6 +8,8 @@ import java.util.Date;
 /**
  * 根据测试，导入规则：
  * excel的列从前往后-->对应本类字段从上到下
+ * 根据index匹配，@ExcelProperty(index = 0)
+ * 根据名称匹配,@ExcelProperty(value = "产品名称")
  *
  * @Author 胡恩会
  * @Date 2021/8/6 21:18
