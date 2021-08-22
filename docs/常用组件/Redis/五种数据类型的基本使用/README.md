@@ -13,107 +13,152 @@
 
 字符串命令整理
 ``` 
-APPEND key value
-summary: Append a value to a key
-since: 2.0.0
-
-GET key
-summary: Get the value of a key
+SET key value [expiration EX seconds|PX milliseconds] [NX|XX]
+summary: Set the string value of a key
 since: 1.0.0
-
-GETRANGE key start end
-summary: Get a substring of the string stored at a key
-since: 2.4.0
-
-GETSET key value
-summary: Set the string value of a key and return its old value
-since: 1.0.0
-
-MGET key [key ...]
-summary: Get the values of all the given keys
-since: 1.0.0
-
-MSET key value [key value ...]
-summary: Set multiple keys to multiple values
-since: 1.0.1
-
-MSETNX key value [key value ...]
-summary: Set multiple keys to multiple values, only if none of the keys exist
-since: 1.0.1
+描述：给key设置一个值，如果key已存在值，则做覆盖动作；set成功后，之前设置的过期时间将失效
+EX seconds – 设置键key的过期时间，单位是秒
+PX milliseconds – 设置键key的过期时间，单位是毫秒
+NX – 只有键key不存在的时候才会设置key的值
+XX – 只有键key存在的时候才会设置key的值
 
 PSETEX key milliseconds value
 summary: Set the value and expiration in milliseconds of a key
 since: 2.6.0
-
-SET key value [expiration EX seconds|PX milliseconds] [NX|XX]
-summary: Set the string value of a key
-since: 1.0.0
+描述：设置key的值，并设置过期时间，单位为毫秒（等同于 set px）
 
 SETEX key seconds value
 summary: Set the value and expiration of a key
 since: 2.0.0
+描述：设置key的值，并设置过期时间，单位为秒（等同于 set ex）
 
 SETNX key value
 summary: Set the value of a key, only if the key does not exist
 since: 1.0.0
+描述：设置key的值，只有key不存在时才设置成功（等同于 set nx）
+
+MSETNX key value [key value ...]
+summary: Set multiple keys to multiple values, only if none of the keys exist
+since: 1.0.1
+描述：设置多个值，只有key不存在才设置成功（原子性操作，一个不成功都不成功）
+
+MSET key value [key value ...]
+summary: Set multiple keys to multiple values
+since: 1.0.1
+描述：一次性设置多个值
+
+MGET key [key ...]
+summary: Get the values of all the given keys
+since: 1.0.0
+描述：一次性查询多个key
+
+GET key
+summary: Get the value of a key
+since: 1.0.0
+描述：获取键key的值
+
+APPEND key value
+summary: Append a value to a key
+since: 2.0.0
+描述：在键key的值后面追加字符串
 
 SETRANGE key offset value
 summary: Overwrite part of a string at key starting at the specified offset
 since: 2.2.0
+描述：根据偏移量覆盖key的值
+
+GETRANGE key start end
+summary: Get a substring of the string stored at a key
+since: 2.4.0
+描述：根据索引位置（支持正负索引）获取键key的值
+
+GETSET key value
+summary: Set the string value of a key and return its old value
+since: 1.0.0
+描述：查询键key的旧值并设置新值
 
 STRLEN key
 summary: Get the length of the value stored in a key
 since: 2.2.0
+描述：查询key的长度（相当于length）
 ```
 
 数值
 ``` 
-DECR key
-summary: Decrement the integer value of a key by one
-since: 1.0.0
-
-DECRBY key decrement
-summary: Decrement the integer value of a key by the given number
-since: 1.0.0
-
 INCR key
 summary: Increment the integer value of a key by one
 since: 1.0.0
+描述：给key的值 ++（原值必须是整数）
 
 INCRBY key increment
 summary: Increment the integer value of a key by the given amount
 since: 1.0.0
+描述：给key的值 + 指定整数（原值必须是整数）
 
 INCRBYFLOAT key increment
 summary: Increment the float value of a key by the given amount
 since: 2.6.0
+描述：给键key的值 + 指定浮点数（没有减法方法，所以减法就加负数）
+
+DECR key
+summary: Decrement the integer value of a key by one
+since: 1.0.0
+描述：给键key的值 --（原值必须是整数）
+
+DECRBY key decrement
+summary: Decrement the integer value of a key by the given number
+since: 1.0.0
+描述：给key的值 - 指定整数
 ```
 
 bitmap
+> 每8个bit为一字节，从下标为0开始   
+> 比如：ascii码中 二进制 0010 0001 表示 !
+> 所以如下：   
+> setbit k1 2 1 和 setbit k1 7 1  ==> get k1 可以得到 !   
+> 同样：set k2 !  ==> getbit k2 2 是1，getbit k2 7是1
 ``` 
+SETBIT key offset value
+summary: Sets or clears the bit at offset in the string value stored at key
+since: 2.2.0
+描述：给key的某个偏移量设置值（value 只能是 0 和 1）（偏移量指的是二进制位的偏移）
+
+GETBIT key offset
+summary: Returns the bit value at offset in the string value stored at key
+since: 2.2.0
+描述：查询key在某位置上的二进制位是 0 还是 1（偏移量指的是二进制位的偏移）
+
 BITCOUNT key [start end]
 summary: Count set bits in a string
 since: 2.6.0
+描述：查询key的二进制位上，有多少个1,(start 和 end 为字符串的索引下标-支持正负索引)
+
+BITOP operation destkey key [key ...]
+summary: Perform bitwise operations between strings
+since: 2.6.0
+描述：对一个或多个key进行 位操作，并把结果保存到 destkey()
+BITOP 命令支持 AND 、 OR 、 NOT 、 XOR 四种位操作
+AND：对多个二进制字符串进行【逻辑与--bit同一位置，全1则1】操作 
+OR：对多个二进制字符串进行【逻辑或--bit同一位置，有1则1】操作 
+NOT：对单个二进制字符串进行【逻辑非--1变0,0变1】操作 
+XOR：对多个二进制字符串进行【逻辑异或--bit同一位置，相同为0，不同为1】操作 
+
+BITPOS key bit [start] [end]
+summary: Find first bit set or clear in a string
+since: 2.8.7
+描述：找出字符串中，第一次出现该bit的二进制位的位置;bit为0或1，start和end代表字符串索引下标
+例子：
+setbit k1 2 1, setbit k1 7 1, setbit k1 8 1
+bitpos k1 0 0 -1 : 从整个字符串中找到第一个0的位置，返回值为 0
+bitpos k1 1 0 -1 : 从整个字符串中找到第一个1的位置，返回值为 2
+bitpos k1 1 1 1 : 从第一个字节找第一个1的位置，返回值为8 （字节下标也从0开始）
+bitpos k1 0 1 1 : 从第一个字节找第一个0的位置，返回值为9
+
 
 BITFIELD key [GET type offset] [SET type offset value] [INCRBY type offset increment] [OVERFLOW WRAP|SAT|FAIL]
 summary: Perform arbitrary bitfield integer operations on strings
 since: 3.2.0
 
-BITOP operation destkey key [key ...]
-summary: Perform bitwise operations between strings
-since: 2.6.0
-
-BITPOS key bit [start] [end]
-summary: Find first bit set or clear in a string
-since: 2.8.7
-
-GETBIT key offset
-summary: Returns the bit value at offset in the string value stored at key
-since: 2.2.0
-
-SETBIT key offset value
-summary: Sets or clears the bit at offset in the string value stored at key
-since: 2.2.0
 ```
 
 ## String类型场景实践
