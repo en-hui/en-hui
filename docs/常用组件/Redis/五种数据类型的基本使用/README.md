@@ -3,7 +3,8 @@
 > 使用redic客户端 redis-cli ,要善于使用 help 命令   
 > help @组名称   
 > help 命令名称   
-> 该笔记中命令摘抄自 redis 5.0(阿里-云数据库Redis版-Redis 5.0 社区版)
+> 该笔记中命令全量摘抄自 redis 5.0(阿里-云数据库Redis版-Redis 5.0 社区版)   
+> 如实际使用遇到疑问，当前文档不能解惑，可以结合help和中文官网【命令】来了解具体用法
 
 ## String类型命令梳理
 > String类型可以分为以下几类：   
@@ -165,10 +166,8 @@ since: 3.2.0
 数值
 > 抢购、秒杀、详情页、点赞、评论。   
 规避并发场景下，对数据库的事务操作，完全由redis内存操作代替
-（**一些不重要的数据可以这样操作，对于银行类必须持久化，保证数据可靠性**）
-``` 
+（**一些不重要的数据可以这样操作，对于银行类金额相关数据必须持久化，保证数据可靠性**）
 
-```
 
 bitmap 
 ```  
@@ -368,11 +367,13 @@ since: 2.0.0
 HSCAN key cursor [MATCH pattern] [COUNT count]
 summary: Incrementally iterate hash fields and associated values
 since: 2.8.0
-描述：用迭代的方式查询key，传一个游标过去，可以指定筛选条件，可以指定返回个数。返回值包含一个游标和一个数组，如果游标为0，则表示迭代结束
+描述：参考 scan http://redis.cn/commands/scan.html
+用迭代的方式查询key，传一个游标过去，可以指定筛选条件，可以指定返回个数。返回值包含一个游标和一个数组，如果游标为0，则表示迭代结束
 cursor表示游标，必须正确使用游标：即第一次必须传0，后面每次必须传上次返回的游标
 MATCH选项：指定筛选规则，例如 hscan k1 n* 表示筛选以n开头的字段
 COUNT选项：
 实验过程中，COUNT选项没生效 ==> ??
+
 ```
 
 ## set类型命令梳理
@@ -450,109 +451,170 @@ since: 1.0.0
 SSCAN key cursor [MATCH pattern] [COUNT count]
 summary: Incrementally iterate Set elements
 since: 2.8.0
-描述：
+描述：参考 scan http://redis.cn/commands/scan.html
 ```
 
 ## sorted_set类型命令梳理
-
+> 有序集合：物理内存左小右大，所以正向命令或排序都是分值小的在前，rev反向命令是分值大的在前   
+> 
+> lex：基于字典序的命令，多数命令适用于分值相同的情况   
+> rank：基于排名的命令   
+> score：基于分值的命令
 ``` 
 ZADD key [NX|XX] [CH] [INCR] score member [score member ...]
 summary: Add one or more members to a sorted set, or update its score if it already exists
 since: 1.2.0
+描述：
+XX: 仅仅更新存在的成员，不添加新成员。
+NX: 不更新存在的成员。只添加新成员。
+CH: 修改返回值为发生变化的成员总数，原始是返回新添加成员的总数 (CH 是 changed 的意思)。更改的元素是新添加的成员，已经存在的成员更新分数。 所以在命令中指定的成员有相同的分数将不被计算在内。注：在通常情况下，ZADD返回值只计算新添加成员的数量。
+INCR: 当ZADD指定这个选项时，成员的操作就等同ZINCRBY命令，对成员的分数进行递增操作。
 
 ZCARD key
 summary: Get the number of members in a sorted set
 since: 1.2.0
+描述：获取有序集合中元素个数
 
 ZCOUNT key min max
 summary: Count the members in a sorted set with scores within the given values
 since: 2.0.0
-
-ZINCRBY key increment member
-summary: Increment the score of a member in a sorted set
-since: 1.2.0
-
-ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight] [AGGREGATE SUM|MIN|MAX]
-summary: Intersect multiple sorted sets and store the resulting sorted set in a new key
-since: 2.0.0
-
-BZPOPMAX key [key ...] timeout
-summary: Remove and return the member with the highest score from one or more sorted sets, or block until one is available
-since: 5.0.0
-
-BZPOPMIN key [key ...] timeout
-summary: Remove and return the member with the lowest score from one or more sorted sets, or block until one is available
-since: 5.0.0
-
-ZLEXCOUNT key min max
-summary: Count the number of members in a sorted set between a given lexicographical range
-since: 2.8.9
-
-ZPOPMAX key [count]
-summary: Remove and return members with the highest scores in a sorted set
-since: 5.0.0
-
-ZPOPMIN key [count]
-summary: Remove and return members with the lowest scores in a sorted set
-since: 5.0.0
-
-ZRANGE key start stop [WITHSCORES]
-summary: Return a range of members in a sorted set, by index
-since: 1.2.0
-
-ZRANGEBYLEX key min max [LIMIT offset count]
-summary: Return a range of members in a sorted set, by lexicographical range
-since: 2.8.9
-
-ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT offset count]
-summary: Return a range of members in a sorted set, by score
-since: 1.0.5
-
-ZRANK key member
-summary: Determine the index of a member in a sorted set
-since: 2.0.0
-
-ZREM key member [member ...]
-summary: Remove one or more members from a sorted set
-since: 1.2.0
-
-ZREMRANGEBYLEX key min max
-summary: Remove all members in a sorted set between the given lexicographical range
-since: 2.8.9
-
-ZREMRANGEBYRANK key start stop
-summary: Remove all members in a sorted set within the given indexes
-since: 2.0.0
-
-ZREMRANGEBYSCORE key min max
-summary: Remove all members in a sorted set within the given scores
-since: 1.2.0
-
-ZREVRANGE key start stop [WITHSCORES]
-summary: Return a range of members in a sorted set, by index, with scores ordered from high to low
-since: 1.2.0
-
-ZREVRANGEBYLEX key max min [LIMIT offset count]
-summary: Return a range of members in a sorted set, by lexicographical range, ordered from higher to lower strings.
-since: 2.8.9
-
-ZREVRANGEBYSCORE key max min [WITHSCORES] [LIMIT offset count]
-summary: Return a range of members in a sorted set, by score, with scores ordered from high to low
-since: 2.2.0
-
-ZREVRANK key member
-summary: Determine the index of a member in a sorted set, with scores ordered from high to low
-since: 2.0.0
+描述：根据【最大、最小分值】获取符合条件的元素个数
+min、max 为分值，默认闭区间，"("符号描述开区间：(5 8 表示 5 < score <= 8
+min和max可以是-inf和+inf
 
 ZSCORE key member
 summary: Get the score associated with the given member in a sorted set
 since: 1.2.0
+描述：获取key中元素的分值
+
+ZRANGE key start stop [WITHSCORES]
+summary: Return a range of members in a sorted set, by index
+since: 1.2.0
+描述：根据元素【索引开始、结束下标】查询元素，返回数据 分值从小到大（物理存储）
+WITHSCORES: 该选项可以指定展示元素时，将分值一并输出
+
+ZREVRANGE key start stop [WITHSCORES]
+summary: Return a range of members in a sorted set, by index, with scores ordered from high to low
+since: 1.2.0
+描述：根据元素【索引开始、结束下标】查询元素，返回数据 分值从大到小（物理存储--反转）
+
+ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT offset count]
+summary: Return a range of members in a sorted set, by score
+since: 1.0.5
+描述：根据【最大、最小分值】查询元素，返回数据 分值从小到大（物理存储）
+min、max 为分值，默认闭区间，"("符号描述开区间：(5 8 表示 5 < score <= 8
+min和max可以是-inf和+inf
+
+ZREVRANGEBYSCORE key max min [WITHSCORES] [LIMIT offset count]
+summary: Return a range of members in a sorted set, by score, with scores ordered from high to low
+since: 2.2.0
+描述：根据【最大、最小分值】查询元素，返回数据 分值从大到小（物理存储--反转）
+min、max 为分值，默认闭区间，"("符号描述开区间：(5 8 表示 5 < score <= 8
+min和max可以是-inf和+inf
+
+ZRANGEBYLEX key min max [LIMIT offset count]
+summary: Return a range of members in a sorted set, by lexicographical range
+since: 2.8.9
+描述：返回指定成员区间内的成员，按成员字典正序排序, 分数必须相同
+比较复杂，查看官网更准确 http://redis.cn/commands/zrangebylex.html
+
+ZREVRANGEBYLEX key max min [LIMIT offset count]
+summary: Return a range of members in a sorted set, by lexicographical range, ordered from higher to lower strings.
+since: 2.8.9
+描述：返回指定成员区间内的成员，按成员字典倒序排序, 分数必须相同
+比较复杂，查看官网更准确 http://redis.cn/commands/zrevrangebylex.html
+
+ZLEXCOUNT key min max
+summary: Count the number of members in a sorted set between a given lexicographical range
+since: 2.8.9
+描述：计算有序集合中指定成员之间的成员数量
+ZLEXCOUNT k1 - +   最小分值元素与最大分值元素之间有多少个元素
+ZLEXCOUNT k1 [m1 [m2 元素m1与m2之间有多少元素（分值之间，必须m1小，m2大，否则返回0）
+- 成员名称前需要加 [ 符号作为开头, [ 符号与成员之间不能有空格
+- 可以使用 - 和 + 表示得分最小值和最大值
+- min 和 max 不能反, max 放前面 min放后面会导致返回结果为0
+- 计算成员之间的成员数量时,参数 min 和 max 的位置也计算在内。
+- min 和 max 参数的含义与 zrangebylex 命令中所描述的相同
+
+ZINCRBY key increment member
+summary: Increment the score of a member in a sorted set
+since: 1.2.0
+描述：将key中某一元素的分值做一个数
+
+ZPOPMAX key [count]
+summary: Remove and return members with the highest scores in a sorted set
+since: 5.0.0
+描述：弹出key中最大分值的几个元素
+
+ZPOPMIN key [count]
+summary: Remove and return members with the lowest scores in a sorted set
+since: 5.0.0
+描述：弹出key中最小分值的几个元素
+
+BZPOPMAX key [key ...] timeout
+summary: Remove and return the member with the highest score from one or more sorted sets, or block until one is available
+since: 5.0.0
+描述：阻塞弹出key中最大分值的一个元素，可同时操作多个key（可设置阻塞时间，单位为秒）
+
+BZPOPMIN key [key ...] timeout
+summary: Remove and return the member with the lowest score from one or more sorted sets, or block until one is available
+since: 5.0.0
+描述：阻塞弹出key中最小分值的一个元素，可同时操作多个key（可设置阻塞时间，单位为秒）
+
+ZRANK key member
+summary: Determine the index of a member in a sorted set
+since: 2.0.0
+描述：查看key中某元素的排名，分值从小到大（物理存储），分值最小的排名为0
+
+ZREVRANK key member
+summary: Determine the index of a member in a sorted set, with scores ordered from high to low
+since: 2.0.0
+描述：查看key中某元素的排名，分值从大到小（物理存储--反转），分值最大的排名为0
+
+ZREM key member [member ...]
+summary: Remove one or more members from a sorted set
+since: 1.2.0
+描述：删除key中指定元素
+
+ZREMRANGEBYLEX key min max
+summary: Remove all members in a sorted set between the given lexicographical range
+since: 2.8.9
+描述：删除名称按字典由低到高排序成员之间所有成员。适用于分数一致的有序集合，待删除的有序集合中,分数最好相同,否则删除结果会不正常
+查看：http://redis.cn/commands/zremrangebylex.html
+
+ZREMRANGEBYRANK key start stop
+summary: Remove all members in a sorted set within the given indexes
+since: 2.0.0
+描述：根据排名删除元素，0为分数最小的（即排名第一），可以使用负数（-1为分数最高的，即排名倒数第一）
+
+ZREMRANGEBYSCORE key min max
+summary: Remove all members in a sorted set within the given scores
+since: 1.2.0
+描述：根据分值删除元素
 
 ZUNIONSTORE destination numkeys key [key ...] [WEIGHTS weight] [AGGREGATE SUM|MIN|MAX]
 summary: Add multiple sorted sets and store the resulting sorted set in a new key
 since: 2.0.0
+描述：计算给定 numkeys 个有序集合的并集，把结果放到目标key中，默认求不同key相同元素的分值的和为新key的元素分值
+WEIGHTS、AGGREGATE 选项可参考下面的交集部分实例
+
+ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight] [AGGREGATE SUM|MIN|MAX]
+summary: Intersect multiple sorted sets and store the resulting sorted set in a new key
+since: 2.0.0
+描述：计算给定 numKeys 个有序集合的交集，把结果放到目标key中，默认求不同key相同元素的分值的和为新key的元素分值
+ZADD k1 1 a （聚合前*2==为2）
+ZADD k1 3 b （聚合前*2==为6）
+ZADD k2 2 a （聚合前*3==为6）
+ZADD k2 1 b （聚合前*3==为3）
+ZADD k2 4 c （聚合前*3==为12）
+ZINTERSTORE resultKey 2 k1 k2 WEIGHTS 2 3 AGGREGATE MIN
+ZRANGE resultKey 0 -1 WITHSCORES
+结果为：resultKey中有两个元素，a是2，b是3
+WEIGHTS: 每个给定有序集的所有成员的score值在传递给聚合函数之前都要先乘以该因子，默认不给是1
+AGGREGATE: 可以指定并集的结果集的聚合方式,默认不给是sum，将所有集合中某个成员的score值之和作为结果集中该成员的score值
 
 ZSCAN key cursor [MATCH pattern] [COUNT count]
 summary: Incrementally iterate sorted sets elements and associated scores
 since: 2.8.0
+描述：参考scan http://redis.cn/commands/scan.html
 ```
