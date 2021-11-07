@@ -10,6 +10,7 @@
     - [Jenkins](常用组件/Jenkins/)
     - [MySQL](常用组件/MySQL/)
     - [Redis](常用组件/Redis/)
+    - [ZooKeeper](常用组件/ZooKeeper/)
     - [Kafka](常用组件/Kafka/)  
 - **常用框架**
     - [Spring](常用框架/Spring/README.md)

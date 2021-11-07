@@ -15,4 +15,7 @@
 > 不可用状态：指主挂掉   
 > 可用状态：指从剩余机器中，重新选出一个主
 
+
+- [zk安装及cli使用](常用组件/ZooKeeper/zk安装及cli使用/)   
+- 
 paxos介绍: https://www.douban.com/note/208430424/
