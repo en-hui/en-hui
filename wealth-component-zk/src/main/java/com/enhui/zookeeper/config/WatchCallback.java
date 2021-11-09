@@ -35,6 +35,8 @@ public class WatchCallback implements Watcher, AsyncCallback.StatCallback, Async
         System.out.println(path + "::exists 的回调:rc=" + rc + ",ctx=" + ctx + ",stat=" + stat);
         if (stat != null) {
             zk.getData("/AppConf", this, this, "ctx上下文");
+        }else {
+            System.out.println("节点不存在");
         }
     }
 
@@ -48,7 +50,7 @@ public class WatchCallback implements Watcher, AsyncCallback.StatCallback, Async
             String s = new String(data);
             myConf.setMySqlAddress(s);
 
-            System.out.println("获取节点数据成功，节点判断的阻塞解除");
+            System.out.println("获取节点数据成功，解除阻塞::CountDownLatch-countDown");
             existLatch.countDown();
         } else {
             System.out.println("节点存在，但数据为null");
@@ -62,7 +64,7 @@ public class WatchCallback implements Watcher, AsyncCallback.StatCallback, Async
         // 该目录全称是 /testConf/AppConf  因为基于/testConf连接的zk
         zk.exists("/AppConf", this, this, "ctx上下文");
         try {
-            System.out.println("节点判断的阻塞");
+            System.out.println("阻塞，等待获取节点数据成功后解除::CountDownLatch-await");
             existLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();

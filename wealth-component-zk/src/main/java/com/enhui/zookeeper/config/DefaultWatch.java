@@ -32,7 +32,7 @@ public class DefaultWatch implements Watcher {
             case NoSyncConnected:
                 break;
             case SyncConnected:
-                System.out.println("连接已完成，CountDownLatch --");
+                System.out.println("连接已完成，解除阻塞::CountDownLatch-countDown");
                 latch.countDown();
                 break;
             case AuthFailed:

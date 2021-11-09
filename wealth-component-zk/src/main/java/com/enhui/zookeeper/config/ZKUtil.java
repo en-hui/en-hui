@@ -24,7 +24,7 @@ public class ZKUtil {
         try {
             defaultWatch.setLatch(latch);
             zk = new ZooKeeper(address, 1000, defaultWatch);
-            System.out.println("CountDownLatch 进行阻塞，等待连接完成后得到zk对象");
+            System.out.println("阻塞，等待连接完成得到zk对象后解除::CountDownLatch-await");
             latch.await();
         } catch (Exception e) {
             e.printStackTrace();
