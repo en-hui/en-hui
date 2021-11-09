@@ -86,8 +86,10 @@ help
 
 # 查看 / 目录
 ls /
-# 创建 /node1
+
+# 创建 /node1 并存放数据【hello】
 create /node1 "hello"
+
 # 查看 /node1 
 get -s node1
 【

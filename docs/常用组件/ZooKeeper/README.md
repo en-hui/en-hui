@@ -9,7 +9,7 @@
 > 一个znode尽量存储不到1MB的数据   
 > znode分为:持久节点 和 临时节点
 > 
-> ZooKeeper 基于主从复制集群，主可以读写，从只负责读   
+> ZooKeeper 基于主从复制集群，主可以读写，从只负责读。意味着主是单点的，当主挂掉，会进入【不可用状态】   
 > 
 > Zookeeper 是高可用的，意味着他可以从【不可用状态】很快的恢复到【可用状态】（官方描述：200ms）   
 > 不可用状态：指主挂掉   
@@ -17,5 +17,6 @@
 
 
 - [zk安装及cli使用](常用组件/ZooKeeper/zk安装及cli使用/)   
-- 
-paxos介绍: https://www.douban.com/note/208430424/
+- [paxos和zab](常用组件/ZooKeeper/paxos和zab/)
+- [zk使用案例](常用组件/ZooKeeper/zk使用案例/)
+

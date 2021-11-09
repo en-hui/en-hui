@@ -1,4 +1,4 @@
-package com.enhui.zookeeper;
+package com.enhui.zookeeper.client;
 
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
@@ -6,6 +6,8 @@ import org.apache.zookeeper.data.Stat;
 import java.util.concurrent.CountDownLatch;
 
 /**
+ * zk 客户端基本操作
+ *
  * @Author 胡恩会
  * @Date 2021/11/7 21:46
  **/
