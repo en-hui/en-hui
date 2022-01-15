@@ -12,6 +12,8 @@
     - [Redis](常用组件/Redis/)
     - [ZooKeeper](常用组件/ZooKeeper/)
     - [Kafka](常用组件/Kafka/)  
+- **大数据技术栈**
+  - [Hadoop](大数据技术栈/Hadoop/)
 - **常用框架**
     - [Spring](常用框架/Spring/README.md)
     - [SpringMVC](常用框架/SpringMVC/)

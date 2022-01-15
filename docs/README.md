@@ -1,4 +1,4 @@
-# 鶴小爺的知識寶庫
+# 胡恩会的知識寶庫
 
 > 作者：胡恩会   
 > 本项目目的：构建一个大而全的知识宝库，记录学习的点点滴滴，方便查看及复习    
@@ -20,6 +20,8 @@
   - [Redis](常用组件/Redis/)
   - [ZooKeeper](常用组件/ZooKeeper/)
   - [Kafka](常用组件/Kafka/)
+- **大数据技术栈**
+  - [Hadoop](大数据技术栈/Hadoop/)
 - **常用框架**
   - [Spring](常用框架/Spring/README.md)
   - [SpringMVC](常用框架/SpringMVC/)
