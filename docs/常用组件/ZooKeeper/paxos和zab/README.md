@@ -5,7 +5,7 @@
 ## paxos一致性算法
 > 文章取自：https://www.douban.com/note/208430424/
 > 
-> 由于平台合规性，将zongtong称为村长，将yiyuan称为村民    
+> 由于平台合规性，将zong tong称为村长，将yi yuan称为村民    
 > 
 > Paxos描述了这样一个场景，有一个叫做Paxos的小岛(Island)上面住了一批居民，
 > 岛上面所有的事情由一些特殊的人决定，他们叫做村民(Senator)。
