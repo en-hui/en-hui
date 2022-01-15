@@ -3,7 +3,7 @@
 > zab：原子广播协议，是zk基于paxos的实现。
 
 ## paxos一致性算法
-> 文章取自：https://www.douban.com/note/208430424/
+> 文章取自：https://www.douban.com/  note/208430424/
 > 
 > 由于平台合规性，将zong tong称为村长，将yi yuan称为村民    
 > 
