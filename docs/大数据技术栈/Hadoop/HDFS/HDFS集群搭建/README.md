@@ -138,5 +138,91 @@ cd /opt/bigdata/hadoop-2.10.1/sbin
 # hdfs dfs 会打印帮助命令
 # hdfs 的根目录为 /user 一般使用，创建自己用户的家目录 
 hdfs dfs -mkdir -p /user/root
+
+# 默认不写上传目录，默认上传至当前用户家目录（使用操作系统的用户）
+hdfs dfs -put hadoop-2.10.1.tar.gz
+
+# -D 设置参数，1.8M文件设置1M的block大小，会分为两个block
+hdfs dfs -Ddfs.blocksize=1048576 -put zstd-1.5.1.tar.gz
 ```
+
 ## HDFS完全分布式（多节点，多进程）
+- 目标：在四个节点上安装所有角色——NameNode、SecondaryNameNode、DataNode
+  - node01:只安装NameNode（对内存使用需求较大，且一个集群只有一个，把整台机器性能都给他自己）
+  - node02：安装SecondaryNameNode、DataNode
+  - node03：安装DataNode
+  - node04：安装DataNode
+
+```shell
+# 使用 scp 分发jdk，并配置环境变量
+
+# 设置免密：如果在node01启动，就把node01的公钥给node02、node03、node04
+scp ./id_dsa.put node02:/root/.ssh/node01.pub # 在node01执行远程拷贝
+cat node01.put >> authorized_keys  # node02 执行，将公钥内容追加到authorized_keys文件
+
+# 修改配置文件；修改后使用 scp 分发 /opt/bigdata/hadoop 文件
+scp -r /opt/bigdata/ node02:`pwd`
+# 需要修改的配置文件包括：
+    # hadoop-env.sh  配置了jdk路径，伪分布式教程改过了，这里不需要改
+    # core-site.xml  配置了NameNode在哪里启动，伪分布式教程改过了，这里不需要改
+    # hdfs-site.xml 1.修改副本数；2.修改数据路径；3.修改SecondaryNode启动节点
+          <property>
+            <name>dfs.replication</name>
+            <value>2</value>
+          </property>
+          <property>
+            <name>dfs.namenode.name.dir</name>
+            <value>/var/bigdata/hadoop/full/dfs/name</value>
+          </property>
+          <property>
+            <name>dfs.datanode.data.dir</name>
+            <value>/var/bigdata/hadoop/full/dfs/data</value>
+          </property>
+          <property>
+            <name>dfs.namenode.secondary.http-address</name>
+            <value>node02:50090</value>
+          </property>
+          <property>
+            <name>dfs.namenode.checkpoint.dir</name>
+            <value>/var/bigdata/hadoop/full/dfs/secondary</value>
+          </property>
+    # slaves
+          node02
+          node03
+          node04
+
+# 格式化启动（在NameNode节点操作--node01）
+hdfs namenode -format
+# 启动集群（在NameNode节点操作--ssh会远程启动其他节点角色）
+./start-dfs.sh
+```
+
+
+# HDFS HA模式
+
+> HDFS 是主从集群：结构相对简单，主与从协作   
+> 主：单点，数据一致好掌握   
+> 问题1：单点故障，集群整体不可用    
+> 问题2：压力过大，内存受限   
+> 
+> HDFS在 2.x版本分别提供了解决方案（Hadoop2.x只支持HA的一主一备）    
+> 一、单点故障问题：    
+>   高可用方案：HA（High Available）——没有SecondaryNode角色了，Standby角色滚动生成FsImage      
+>   涉及技术：Zookeeper、JournalNode    
+>   多个NameNode，主备切换；Active和Standby状态（Active对外提供服务）     
+>   增加JournalNode角色（>3台）,负责同步NameNode的editLog（最终一致性）    
+>   增加zkfc角色（与NN同台），通过zookeeper集群协调NN的主从选举和切换（事件回调机制）    
+>   DN同时向NNs（所有的）汇报block信息
+> 
+> 二、压力过大，内存受限问题：   
+>   联邦机制：Federation（元数据分片）    
+>   多个NameNode，管理不同的元数据     
+>   元数据隔离（不同人访问自己的NN）   
+>   DN共享，使用目录隔离所属的NN        
+
+
+- HA搭建（https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html）
+  - node01:NameNode、ZKFC、JournalNode
+  - node02:NameNode、ZKFC、JournalNode、DataNode、ZooKeeper
+  - node03:JournalNode、DataNode、ZooKeeper
+  - node04：DataNode、Zookeeper

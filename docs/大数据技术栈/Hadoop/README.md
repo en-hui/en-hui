@@ -7,5 +7,6 @@
 ## HDFS
 - [HDFS理论知识点](大数据技术栈/Hadoop/HDFS/HDFS理论知识点/)
 - [HDFS集群搭建](大数据技术栈/Hadoop/HDFS/HDFS集群搭建/)
+- [HDFS客户端开发](大数据技术栈/Hadoop/HDFS/HDFS客户端开发/)
 
 ## MapReduce
