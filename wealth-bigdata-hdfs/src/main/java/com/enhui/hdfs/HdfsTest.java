@@ -32,12 +32,12 @@ public class HdfsTest {
 
     //  <property>
     //    <name>fs.defaultFS</name>
-    //    <value>hdfs://node01:9000</value>
+    //    <value>hdfs://heh-node02:9000</value>
     //  </property>
     // 取core配置的schema获取客户端类型；取环境变量 HADOOP_USER_NAME 当做客户端用户,如果没有取当前系统登录用户
     // fileSystem = FileSystem.get(configuration);
 
-    fileSystem = FileSystem.get(URI.create("hdfs://node01:9000"), configuration, "root");
+    fileSystem = FileSystem.get(URI.create("hdfs://heh-node02:9000"), configuration, "root");
   }
 
   @Test
