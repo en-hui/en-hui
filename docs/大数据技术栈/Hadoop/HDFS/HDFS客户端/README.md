@@ -1,4 +1,8 @@
-# HDFS客户端开发
+# HDFS客户端
+
+## 命令行客户端
+
+## Java客户端
 
 > 基于idea+maven   
 > 使用java语言操作hdfs    

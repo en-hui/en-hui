@@ -1,4 +1,6 @@
 - [封面](/README.md)
+- **大数据技术栈**
+  - [Hadoop](大数据技术栈/Hadoop/)
 - **夯实基础**
     - [计算机及操作系统](夯实基础/计算机及操作系统/)
     - [多线程](夯实基础/多线程/)
@@ -11,9 +13,7 @@
     - [MySQL](常用组件/MySQL/)
     - [Redis](常用组件/Redis/)
     - [ZooKeeper](常用组件/ZooKeeper/)
-    - [Kafka](常用组件/Kafka/)  
-- **大数据技术栈**
-  - [Hadoop](大数据技术栈/Hadoop/)
+    - [Kafka](常用组件/Kafka/)
 - **常用框架**
     - [Spring](常用框架/Spring/README.md)
     - [SpringMVC](常用框架/SpringMVC/)

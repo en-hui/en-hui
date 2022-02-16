@@ -7,6 +7,8 @@
 > GitHub:https://en-hui.github.io/en-hui/#/   
 > csdn:https://blog.csdn.net/weixin_38503726?spm=1010.2135.3001.5421   
 
+- **大数据技术栈**
+  - [Hadoop](大数据技术栈/Hadoop/)
 - **夯实基础**
   - [计算机及操作系统](夯实基础/计算机及操作系统/)
   - [多线程](夯实基础/多线程/)
@@ -20,8 +22,6 @@
   - [Redis](常用组件/Redis/)
   - [ZooKeeper](常用组件/ZooKeeper/)
   - [Kafka](常用组件/Kafka/)
-- **大数据技术栈**
-  - [Hadoop](大数据技术栈/Hadoop/)
 - **常用框架**
   - [Spring](常用框架/Spring/README.md)
   - [SpringMVC](常用框架/SpringMVC/)

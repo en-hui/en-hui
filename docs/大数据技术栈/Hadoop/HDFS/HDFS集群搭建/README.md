@@ -5,7 +5,7 @@
 ```shell
 vi /etc/sysconfig/network
     NETWORKING=yes
-    # 设置本机主机名
+    # 设置本机主机名,不能包含下划线
     HOSTNAME=node01
 ```
 - 修改host文件
@@ -84,7 +84,7 @@ vi hadoop-env.sh
 vi core-site.xml
   <property>
     <name>fs.defaultFS</name>
-    # 给出NameNode在哪里启动，ip、端口   尽量不要用localhost
+    <!-- 给出NameNode在哪里启动，ip、端口,尽量不要用localhost -->
     <value>hdfs://node01:9000</value>
   </property>
 
@@ -92,27 +92,27 @@ vi core-site.xml
 vi hdfs-site.xml  
   <property>
     <name>dfs.replication</name>
-    # 伪分布式，副本数量设置为了1
+    <!-- 伪分布式，副本数量设置为了1 -->
     <value>1</value>
   </property>
   <property>
     <name>dfs.namenode.name.dir</name>
-    # NameNode 数据存放路径
+    <!-- NameNode 数据存放路径 -->
     <value>/var/bigdata/hadoop/local/dfs/name</value>
   </property>
   <property>
     <name>dfs.datanode.data.dir</name>
-    # NameNode 数据存放路径
+    <!-- NameNode 数据存放路径 -->
     <value>/var/bigdata/hadoop/local/dfs/data</value>
   </property>
   <property>
     <name>dfs.namenode.secondary.http-address</name>
-    # SecondaryNode 在哪里启动,不设置也会在本机启动
+    <!-- SecondaryNode 在哪里启动,不设置也会在本机启动 -->
     <value>node01:50090</value>
   </property>
   <property>
     <name>dfs.namenode.checkpoint.dir</name>
-    # SecondaryNode 数据存放路径
+    <!-- SecondaryNode 数据存放路径 -->
     <value>/var/bigdata/hadoop/local/dfs/secondary</value>
   </property>
 vi slaves
@@ -130,6 +130,9 @@ hdfs namenode -format
 cd /opt/bigdata/hadoop-2.10.1/sbin
 # 第一次执行，DataNode和SecondaryNode会初始化自己的数据目录
 ./start-dfs.sh
+
+使用jps查看角色是否完整
+根据配置文件配置的节点，全部角色包括一个NameNode、多个DataNode、一个SecondaryNameNode
 ```
 - 本机配置host，访问node01:50070
 - 简单使用
@@ -138,10 +141,8 @@ cd /opt/bigdata/hadoop-2.10.1/sbin
 # hdfs dfs 会打印帮助命令
 # hdfs 的根目录为 /user 一般使用，创建自己用户的家目录 
 hdfs dfs -mkdir -p /user/root
-
 # 默认不写上传目录，默认上传至当前用户家目录（使用操作系统的用户）
 hdfs dfs -put hadoop-2.10.1.tar.gz
-
 # -D 设置参数，1.8M文件设置1M的block大小，会分为两个block
 hdfs dfs -Ddfs.blocksize=1048576 -put zstd-1.5.1.tar.gz
 ```
@@ -155,11 +156,9 @@ hdfs dfs -Ddfs.blocksize=1048576 -put zstd-1.5.1.tar.gz
 
 ```shell
 # 使用 scp 分发jdk，并配置环境变量
-
 # 设置免密：如果在node01启动，就把node01的公钥给node02、node03、node04
 scp ./id_dsa.put node02:/root/.ssh/node01.pub # 在node01执行远程拷贝
 cat node01.put >> authorized_keys  # node02 执行，将公钥内容追加到authorized_keys文件
-
 # 修改配置文件；修改后使用 scp 分发 /opt/bigdata/hadoop 文件
 scp -r /opt/bigdata/ node02:`pwd`
 # 需要修改的配置文件包括：
@@ -190,7 +189,6 @@ scp -r /opt/bigdata/ node02:`pwd`
           node02
           node03
           node04
-
 # 格式化启动（在NameNode节点操作--node01）
 hdfs namenode -format
 # 启动集群（在NameNode节点操作--ssh会远程启动其他节点角色）
