@@ -3,10 +3,9 @@
 
 - 设置主机名
 ```shell
-vi /etc/sysconfig/network
-    NETWORKING=yes
-    # 设置本机主机名,不能包含下划线
-    HOSTNAME=node01
+vi /etc/hostname
+    # 设置本机主机名,不能包含下划线，重启依然生效（hostname node01直接生效，两个一起改就可以了）
+    node01
 ```
 - 修改host文件
 ```shell
