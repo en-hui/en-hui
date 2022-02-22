@@ -4,7 +4,6 @@
 target
 
 *.html
-*.txt
 *.txt.crc
 
 application-ali.yml

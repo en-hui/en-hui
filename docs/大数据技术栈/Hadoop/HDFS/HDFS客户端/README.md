@@ -34,10 +34,17 @@
 package com.enhui.hdfs;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.BlockLocation;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -50,76 +57,134 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class HdfsTest {
+@Slf4j
+public class JavaClientTest {
 
-  public Configuration configuration = null;
-  public FileSystem fileSystem = null;
+    FileSystem fileSystem = null;
+    Configuration config = null;
 
-  @Before
-  public void conn() throws Exception {
-    // true : 是否加载默认配置文件构造连接（设置false可以上传配置文件自己构造连接其他集群）
-    configuration = new Configuration(true);
-    // 阿里云搭建的hadoop集群，集群搭建配置的是内网ip，
-    // idea中开发需要配置使用主机名连接（否则使用内网ip连接不上DN），且必须本机配置host文件来做ip映射
-    configuration.set("dfs.client.use.datanode.hostname", "true");
-
-    //  <property>
-    //    <name>fs.defaultFS</name>
-    //    <value>hdfs://node01:9000</value>
-    //  </property>
-    // 取core配置的schema获取客户端类型；取环境变量 HADOOP_USER_NAME 当做客户端用户,如果没有取当前系统登录用户
-    // fileSystem = FileSystem.get(configuration);
-
-    fileSystem = FileSystem.get(URI.create("hdfs://node01:9000"), configuration, "root");
-  }
-
-  @Test
-  public void mkdir() throws IOException {
-    Path dir = new Path("test1");
-    if (fileSystem.exists(dir)) {
-      fileSystem.delete(dir, true);
-    }
-    fileSystem.mkdirs(dir);
-  }
-
-  @Test
-  public void upload() throws IOException {
-    BufferedInputStream input =
-        new BufferedInputStream(new FileInputStream(new File("./data/upload/hello.txt")));
-    Path outFile = new Path("/user/root/hello.txt");
-    FSDataOutputStream output = fileSystem.create(outFile);
-
-    IOUtils.copyBytes(input, output, configuration, true);
-  }
-
-  @Test
-  public void blocks() throws IOException {
-    Path file = new Path("/user/root/zstd-1.5.1.tar.gz");
-    FileStatus fileStatus = fileSystem.getFileStatus(file);
-    BlockLocation[] fileBlockLocations =
-        fileSystem.getFileBlockLocations(fileStatus, 0, fileStatus.getLen());
-    for (BlockLocation block : fileBlockLocations) {
-      // 偏移量    块大小     块所在节点
-      //      0,        1048576,   node01
-      //      1048576,  899963,    node01
-      // 可以实现不同计算节点使用不同块，从而达到计算向数据移动，各自计算各自的块，实现并行计算
-      System.out.println(block);
+    @Before
+    public void initClient() throws IOException {
+        config = new Configuration(true);
+        // 客户端与datanode 使用主机名通信
+        config.set("dfs.client.use.datanode.hostname", "true");
+        // 设置块大小
+        config.set("dfs.blocksize","1m");
+        System.setProperty("HADOOP_USER_NAME", "root");
+        // fileSystem = FileSystem.get(URI.create("hdfs://heh-node02:9000"), configuration, "root");
+        fileSystem = FileSystem.get(config);
+        log.info("=======客户端初始化=======");
     }
 
-    FSDataInputStream in = fileSystem.open(file);
-    System.out.println((char) in.readByte());
+    @After
+    public void close() throws IOException {
+        fileSystem.close();
+        log.info("=======客户端关闭=======");
+    }
 
-    // 使用seek 将偏移量调整
-    // 文件1M一块；1048576=1M，即调整到第二个块，
-    // 这时候在读，就是跳过第一块，直接读第二块了
-    in.seek(1048576);
-    System.out.println((char) in.readByte());
-  }
+    /** 创建文件夹 */
+    @Test
+    public void mkdir() throws IOException {
+        String path = "/user/root";
+        if (fileSystem.exists(new Path(path))) {
+            log.info("【{}】文件夹已存在", path);
+        } else {
+            boolean result = fileSystem.mkdirs(new Path(path));
+            log.info("【{}】文件夹创建结果：{}", path, result);
+        }
+    }
 
-  @After
-  public void close() throws IOException {
-    fileSystem.close();
-  }
+    /** 展示指定路径下的文件及文件夹 */
+    @Test
+    public void ls() throws IOException {
+        String path = "/user/root";
+        FileStatus[] files = fileSystem.listStatus(new Path(path));
+        log.info("【{}】路径下包含文件如下：", path);
+        for (FileStatus file : files) {
+            log.info(
+                    "    {} {} {} {} {}",
+                    file.getPermission().toString(),
+                    file.getOwner(),
+                    file.getGroup(),
+                    LocalDateTime.ofEpochSecond(file.getModificationTime() / 1000, 0, ZoneOffset.ofHours(8)),
+                    file.getPath().toUri().getPath());
+        }
+    }
+
+    @Test
+    public void copyWithContent() throws IOException {
+        String remotePath = "/user/root/putWithContent.txt";
+        String req = "hello hadoop 1   hello world";
+        String res = "";
+
+        BufferedInputStream input =
+                new BufferedInputStream(new ByteArrayInputStream(req.getBytes(StandardCharsets.UTF_8)));
+        Path outFile = new Path(remotePath);
+        FSDataOutputStream output = fileSystem.create(outFile, true);
+        IOUtils.copyBytes(input, output, config, true);
+        log.info("io形式将字符串内容 【{}】 上传至文件 {}", req, remotePath);
+
+        FileStatus[] files = fileSystem.listStatus(new Path("/user/root/"));
+        for (FileStatus file : files) {
+            if (remotePath.equals(file.getPath().toUri().getPath())) {
+                FSDataInputStream open = fileSystem.open(new Path(remotePath));
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                IOUtils.copyBytes(open, outputStream, config, true);
+                res = new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
+                log.info("打开文件并读取内容: 【{}】", res);
+            }
+        }
+    }
+
+    /** 文件上传 */
+    @Test
+    public void put() throws IOException {
+        String localPath = "./data/upload/hello.txt";
+        String remotePath = "/user/root/hello.txt";
+
+        fileSystem.copyFromLocalFile(new Path(localPath), new Path(remotePath));
+        log.info("本地文件 【{}】 上传至 【{}】", localPath, remotePath);
+    }
+
+    /** 文件下载 */
+    @Test
+    public void get() throws IOException {
+        String localPath = "./data/download/hello.txt";
+        String remotePath = "/user/root/hello.txt";
+
+        fileSystem.copyToLocalFile(new Path(remotePath), new Path(localPath));
+        log.info("【{}】 下载至 【{}】", remotePath, localPath);
+    }
+
+    /** 对于多个块的操作 */
+    @Test
+    public void putMultipleBlock() throws IOException {
+        String localPath = "./data/upload/big.txt";
+        FileWriter writer = new FileWriter(localPath);
+        // 写入完成后,会分为多个块
+        for (int i = 0; i < 50000; i++) {
+            writer.write("hello world,hello hadoop " + i + "\r\n");
+        }
+
+        String remotePath = "/user/root/big.txt";
+        fileSystem.copyFromLocalFile(new Path(localPath), new Path(remotePath));
+        log.info("本地文件 【{}】 上传至 【{}】", localPath, remotePath);
+
+        FileStatus fileStatus = fileSystem.getFileStatus(new Path(remotePath));
+        BlockLocation[] fileBlockLocations =
+                fileSystem.getFileBlockLocations(fileStatus, 0, fileStatus.getLen());
+        List<Long> offsetList = new ArrayList<>();
+        for (BlockLocation fileBlockLocation : fileBlockLocations) {
+            log.info("偏移量：{}，块大小：{}，节点位置：{}",fileBlockLocation.getOffset(),fileBlockLocation.getLength(),fileBlockLocation.getHosts());
+            offsetList.add(fileBlockLocation.getOffset());
+        }
+        if (offsetList.size() > 1) {
+            FSDataInputStream open = fileSystem.open(new Path(remotePath));
+            // 使用seek 将偏移量调整
+            open.seek(offsetList.get(offsetList.size() - 1));
+            log.info("使用seek调整偏移，直接读取最后一个块的数据，读一行：【{}】",open.readLine());
+        }
+    }
 }
 
 ```
