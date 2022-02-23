@@ -1,4 +1,4 @@
-package com.enhui.kafka.consumer;
+package com.enhui.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
