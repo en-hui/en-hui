@@ -48,3 +48,23 @@ vim yarn-site.xml
 会在主节点启动一个ResourceManager进程
 会在每个datanode启动一个NodeManager进程
 ```
+
+## 环境测试——运行案例程序
+
+```shell 
+# 创建hdfs目录，上传对应的文件
+   
+# 进入案例程序的目录 
+cd /opt/bigdata/hadoop-3.3.1/share/hadoop/mapreduce/
+# 将程序提交给yarn运行 hadoop jar 【jar文件】 【启动程序全限定类名，案例类直接写名称】 【输入路径（如果是路径，下面所有文件都参与运算）】 【输出路径（空文件夹）】
+hadoop jar hadoop-mapreduce-examples-3.3.1.jar wordcount /data/input/big.txt /data/output/bigMR
+```
+
+### 问题1：/bin/java: No such file or directory
+![Alt](./img/mrError127.png)
+> 在 shell 执行 /bin/java --> 无法执行       
+> 创建 /bin/java 的软链接，指向jdk的真实目录    
+> ln -s /opt/bigdata/jdk1.8.0_281/bin/java /bin/java   
+> 
+> 创建后在执行   /bin/java   可以执行了    
+> 重新提交mr任务    

@@ -15,13 +15,14 @@ public class WordCount {
     Configuration conf = new Configuration(true);
 
     // 获取 mr 的客户端
-    Job job = Job.getInstance(conf, "word count task 001");
+    Job job = Job.getInstance(conf, "word count");
     job.setJarByClass(WordCount.class);
 
-    Path inPath = new Path("/user/root/wordCount.txt");
+    Path inPath = new Path("/data/input/wordCount.txt");
     FileInputFormat.addInputPath(job, inPath);
 
-    Path outPath = new Path("/user/root/mrOut/wordCount");
+    // 指定一个空目录
+    Path outPath = new Path("/data/output/wordCountMR");
     if (outPath.getFileSystem(conf).exists(outPath)) {
       outPath.getFileSystem(conf).delete(outPath, true);
     }
