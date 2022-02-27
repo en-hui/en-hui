@@ -1,68 +1,206 @@
 package com.enhui.kafka;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndTimestamp;
+import org.apache.kafka.common.PartitionInfo;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Properties;
-
-/**
- * @Author 胡恩会
- * @Date 2021/7/20 0:19
- **/
+/** @Author 胡恩会 @Date 2021/7/20 0:19 */
 public class ConsumerTest {
+  KafkaConsumer<String, String> consumer = null;
+  String topic = "first";
+  String groupId = "huenhui_test";
+  Properties properties = new Properties();
 
-    @Test
-    public void consumer() {
-        Properties properties = new Properties();
-        // 基本配置
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "39.100.158.215:9092");
-        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+  @BeforeEach
+  public void before() {
+    // 基本配置
+    properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9092");
+    properties.setProperty(
+        ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+    properties.setProperty(
+        ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+  }
 
-        // 消费者的细节
-        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "first_enhui");
-        // kafka is MQ;is storage (存储)   所以要指定从哪里开始消费
-        /**
-         * What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server
-         * (e.g. because that data has been deleted):
-         * <ul>
-         *     <li>earliest: automatically reset the offset to the earliest offset
-         *     <li>latest: automatically reset the offset to the latest offset</li>
-         *     <li>none: throw exception to the consumer if no previous offset is found for the consumer's group</li>
-         *     <li>anything else: throw exception to the consumer.</li>
-         * </ul>
-         **/
-        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-        // 自动提交（异步提交）；自动提交可能会重复消费||丢失消息
-        properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,"true");
-        // 默认5s自动提交
-        // properties.setProperty(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG,"");
-        // POLL 拉取数据，弹性、按需，设置每次拉取多少（根据消费能力设定）
-        // properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,"");
+  /** 普通的正常消费 */
+  @Test
+  public void consumer() {
+    // 消费者的细节
+    properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+    // kafka is MQ;is storage (存储)   所以要指定从哪里开始消费
 
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
+    properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+    // 自动提交（异步提交）；自动提交可能会重复消费||丢失消息
+    properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+    // 默认5s自动提交
+    // properties.setProperty(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG,"");
+    // POLL 拉取数据，弹性、按需，设置每次拉取多少（根据消费能力设定）
+    // properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,"");
 
-        // 订阅 topic
-        consumer.subscribe(Arrays.asList("first"));
+    consumer = new KafkaConsumer<String, String>(properties);
+    // 订阅 topic
+    consumer.subscribe(Arrays.asList(topic));
 
-        while(true) {
-            // 0~N
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(0));
+    while (true) {
+      // 0~N
+      ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(0));
 
-            // 消费部分优化很重要
-            Iterator<ConsumerRecord<String, String>> iterator = records.iterator();
-            while (iterator.hasNext()) {
-                // 一个consumer可以消费多个分区，但是一个分区只能给一个组里的一个consumer消费
-                ConsumerRecord<String, String> record = iterator.next();
-                System.out.println("key:" + record.key() + " val:" + record.value() + " topic:" + record.topic() + " partition:" + record.partition() + " offset:" + record.offset());
-            }
-        }
+      // 消费部分优化很重要
+      Iterator<ConsumerRecord<String, String>> iterator = records.iterator();
+      while (iterator.hasNext()) {
+        // 一个consumer可以消费多个分区，但是一个分区只能给一个组里的一个consumer消费
+        ConsumerRecord<String, String> record = iterator.next();
+        System.out.println(
+            "key:"
+                + record.key()
+                + " val:"
+                + record.value()
+                + " topic:"
+                + record.topic()
+                + " partition:"
+                + record.partition()
+                + " offset:"
+                + record.offset());
+      }
     }
+  }
+
+  /** 指定时间消费指定条数 */
+  @Test
+  public void consumerByTime() {
+    // 【指定开始时间】
+    long fetchDataTime = new Date().getTime() - 1000 * 60 * 30;
+    int count = 100;
+
+    properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+    // 不提交--关闭自动提交，且不手动提交
+    properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+    // 指定消费条数（如果有100条，就拉一百条，不够就算了）
+    properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, String.valueOf(count));
+    consumer = new KafkaConsumer<String, String>(properties);
+
+    // 获取topic的分区信息
+    List<PartitionInfo> partitionInfos = consumer.partitionsFor(topic);
+    List<TopicPartition> topicPartitions = new ArrayList<>();
+
+    HashMap<TopicPartition, Long> timestampsToSearch = new HashMap<>();
+
+    for (PartitionInfo partitionInfo : partitionInfos) {
+      topicPartitions.add(new TopicPartition(partitionInfo.topic(), partitionInfo.partition()));
+      timestampsToSearch.put(
+          new TopicPartition(partitionInfo.topic(), partitionInfo.partition()), fetchDataTime);
+    }
+
+    consumer.assign(topicPartitions);
+
+    // 获取每个分区指定时间的偏移量
+    Map<TopicPartition, OffsetAndTimestamp> map = consumer.offsetsForTimes(timestampsToSearch);
+
+    System.out.println("开始设置各分区初始偏移量....");
+    OffsetAndTimestamp offsetAndTimestamp = null;
+    for (Map.Entry<TopicPartition, OffsetAndTimestamp> entry : map.entrySet()) {
+      offsetAndTimestamp = entry.getValue();
+      if (offsetAndTimestamp != null) {
+        int partition = entry.getKey().partition();
+        long timestamp = offsetAndTimestamp.timestamp();
+        long offset = offsetAndTimestamp.offset();
+
+        // 设置读取消息的偏移量
+        consumer.seek(entry.getKey(), offset);
+      }
+    }
+    System.out.println("设置各分区初始偏移量结束....");
+
+    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
+    for (ConsumerRecord<String, String> record : records) {
+      System.out.println(
+          "partition:"
+              + record.partition()
+              + ",offset:"
+              + record.offset()
+              + ",value:"
+              + record.value());
+    }
+  }
+
+  /** 指定offset消费指定条数 */
+  @Test
+  public void consumerByOffset() {
+    long offset = 10;
+    int count = 100;
+    properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+    // 不提交--关闭自动提交，且不手动提交
+    properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+    // 指定消费条数（如果有100条，就拉一百条，不够就算了）
+    properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, String.valueOf(count));
+    consumer = new KafkaConsumer<String, String>(properties);
+
+    List<PartitionInfo> partitionInfos = consumer.partitionsFor(topic);
+    List<TopicPartition> topicPartitions = new ArrayList<>();
+    for (PartitionInfo partitionInfo : partitionInfos) {
+      topicPartitions.add(new TopicPartition(partitionInfo.topic(), partitionInfo.partition()));
+    }
+    consumer.assign(topicPartitions);
+    for (TopicPartition topicPartition : topicPartitions) {
+
+      consumer.seek(topicPartition, offset);
+    }
+
+    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
+    for (ConsumerRecord<String, String> record : records) {
+      System.out.println(
+          "partition:"
+              + record.partition()
+              + ",offset:"
+              + record.offset()
+              + ",value:"
+              + record.value());
+    }
+  }
+
+  /** 从beginning拉取【100】条 */
+  @Test
+  public void consumerByBeginning() {
+    int count = 100;
+    properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+    // 不提交--关闭自动提交，且不手动提交
+    properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+    // 指定消费条数（如果有100条，就拉一百条，不够就算了）
+    properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, String.valueOf(count));
+    consumer = new KafkaConsumer<String, String>(properties);
+
+    List<PartitionInfo> partitionInfos = consumer.partitionsFor(topic);
+    List<TopicPartition> topicPartitions = new ArrayList<>();
+    for (PartitionInfo partitionInfo : partitionInfos) {
+      topicPartitions.add(new TopicPartition(partitionInfo.topic(), partitionInfo.partition()));
+    }
+    consumer.assign(topicPartitions);
+    consumer.seekToBeginning(topicPartitions);
+
+    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
+    for (ConsumerRecord<String, String> record : records) {
+      System.out.println(
+          "partition:"
+              + record.partition()
+              + ",offset:"
+              + record.offset()
+              + ",value:"
+              + record.value());
+    }
+  }
 }
