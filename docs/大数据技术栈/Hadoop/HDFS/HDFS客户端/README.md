@@ -1,6 +1,23 @@
 # HDFS客户端
 
 ## 命令行客户端
+在任意一台hdfs的安装节点上直接运行     
+常用命令示例：
+1. 查看目录信息：hdfs dfs -ls /
+2. 创建文件夹：hdfs dfs -mkdir /user
+3. 创建多级文件夹：hdfs dfs -mkdir -p /user/root/test
+4. 上传文件：hdfs dfs -put test.sh /user/root/test/
+5. 上传文件并设置块大小（1M）：hdfs dfs -Ddfs.blocksize=1048576 -put test.sh
+6. 剪切文件：hdfs dfs -moveFromLocal a.txt /aa.txt
+7. 下载文件到本地：hdfs dfs -get /hdfs路径 /本地路径
+8. 移动hdfs文件：hdfs dfs -mv /hdfs路径 /hdfs路径
+9. 复制hdfs文件：hdfs dfs -cp /hdfs路径 /hdfs路径
+10. 删除hdfs文件：hdfs dfs -rm /aa.txt
+11. 删除hdfs文件夹：hdfs dfs -rm -r /hello
+12. 查看hdfs中的文件：hdfs dfs -cat /文件、hdfs dfs -tail -f /文件
+13. 查看文件夹中有多少个文件：hdfs dfs -count /文件夹
+14. 查看hdfs的总空间：hdfs dfs -df -h /
+15. 修改副本数：hdfs dfs -setrep 1 /a.txt
 
 ## Java客户端
 
