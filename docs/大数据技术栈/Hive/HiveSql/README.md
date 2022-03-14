@@ -109,3 +109,25 @@ load data inpath '/user/root/data/data.txt' into table person;
 load data local inpath '/root/data/partition001' into table double_partition partition(dt='1',hour='18');
 ```
 
+## Hive函数
+> https://cwiki.apache.org/confluence/display/Hive/LanguageManual+UDF
+
+> UDF（用户自定义函数）：输入一个值，输出也是一个值    
+> UDAF(聚合函数)：多个输入，一个输出   
+> UDTF：一个输入，多个输出    
+> 
+> 自定义函数：    
+> https://cwiki.apache.org/confluence/display/Hive/HivePlugins    
+> 1.定义一个类，实现UDF,并重写方法     
+> 2.将工程打成jar包，上传到hive所在服务器     
+> 3.将jar包添加到hive的classpath（hive命令行）：add jar my_jar.jar;       
+> 4.创建一个hive函数（hive命令行）：create function heh_tm as 'com.enhui.MyFunction';     
+> 5.使用函数：select heh_tm(name) from person;     
+> 
+> 上述方法是临时函数，关闭hive，重新连接就不生效了     
+> 
+> 1.创建一个hdfs目录存放jar：hdfs dfs -mkdir /jar     
+> 2.将jar上传到hdfs中:hdfs dfs -put my_jar.jar /jar     
+> 3.创建一个hive函数（hive命令行）：create function heh_tm2 as 'com.enhui.MyFunction' using jar 'hdfs://heh-node02/jar/my_jar.jar';     
+> 4.使用函数：select heh_tm2(name) from person;      
+> 关闭hive，重新连接，失效了会自动去hdfs重新加载   
