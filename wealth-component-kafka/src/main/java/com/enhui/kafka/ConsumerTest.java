@@ -212,7 +212,7 @@ public class ConsumerTest {
   /** 从结尾倒数消费指定条数，特定的消费者组，无需提交 */
   @Test
   public void consumeByEndNoCommit() {
-    int count = 100;
+    int count = 10;
     properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
     // 不提交--关闭自动提交，且不手动提交
     properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
@@ -221,8 +221,7 @@ public class ConsumerTest {
     consumer = new KafkaConsumer<String, String>(properties);
 
     try (KafkaConsumer<Object, Object> consumer = new KafkaConsumer<>(properties)) {
-      List<PartitionInfo> partitionInfos = consumer.partitionsFor(topic);
-      partitionInfos.stream().map(PartitionInfo::partition).forEach(System.out::println);
+      List<PartitionInfo> partitionInfos = consumer.partitionsFor("huenhui");
       // 每个分区分别消费
       List<ConsumerRecords<Object, Object>> multRecords = new ArrayList<>();
       for (PartitionInfo partitionInfo : partitionInfos) {
@@ -231,6 +230,7 @@ public class ConsumerTest {
         consumer.assign(Collections.singleton(topicPartition));
         consumer.seekToEnd(Collections.singleton(topicPartition));
         long position = consumer.position(topicPartition);
+        System.out.println("分区：【" + topicPartition.partition() + "】的最大偏移：" + position);
         // position是下一次消息的偏移，而非最后一条的偏移，所以-1，减去数量需要+1才是第一个位置的offset，+-抵消
         long currentMaxOffset = position - count > 0 ? position - count : 0;
         consumer.seek(topicPartition, currentMaxOffset);
@@ -272,7 +272,7 @@ public class ConsumerTest {
                         .collect(Collectors.toList());
         int size = allPartitionsRecords.size();
         if (size > finalCount) {
-          allPartitionsRecords = allPartitionsRecords.subList(size - consumerCount, size - 1);
+          allPartitionsRecords = allPartitionsRecords.subList(size - consumerCount, size);
         }
       }
       List<String> messages = new ArrayList<>(finalCount);
