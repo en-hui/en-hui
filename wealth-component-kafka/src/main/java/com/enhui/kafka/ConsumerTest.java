@@ -1,6 +1,9 @@
 package com.enhui.kafka;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -275,13 +278,22 @@ public class ConsumerTest {
           allPartitionsRecords = allPartitionsRecords.subList(size - consumerCount, size);
         }
       }
-      List<String> messages = new ArrayList<>(finalCount);
     for (ConsumerRecord<Object, Object> record : allPartitionsRecords) {
-      long offset = record.offset();
       StringBuilder sb = new StringBuilder(100);
-      sb.append("offset: ").append(offset).append("\n");
-      sb.append("partition: ").append(record.partition()).append("\n");
-      sb.append("timestamp: ").append(record.timestamp()).append("\n");
+      long timestamp = record.timestamp();
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+      LocalDateTime localDateTime =
+              LocalDateTime.ofEpochSecond(timestamp / 1000, 0, ZoneOffset.ofHours(8));
+      String dateTime = localDateTime.format(formatter);
+      sb.append("partition: ")
+              .append(record.partition())
+              .append("  ")
+              .append("offset: ")
+              .append(record.offset())
+              .append("  ")
+              .append("timestamp: ")
+              .append(dateTime)
+              .append("\n");
       if (record.key() != null) {
         sb.append("key: ").append(record.key().toString()).append("\n");
       } else {
