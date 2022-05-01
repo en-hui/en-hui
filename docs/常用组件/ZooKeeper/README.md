@@ -15,6 +15,9 @@
 > 不可用状态：指主挂掉   
 > 可用状态：指从剩余机器中，重新选出一个主
 
+[在线画图工具ProcessOn新人注册](https://www.processon.com/i/5e0d9502e4b02086237ce4f8)       
+[ZK](https://www.processon.com/view/link/626e972be401fd1b24654e57)      
+![Alt](http://processon.com/chart_image/6186910d637689771d6b8a19.png?_=1651414838701)
 
 - [zk安装及cli使用](常用组件/ZooKeeper/zk安装及cli使用/)   
 - [paxos和zab](常用组件/ZooKeeper/paxos和zab/)
