@@ -1,6 +1,7 @@
 package com.enhui.zookeeper.config;
 
 import com.alibaba.fastjson.JSONObject;
+import com.enhui.zookeeper.ZkUtil;
 import java.util.concurrent.CountDownLatch;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -16,23 +17,36 @@ import org.apache.zookeeper.data.Stat;
 /** 节点watch、状态回调、数据回调 */
 @Slf4j
 @Data
-public class WatchAndCallback
-    implements Watcher, AsyncCallback.StatCallback, AsyncCallback.DataCallback {
+public class ZkConf implements Watcher, AsyncCallback.StatCallback, AsyncCallback.DataCallback {
 
   private ZooKeeper zk;
-  private AppConf appConf;
-  private String confPath = "/appConf";
+  private Object conf;
+  private String parentPath;
+  private String confPath;
+  private ConfType confType;
   private CountDownLatch existLatch = new CountDownLatch(1);
 
-  public WatchAndCallback(ZooKeeper zk) {
-    this.zk = zk;
+  public ZkConf(ConfType confType) {
+    this.zk = ZkUtil.getZkClient();
+    this.confType = confType;
+    this.parentPath = "/conf";
+    this.confPath = parentPath + "/" + confType.getConfName();
+
+    try {
+      initConf();
+      log.info("程序启动，模拟初始化配置,真实使用直接删掉");
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } catch (KeeperException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
   public void processResult(int rc, String path, Object ctx, byte[] data, Stat stat) {
     String dataStr = new String(data);
     log.info("获取数据的回调方法::获取到数据：{}", dataStr);
-    appConf = JSONObject.parseObject(dataStr, AppConf.class);
+    conf = JSONObject.parseObject(dataStr, confType.getConfClass());
     existLatch.countDown();
   }
 
@@ -58,7 +72,7 @@ public class WatchAndCallback
         break;
       case NodeDeleted:
         log.info("节点被删除::不同方案：将配置设置为空？使用原有配置？");
-        appConf = null;
+        conf = null;
         existLatch = new CountDownLatch(1);
         break;
       case NodeDataChanged:
@@ -86,8 +100,7 @@ public class WatchAndCallback
   }
 
   public void initConf() throws InterruptedException, KeeperException {
-    AppConf conf = new AppConf();
-    conf.setOpenAuth(true);
+    RegistryConf conf = new RegistryConf();
     conf.setServiceA("localhost:8081");
     conf.setServiceB("localhost:8082");
     Stat exists = zk.exists(confPath, false);

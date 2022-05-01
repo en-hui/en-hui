@@ -10,10 +10,8 @@ import lombok.Data;
  * @author huenhui
  */
 @Data
-public class AppConf {
+public class RegistryConf {
 
-  /** 是否开启认证 */
-  private boolean openAuth;
   /** a服务的地址 */
   private String serviceA;
   /** b服务的地址 */
