@@ -102,7 +102,7 @@ pZxid = 0x400000002
 cversion = 0
 dataVersion = 1
 aclVersion = 0
-ephemeralOwner = 0x0   // session id（临时节点时显示）
+ephemeralOwner = 0x0   // 临时节点的所属者-session id（临时节点时显示）
 dataLength = 5
 numChildren = 0
 】

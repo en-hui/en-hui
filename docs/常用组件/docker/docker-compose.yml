@@ -1,0 +1,58 @@
+version: '3'
+services:
+  heh-mysql:
+    image: mysql:5.7
+    container_name: heh-mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - /data/docker/mysql/data:/var/lib/mysql
+      - /data/docker/mysql/backup:/mysql-backup
+      # 初始化数据库脚本
+      # - ${INIT_DIR}/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+  heh-redis:
+    image: redis
+    container_name: heh-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - /data/docker/redis/data:/data
+    environment:
+      - REDIS_PASSWORD=123456
+  heh-zk:
+    image: zookeeper
+    container_name: heh-zk
+    ports:
+      - "2181:2181"
+    volumes:
+      - /data/docker/zk/data:/var/lib/zookeeper/data
+      - /data/docker/zk/log:/var/lib/zookeeper/log
+    entrypoint:
+      - ZOOKEEPER_CLIENT_PORT=2181
+  heh-kafka:
+    image: kafka
+    container_name: heh-kafka
+    ports:
+      - "9092:9092"
+    volumes:
+      - /data/docker/kafka/data:/var/lib/kafka/data
+      - /data/docker/kafka/log:/log
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=heh-zk:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://heh-kafka:9092
+      - KAFKA_LOG_RETENTION_BYTES=53687091200
+      - KAFKA_LOG_RETENTION_HOURS=120
+      - KAFKA_MESSAGE_MAX_BYTES=33554432
+      - KAFKA_SOCKET_REQUEST_MAX_BYTES=33554432
+      - KAFKA_LOG4J_ROOT_LOGLEVEL=INFO
+      - KAFKA_LOG4J_LOGGERS=kafka.controller=INFO,state.change.logger=INFO,kafka.producer.async.DefaultEventHandler=INFO
+      - KAFKA_HEAP_OPTS=-Xmx500M -Xms500M -XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80
+      - KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS=6000
+      - KAFKA_OFFSETS_RETENTION_MINUTES=43200
+      - KAFKA_DELETE_TOPIC_ENABLE=true
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_MIN_INSYNC_REPLICAS=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
