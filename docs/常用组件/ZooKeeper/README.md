@@ -18,5 +18,6 @@
 
 - [zk安装及cli使用](常用组件/ZooKeeper/zk安装及cli使用/)   
 - [paxos和zab](常用组件/ZooKeeper/paxos和zab/)
-- [zk使用案例](常用组件/ZooKeeper/zk使用案例/)
-
+- ZooKeeper 使用场景
+  - 配置中心
+  - 分布式锁
