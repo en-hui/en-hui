@@ -2,11 +2,8 @@ package com.enhui.zookeeper.config;
 
 import com.alibaba.fastjson.JSONObject;
 import java.util.concurrent.CountDownLatch;
-
 import lombok.Data;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.zookeeper.AsyncCallback;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
