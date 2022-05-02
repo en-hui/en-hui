@@ -1,7 +1,7 @@
 version: '3'
 services:
   heh-mysql:
-    image: mysql:5.7
+    image: mysql:8.0
     container_name: heh-mysql
     ports:
       - "3306:3306"
@@ -13,7 +13,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=123456
   heh-redis:
-    image: redis
+    image: redis:7.0.0
     container_name: heh-redis
     ports:
       - "6379:6379"
@@ -22,17 +22,18 @@ services:
     environment:
       - REDIS_PASSWORD=123456
   heh-zk:
-    image: zookeeper
+    image: bitnami/zookeeper:3.8.0
     container_name: heh-zk
     ports:
       - "2181:2181"
     volumes:
       - /data/docker/zk/data:/var/lib/zookeeper/data
       - /data/docker/zk/log:/var/lib/zookeeper/log
-    entrypoint:
-      - ZOOKEEPER_CLIENT_PORT=2181
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - ZOO_HEAP_SIZE=512
   heh-kafka:
-    image: kafka
+    image: bitnami/kafka:3.1.0
     container_name: heh-kafka
     ports:
       - "9092:9092"
@@ -40,19 +41,8 @@ services:
       - /data/docker/kafka/data:/var/lib/kafka/data
       - /data/docker/kafka/log:/log
     environment:
-      - KAFKA_ZOOKEEPER_CONNECT=heh-zk:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://heh-kafka:9092
-      - KAFKA_LOG_RETENTION_BYTES=53687091200
-      - KAFKA_LOG_RETENTION_HOURS=120
-      - KAFKA_MESSAGE_MAX_BYTES=33554432
-      - KAFKA_SOCKET_REQUEST_MAX_BYTES=33554432
-      - KAFKA_LOG4J_ROOT_LOGLEVEL=INFO
-      - KAFKA_LOG4J_LOGGERS=kafka.controller=INFO,state.change.logger=INFO,kafka.producer.async.DefaultEventHandler=INFO
-      - KAFKA_HEAP_OPTS=-Xmx500M -Xms500M -XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80
-      - KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS=6000
-      - KAFKA_OFFSETS_RETENTION_MINUTES=43200
-      - KAFKA_DELETE_TOPIC_ENABLE=true
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
-      - KAFKA_MIN_INSYNC_REPLICAS=1
-      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
-      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://heh-kafka:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=heh-zk:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_HEAP_OPTS=-Xmx1024m -Xms1024m
