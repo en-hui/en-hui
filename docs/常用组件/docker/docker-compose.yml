@@ -27,9 +27,11 @@ services:
     ports:
       - "2181:2181"
     volumes:
-      - /data/docker/zk/data:/var/lib/zookeeper/data
-      - /data/docker/zk/log:/var/lib/zookeeper/log
+      # 配置宿主机的目录权限 chmod 777 -R /data/docker/zk
+      - /data/docker/zk:/bitnami/zookeeper
+      # 配置文件 /opt/bitnami/zookeeper/conf
     environment:
+      - ZOO_SERVER_ID=1
       - ALLOW_ANONYMOUS_LOGIN=yes
       - ZOO_HEAP_SIZE=512
   heh-kafka:
@@ -38,8 +40,9 @@ services:
     ports:
       - "9092:9092"
     volumes:
-      - /data/docker/kafka/data:/var/lib/kafka/data
-      - /data/docker/kafka/log:/log
+      # 配置宿主机的目录权限 chmod 777 -R /data/docker/zk
+      - /data/docker/kafka:/bitnami/kafka
+      # 配置文件 /opt/bitnami/kafka/config
     environment:
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://heh-kafka:9092
