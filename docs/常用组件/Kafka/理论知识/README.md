@@ -8,9 +8,10 @@
 > 在数据目录，对于topic：heh01 需要关注三个文件{heh01-0  heh01-1  heh01-2}   
 > 以一个目录下的文件列表举例子(heh01-0)：
 > 
-> 00000000000000000000.log ：日志文件，存储了部分元数据信息    
-> baseOffset: 3004 lastOffset: 3004 count: 1 baseSequence: -1 lastSequence: -1 producerId: -1 producerEpoch: -1 partitionLeaderEpoch: 0 isTransactional: false isControl: false position: 245176 CreateTime: 1651934082083 size: 82 magic: 2 compresscodec: NONE crc: 604145200 isllid: true   
-> baseOffset: 3005 lastOffset: 3005 count: 1 baseSequence: -1 lastSequence: -1 producerId: -1 producerEpoch: -1 partitionLeaderEpoch: 0 isTransactional: false isControl: false position: 245258 CreateTime: 1651934082100 size: 82 magic: 2 compresscodec: NONE crc: 4100308093 isvalid: true    
+> 00000000000000000000.log ：数据文件，存储了数据     
+> 查看文件时，需要加上参数才能把真实数据打印出来：（kafka-dump-log --files 00000000000000000000.log --print-data-log）     
+> baseOffset: 3004 lastOffset: 3004 count: 1 baseSequence: -1 lastSequence: -1 producerId: -1 producerEpoch: -1 partitionLeaderEpoch: 0 isTransactional: false isControl: false position: 245176 CreateTime: 1651934082083 size: 82 magic: 2 compresscodec: NONE crc: 604145200 isvalid: true | offset: 3004 CreateTime: 1651934082083 keysize: 9 valuesize: 5 sequence: -1 headerKeys: [] key: item-2996 payload: val-2      
+> baseOffset: 3005 lastOffset: 3005 count: 1 baseSequence: -1 lastSequence: -1 producerId: -1 producerEpoch: -1 partitionLeaderEpoch: 0 isTransactional: false isControl: false position: 245258 CreateTime: 1651934082100 size: 82 magic: 2 compresscodec: NONE crc: 4100308093 isvalid: true | offset: 3005 CreateTime: 1651934082100 keysize: 9 valuesize: 5 sequence: -1 headerKeys: [] key: item-2999 payload: val-2          
 > 
 > 00000000000000000000.index ：索引文件，存储了offset和对应的position  
 > offset: 2924 position: 238616   
