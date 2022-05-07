@@ -30,6 +30,8 @@ public class ProducerTest {
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9092");
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        // 默认是1，只要leader持久化成功就返回ack确认
+        properties.setProperty(ProducerConfig.ACKS_CONFIG,"1");
         producer = new KafkaProducer<>(properties);
     }
 

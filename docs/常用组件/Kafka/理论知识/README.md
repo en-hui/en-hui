@@ -2,6 +2,26 @@
 
 ## 理论基础
 
+### kafka存储数据的文件介绍
+> topic是逻辑的，partition是物理的。    
+> 假设 topic：heh01   三个分区    三个副本     
+> 在数据目录，对于topic：heh01 需要关注三个文件{heh01-0  heh01-1  heh01-2}   
+> 以一个目录下的文件列表举例子(heh01-0)：
+> 
+> 00000000000000000000.log ：日志文件，存储了部分元数据信息    
+> baseOffset: 3004 lastOffset: 3004 count: 1 baseSequence: -1 lastSequence: -1 producerId: -1 producerEpoch: -1 partitionLeaderEpoch: 0 isTransactional: false isControl: false position: 245176 CreateTime: 1651934082083 size: 82 magic: 2 compresscodec: NONE crc: 604145200 isllid: true   
+> baseOffset: 3005 lastOffset: 3005 count: 1 baseSequence: -1 lastSequence: -1 producerId: -1 producerEpoch: -1 partitionLeaderEpoch: 0 isTransactional: false isControl: false position: 245258 CreateTime: 1651934082100 size: 82 magic: 2 compresscodec: NONE crc: 4100308093 isvalid: true    
+> 
+> 00000000000000000000.index ：索引文件，存储了offset和对应的position  
+> offset: 2924 position: 238616   
+> offset: 2974 position: 242716
+> 
+> 00000000000000000000.timeindex ：时间戳索引文件，存储了时间戳和对应的offset   
+> timestamp: 1651934080154 offset: 2924   
+> timestamp: 1651934081535 offset: 2974   
+> 
+> 文件查看：使用 kafka-dump-log --files 00000000000000000000.index
+
 ### acks 配置
 > 配置的含义：数据可靠性的级别（性能 VS 数据可靠性   trade off）   
 > 默认值是 **1** , leader 分区持久化成功，返回给生产者后，生产者认为操作成功   
