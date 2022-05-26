@@ -1,4 +1,5 @@
-![logo](https://docsify.js.org/_media/icon.svg)
+[comment]: <> (![logo]&#40;https://docsify.js.org/_media/icon.svg&#41;)
+![logo](img/docsify_icon.svg)
 
 # 胡恩会的知識寶庫
 
