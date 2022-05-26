@@ -12,8 +12,6 @@ node2:39.105.176.190（从）
 ```
 
 ## 2、安装mysql数据库
-[切换yum源参考](大数据技术栈/Hive/msb-notes/linux切换yum源.md)   
-[安装参考](大数据技术栈/Hive/msb-notes/linux安装mysql步骤.md)
 
 ## 3、在两台数据库中分别创建数据库
 ```sql
