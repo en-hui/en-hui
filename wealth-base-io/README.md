@@ -1,9 +1,20 @@
-package com.enhui.io;
+# io
 
-import org.junit.jupiter.api.Test;
+## 文件io
 
-/**
- * 多路复用器 ,os中 select、poll、epoll 都是多路复用器。select、poll是一个阶段、epoll更高级<br>
+1--> 直接写(每次写触发系统调用将数据写到page cache)    
+2-->  buffer写(buffer满了触发系统调用写到page cache)     
+3-->  mmap（用户态和内核态共享的一块内存空间，不用系统调用数据直接进到page cache）   
+
+## 网络io
+
+1--> BIO(accept和read都是阻塞的)   
+2--> NIO(accept和read都不是阻塞的)   
+3--> 多路复用器(select、poll、epoll)，提供一个方法，将所有的网络连接作为参数，返回有状态的fd   
+
+对于多路复用器的介绍
+```java
+ /** 多路复用器 ,os中 select、poll、epoll 都是多路复用器。select、poll是一个阶段、epoll更高级<br>
  * select、poll：每次在系统调用时，将所有的fd作为参数传递，内核中遍历所有的fd，查询状态，返回有状态的fd<br>
  * select有个限制，fd参数最大1024，超过1024就要调用多次select，poll没有这个限制<br>
  * 问题：<br>
@@ -11,7 +22,7 @@ import org.junit.jupiter.api.Test;
  * 2.每次调用，内核中都要遍历所有的fd来查询状态
  * epoll：再内核开辟一块空间，只需要把fd传递一次，存在这块内存空间，内核对中断进行扩展，将有状态的fd提前放到一个链表中，程序调用时，直接返回链表<br>
  *
- * <p>网络连接socket再os中，就是fd文件描述符<br>
+ * <p>网络连接socket在os中，就是fd文件描述符<br>
  * 多路复用器：操作系统提供的系统调用，返回有状态的fd（可读写的）<br>
  * 场景：服务端接收到10k个网络连接，要读写网络连接中的数据<br>
  * 未用多路复用器时：程序调用10k次read（用户空间遍历），无数据就返回null（read是系统调用，对于无数据的调用，很多余） <br>
@@ -28,11 +39,4 @@ import org.junit.jupiter.api.Test;
  * epoll_ctl：将fd新增、修改、删除等操作，到内核中的这块内存空间<br>
  * epoll_wait：调用后，直接返回有状态的fd<br>
  */
-public class SocketNIOMultiplexing {
-
-  @Test
-  public void testPoll() {}
-
-  @Test
-  public void testEPoll() {}
-}
+```
