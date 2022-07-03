@@ -7,6 +7,9 @@
 > GitHub:https://en-hui.github.io/en-hui/#/   
 > csdn:https://blog.csdn.net/weixin_38503726?spm=1010.2135.3001.5421   
 
+- **日常记录**
+  - [日常问题](日常记录/日常问题/)
+  - [生产问题](日常记录/生产问题/)
 - **大数据技术栈**
   - [Hadoop](大数据技术栈/Hadoop/)
   - [Hive](大数据技术栈/Hive/)

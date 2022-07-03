@@ -13,6 +13,7 @@
         <module>wealth-bigdata-hdfs</module>
         <module>wealth-bigdata-hive</module>
         <module>wealth-bigdata-mr</module>
+        <module>wealth-bigdata-orc</module>
     </modules>
 
     <properties>
