@@ -32,6 +32,80 @@
 > 内部表：先创建表，在添加数据    
 > 外部表：可以先创建表再添加数据；也可以先添加数据再创建表   
 
+- 不同格式建表样例
+``` csv
+CREATE EXTERNAL TABLE `heh`.`csvtable`(
+  `id` INT, 
+  `col1` STRING, 
+  `col2` STRING)
+PARTITIONED BY ( 
+  `dt` STRING)
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.serde2.OpenCSVSerde' 
+WITH SERDEPROPERTIES ( 
+  'quoteChar'='\"', 
+  'escapeChar'='\\', 
+  'separatorChar'=',') 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  '/user/heh/csvtable'
+```
+``` orc 
+CREATE EXTERNAL TABLE `heh`.`orctable`(
+  `id` INT, 
+  `col1` STRING, 
+  `col2` STRING)
+PARTITIONED BY ( 
+  `dt` STRING)
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.ql.io.orc.OrcSerde' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.orc.OrcInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat'
+LOCATION
+  '/user/heh/orctable'
+```
+``` parquet
+CREATE EXTERNAL TABLE `heh`.`parquettable`(
+  `id` INT, 
+  `col1` STRING, 
+  `col2` STRING)
+PARTITIONED BY ( 
+  `dt` STRING)
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe' 
+WITH SERDEPROPERTIES ( 
+  'parquet.compression'='SNAPPY') 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION
+  '/user/heh/parquettable'
+```
+``` avro
+CREATE EXTERNAL TABLE `heh`.`avrotable`(
+  `id` INT, 
+  `col1` STRING, 
+  `col2` STRING)
+PARTITIONED BY ( 
+  `dt` STRING)
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.serde2.avro.AvroSerDe' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
+LOCATION
+  '/user/heh/avrotable'
+TBLPROPERTIES (
+  'avro.schema.literal'='{"type":"record","name":"parquetRecord","fields":[{"name":"id","type":["int","null"]},{"name":"col1","type":["string","null"]},{"name":"col2","type":["string","null"]}]}')
+```
+
 - 内部表
 
 ```hiveql
