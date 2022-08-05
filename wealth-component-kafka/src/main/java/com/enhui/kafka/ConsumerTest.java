@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -25,9 +27,12 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.clients.consumer.OffsetAndTimestamp;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static com.enhui.kafka.AdminTest.KAFKA_PLAIN_JAAS_CONF;
 
 /** @Author 胡恩会 @Date 2021/7/20 0:19 */
 public class ConsumerTest {
@@ -44,6 +49,12 @@ public class ConsumerTest {
         ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
     properties.setProperty(
         ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+    if (true) {
+      properties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
+      properties.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
+      properties.put(
+              SaslConfigs.SASL_JAAS_CONFIG, String.format(KAFKA_PLAIN_JAAS_CONF, "heh", "heh"));
+    }
   }
 
   /**
@@ -59,7 +70,7 @@ public class ConsumerTest {
     // 自动提交（异步提交）；自动提交可能会重复消费||丢失消息
     properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
     // 默认5s自动提交
-    properties.setProperty(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "10s");
+    properties.setProperty(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "10");
     // POLL 拉取数据，弹性、按需，设置每次拉取多少（根据消费能力设定）
     properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "100");
 

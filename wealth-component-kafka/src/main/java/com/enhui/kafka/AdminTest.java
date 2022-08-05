@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
+
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.Config;
@@ -31,12 +33,17 @@ import org.apache.kafka.common.Node;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.TopicPartitionInfo;
 import org.apache.kafka.common.config.ConfigResource;
+import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.requests.DescribeLogDirsResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class AdminTest {
+
+  public static final String KAFKA_PLAIN_JAAS_CONF =
+          "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\""
+                  + " password=\"%s\";";
   AdminClient client = null;
   long start = 0L;
 
@@ -45,6 +52,13 @@ public class AdminTest {
     start = System.currentTimeMillis();
     Properties props = new Properties();
     props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9092");
+    if (true) {
+      props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
+      props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
+      props.put(
+              SaslConfigs.SASL_JAAS_CONFIG, String.format(KAFKA_PLAIN_JAAS_CONF, "admin", "admin"));
+    }
+
     client = AdminClient.create(props);
   }
 
@@ -115,8 +129,13 @@ public class AdminTest {
     ListTopicsResult result =
         client.listTopics(new ListTopicsOptions().timeoutMs(10 * 60 * 1000));
     Set<String> names = result.names().get();
-
-    System.out.println(names);
+    DescribeTopicsResult desc = client.describeTopics(names);
+    Map<String, TopicDescription> map = desc.all().get();
+    for (String name : names) {
+      TopicDescription topicDescription = map.get(name);
+      int partitionCount = topicDescription.partitions().size();
+      System.out.println("分区个数：" + partitionCount + "；topic名称：" + name);
+    }
     System.out.println("查询到的 topic 总数：" + names.size());
   }
 

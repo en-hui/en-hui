@@ -1,9 +1,11 @@
 package com.enhui.kafka;
 
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import static com.enhui.kafka.AdminTest.KAFKA_PLAIN_JAAS_CONF;
 
 /**
  * 生产者
@@ -30,6 +34,12 @@ public class ProducerTest {
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9092");
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        if (true) {
+            properties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
+            properties.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
+            properties.put(
+                    SaslConfigs.SASL_JAAS_CONFIG, String.format(KAFKA_PLAIN_JAAS_CONF, "heh", "heh"));
+        }
         // 默认是1，只要leader持久化成功就返回ack确认
         properties.setProperty(ProducerConfig.ACKS_CONFIG,"1");
         producer = new KafkaProducer<>(properties);
