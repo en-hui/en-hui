@@ -57,10 +57,14 @@ public class AdminTest {
 
     props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9092");
     if (true) {
+      // # 查看全部权限
+      //kafka-acls --authorizer-properties zookeeper.connect=zk1:2181 --list
+      // # 添加权限
+      //kafka-acls  --authorizer kafka.security.auth.SimpleAclAuthorizer --authorizer-properties zookeeper.connect=zk1:2181 --add --allow-principal User:test  --producer --topic=*
+      //kafka-acls  --authorizer kafka.security.auth.SimpleAclAuthorizer --authorizer-properties zookeeper.connect=zk1:2181 --add  --allow-principal User:test --consumer --topic=* --group=*
       props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
       props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
-      props.put(
-          SaslConfigs.SASL_JAAS_CONFIG, String.format(KAFKA_PLAIN_JAAS_CONF, "admin", "admin"));
+      props.put(SaslConfigs.SASL_JAAS_CONFIG, String.format(KAFKA_PLAIN_JAAS_CONF, "test", "test"));
     }
 
     client = AdminClient.create(props);
@@ -77,6 +81,13 @@ public class AdminTest {
     NewTopic newTopic = new NewTopic("first", 3, (short) 1);
     client.createTopics(Arrays.asList(newTopic)).all().get();
     System.out.println(client.listTopics().names().get());
+  }
+
+  @Test
+  public void deleteATopic() throws ExecutionException, InterruptedException {
+    String delTopics = "first";
+    DeleteTopicsResult result = client.deleteTopics(Collections.singletonList(delTopics));
+    result.all().get();
   }
 
   @Test
