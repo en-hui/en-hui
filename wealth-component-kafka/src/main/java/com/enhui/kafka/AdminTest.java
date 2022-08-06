@@ -297,6 +297,10 @@ public class AdminTest {
         System.out.println(
             "lag："
                 + (end - offset)
+                + "；end："
+                + end
+                + "；offset："
+                + offset
                 + "；topic："
                 + entry.getKey().topic()
                 + "；partition："
