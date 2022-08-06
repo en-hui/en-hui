@@ -13,11 +13,12 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.Config;
+import org.apache.kafka.clients.admin.ConsumerGroupDescription;
+import org.apache.kafka.clients.admin.ConsumerGroupListing;
 import org.apache.kafka.clients.admin.CreateTopicsOptions;
 import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.DeleteTopicsResult;
@@ -29,34 +30,37 @@ import org.apache.kafka.clients.admin.LogDirDescription;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.admin.ReplicaInfo;
 import org.apache.kafka.clients.admin.TopicDescription;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.Node;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.TopicPartitionInfo;
 import org.apache.kafka.common.config.ConfigResource;
 import org.apache.kafka.common.config.SaslConfigs;
-import org.apache.kafka.common.requests.DescribeLogDirsResponse;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class AdminTest {
-
+  Properties props = new Properties();
   public static final String KAFKA_PLAIN_JAAS_CONF =
-          "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\""
-                  + " password=\"%s\";";
+      "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\""
+          + " password=\"%s\";";
   AdminClient client = null;
   long start = 0L;
 
   @BeforeEach
   public void before() {
     start = System.currentTimeMillis();
-    Properties props = new Properties();
+
     props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9092");
     if (true) {
       props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
       props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
       props.put(
-              SaslConfigs.SASL_JAAS_CONFIG, String.format(KAFKA_PLAIN_JAAS_CONF, "admin", "admin"));
+          SaslConfigs.SASL_JAAS_CONFIG, String.format(KAFKA_PLAIN_JAAS_CONF, "admin", "admin"));
     }
 
     client = AdminClient.create(props);
@@ -83,7 +87,7 @@ public class AdminTest {
     int count = 5000;
     List<CreateTopicsResult> resultList = new ArrayList<>();
     for (int i = 0; i < loop; i++) {
-      try{
+      try {
         ArrayList<NewTopic> topics = new ArrayList<>();
         int start = num;
         for (int j = 0; j < count; j++) {
@@ -92,15 +96,15 @@ public class AdminTest {
           num++;
         }
         System.out.println(
-                "要创建的 topic 个数：" + topics.size() + "   ==>   [" + start + "~" + (num - 1) + "]");
-        CreateTopicsResult result = client.createTopics(topics, new CreateTopicsOptions().timeoutMs(10 * 60 * 1000));
+            "要创建的 topic 个数：" + topics.size() + "   ==>   [" + start + "~" + (num - 1) + "]");
+        CreateTopicsResult result =
+            client.createTopics(topics, new CreateTopicsOptions().timeoutMs(10 * 60 * 1000));
         // 阻塞等待新增完成.顺序执行，避免都超时
         result.all().get();
-      }catch (Exception e) {
+      } catch (Exception e) {
         e.printStackTrace();
         System.out.println("进行下一轮....");
       }
-
     }
   }
 
@@ -126,8 +130,7 @@ public class AdminTest {
   @Test
   public void listTopic() throws ExecutionException, InterruptedException, TimeoutException {
     // 不包含内部topic
-    ListTopicsResult result =
-        client.listTopics(new ListTopicsOptions().timeoutMs(10 * 60 * 1000));
+    ListTopicsResult result = client.listTopics(new ListTopicsOptions().timeoutMs(10 * 60 * 1000));
     Set<String> names = result.names().get();
     DescribeTopicsResult desc = client.describeTopics(names);
     Map<String, TopicDescription> map = desc.all().get();
@@ -153,9 +156,12 @@ public class AdminTest {
     System.out.println("======================");
 
     ConfigResource configResource = new ConfigResource(ConfigResource.Type.TOPIC, name);
-    Map<ConfigResource, Config> configResourceConfigMap = client.describeConfigs(Collections.singleton(configResource)).all().get();
-    for (Map.Entry<ConfigResource, Config> configResourceConfigEntry : configResourceConfigMap.entrySet()) {
-      System.out.println(configResourceConfigEntry.getKey() + "——" + configResourceConfigEntry.getValue());
+    Map<ConfigResource, Config> configResourceConfigMap =
+        client.describeConfigs(Collections.singleton(configResource)).all().get();
+    for (Map.Entry<ConfigResource, Config> configResourceConfigEntry :
+        configResourceConfigMap.entrySet()) {
+      System.out.println(
+          configResourceConfigEntry.getKey() + "——" + configResourceConfigEntry.getValue());
     }
   }
 
@@ -168,23 +174,27 @@ public class AdminTest {
 
     // 获取全部分区leader
     Set<String> allTopicNames = client.listTopics().names().get();
-    List<String> realTopicNames = allTopicNames.stream().filter(topicName -> topicName.startsWith("heh_")).collect(Collectors.toList());
+    List<String> realTopicNames =
+        allTopicNames.stream()
+            .filter(topicName -> topicName.startsWith("heh_"))
+            .collect(Collectors.toList());
     Map<String, TopicDescription> map1 = client.describeTopics(realTopicNames).all().get();
-    Map<String,Map<Integer,Integer>> topicAndPartitionLeader = new HashMap<>();
+    Map<String, Map<Integer, Integer>> topicAndPartitionLeader = new HashMap<>();
     for (Map.Entry<String, TopicDescription> entry : map1.entrySet()) {
       String key = entry.getKey();
-      Map<Integer,Integer> partitionAndBrokerId = new HashMap<>();
+      Map<Integer, Integer> partitionAndBrokerId = new HashMap<>();
       for (TopicPartitionInfo partition : entry.getValue().partitions()) {
         int brokerId = partition.leader().id();
         int partition1 = partition.partition();
-        partitionAndBrokerId.put(partition1,brokerId);
+        partitionAndBrokerId.put(partition1, brokerId);
       }
-      topicAndPartitionLeader.put(key,partitionAndBrokerId);
+      topicAndPartitionLeader.put(key, partitionAndBrokerId);
     }
 
     // topic:  partition,size
-    Map<String,Long> resultMap = new HashMap<>();
-    Map<Integer, Map<String, LogDirDescription>> brokerAndInfo = client.describeLogDirs(brokerIds).allDescriptions().get();
+    Map<String, Long> resultMap = new HashMap<>();
+    Map<Integer, Map<String, LogDirDescription>> brokerAndInfo =
+        client.describeLogDirs(brokerIds).allDescriptions().get();
     for (Map.Entry<Integer, Map<String, LogDirDescription>> entry1 : brokerAndInfo.entrySet()) {
       Integer brokerId = entry1.getKey();
       Map<String, LogDirDescription> dirAndInfo = entry1.getValue();
@@ -193,13 +203,15 @@ public class AdminTest {
         Map<TopicPartition, ReplicaInfo> replicaInfoMap = topicPartitionAndInfo.replicaInfos();
         System.out.println("副本数量==" + replicaInfoMap.size());
         for (Map.Entry<TopicPartition, ReplicaInfo> replicas : replicaInfoMap.entrySet()) {
-          Map<Integer, Integer> integerIntegerMap1 = topicAndPartitionLeader.get(replicas.getKey().topic());
-          if (integerIntegerMap1 != null && brokerId.equals(integerIntegerMap1.get(replicas.getKey().partition()))) {
+          Map<Integer, Integer> integerIntegerMap1 =
+              topicAndPartitionLeader.get(replicas.getKey().topic());
+          if (integerIntegerMap1 != null
+              && brokerId.equals(integerIntegerMap1.get(replicas.getKey().partition()))) {
             Long oldSize = resultMap.get(replicas.getKey().topic());
             if (oldSize == null) {
-              resultMap.put(replicas.getKey().topic(),replicas.getValue().size());
-            }else {
-              resultMap.put(replicas.getKey().topic(),oldSize + replicas.getValue().size());
+              resultMap.put(replicas.getKey().topic(), replicas.getValue().size());
+            } else {
+              resultMap.put(replicas.getKey().topic(), oldSize + replicas.getValue().size());
             }
           }
         }
@@ -224,7 +236,8 @@ public class AdminTest {
     long sum = 0;
     DescribeLogDirsResult ret = client.describeLogDirs(brokerIds);
     Map<Integer, Map<String, LogDirDescription>> integerMapMap = ret.allDescriptions().get();
-    for (Map.Entry<Integer, Map<String, LogDirDescription>> integerMapEntry : integerMapMap.entrySet()) {
+    for (Map.Entry<Integer, Map<String, LogDirDescription>> integerMapEntry :
+        integerMapMap.entrySet()) {
       Map<String, LogDirDescription> value = integerMapEntry.getValue();
       for (Map.Entry<String, LogDirDescription> stringLogDirDescriptionEntry : value.entrySet()) {
         LogDirDescription info = stringLogDirDescriptionEntry.getValue();
@@ -239,5 +252,46 @@ public class AdminTest {
     System.out.println("总字节:" + sum);
   }
 
-
+  @Test
+  public void listLag() throws ExecutionException, InterruptedException {
+    System.out.println(props.getProperty(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG));
+    Collection<ConsumerGroupListing> groupListings = client.listConsumerGroups().all().get();
+    List<String> consumerGroupIds =
+        groupListings.stream().map(ConsumerGroupListing::groupId).collect(Collectors.toList());
+    for (String consumerGroupId : consumerGroupIds) {
+      ConsumerGroupDescription desc =
+          client
+              .describeConsumerGroups(Collections.singleton(consumerGroupId))
+              .all()
+              .get()
+              .get(consumerGroupId);
+      if (desc == null) {
+        continue;
+      }
+      Map<TopicPartition, OffsetAndMetadata> topicPartitionOffsetAndMetadataMap =
+          client.listConsumerGroupOffsets(consumerGroupId).partitionsToOffsetAndMetadata().get();
+      // 消费者api
+      props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "111");
+      props.setProperty(
+          ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+      props.setProperty(
+          ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+      KafkaConsumer<Object, Object> consumer = new KafkaConsumer<>(props);
+      Map<TopicPartition, Long> map =
+          consumer.endOffsets(topicPartitionOffsetAndMetadataMap.keySet());
+      for (Map.Entry<TopicPartition, OffsetAndMetadata> entry :
+          topicPartitionOffsetAndMetadataMap.entrySet()) {
+        long offset = entry.getValue().offset();
+        Long end = map.get(entry.getKey());
+        System.out.println(
+            "lag："
+                + (end - offset)
+                + "；topic："
+                + entry.getKey().topic()
+                + "；partition："
+                + entry.getKey().partition());
+      }
+      System.out.println();
+    }
+  }
 }
