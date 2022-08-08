@@ -304,7 +304,9 @@ public class AdminTest {
                 + "；topic："
                 + entry.getKey().topic()
                 + "；partition："
-                + entry.getKey().partition());
+                + entry.getKey().partition()
+                + "；groupId："
+                + consumerGroupId);
       }
       System.out.println();
     }
