@@ -41,12 +41,11 @@ DELETE /product/_doc/2
 
 - mapping相关
 ```text
-# dynamic mapping(创建索引时不指定mapping，es会默认根据数据给出类型)
 ## 查看映射
 GET /product/_mapping
 ## 删除映射
 DELETE /product
-## 再没有索引的情况下直接插入数据，让es做动态映射
+## dynamic mapping(创建索引时不指定mapping，es会默认根据数据给出类型)
 PUT product/_doc/1
 {
   "name":"小米手机",
@@ -61,8 +60,7 @@ PUT product/_doc/1
     "不卡顿"
     ]
 }
-
-# 手动创建mapping
+## 手动创建mapping
 PUT /product
 {
   "mappings": {
