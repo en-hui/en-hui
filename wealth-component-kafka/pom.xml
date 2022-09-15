@@ -6,7 +6,11 @@
 
     <groupId>com.enhui</groupId>
     <artifactId>wealth-component-kafka</artifactId>
+    <packaging>pom</packaging>
     <version>1.0.0</version>
+    <modules>
+        <module>move-topic</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

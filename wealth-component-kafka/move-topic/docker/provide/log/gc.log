@@ -1,0 +1,11 @@
+Java HotSpot(TM) 64-Bit Server VM (25.311-b11) for bsd-amd64 JRE (1.8.0_311-b11), built on Sep 27 2021 13:08:09 by "java_re" with gcc 4.2.1 Compatible Apple LLVM 11.0.0 (clang-1100.0.33.17)
+Memory: 4k page, physical 16777216k(258488k free)
+
+/proc/meminfo:
+
+CommandLine flags: -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/Users/huenhui/IdeaProjects/move-topic/docker/provide/log/heapdump.bin -XX:InitialHeapSize=2147483648 -XX:MaxHeapSize=2147483648 -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseG1GC 
+Heap
+ garbage-first heap   total 2097152K, used 29696K [0x0000000740000000, 0x0000000740104000, 0x00000007c0000000)
+  region size 1024K, 30 young (30720K), 0 survivors (0K)
+ Metaspace       used 13931K, capacity 14250K, committed 14336K, reserved 1062912K
+  class space    used 1592K, capacity 1706K, committed 1792K, reserved 1048576K

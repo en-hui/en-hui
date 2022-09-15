@@ -1,0 +1,8 @@
+source,dest,serializer(string或avro、string可省略不写)
+rap-rdpl-sitcls01-status_connect_sink_dp,test08161,string
+rap-rdpl-sitcls01-status_connect_source_dp,test08161,string
+rap-rdpl-sitcls01-offset_connect_sink_dp,test08161,string
+rap-rdpl-sitcls01-offset_connect_source_dp,test08161,string
+rap-rdpl-sitcls01-config_connect_sink_dp,test08161,string
+rap-rdpl-sitcls01-config_connect_source_dp,test08161,string
+rap-rdpl-sitcls01-dptask_3.schema-changes,test08161,string

@@ -1,0 +1,35 @@
+version: '3'
+services:
+  move-topic:
+    image: registry.datapipeline.com/move-topic:1
+    container_name: move-topic
+    environment:
+      # 配置true，则环境变量生效，配置文件不生效
+      - envParam=true
+      # 是否添加前缀（原来没有本次要加）
+      - isAddPrefix=true
+      # 要加的前缀是什么
+      - addPrefix=xxx
+      # 是否覆盖一遍（迁移错了，遗漏前缀时，选true）
+      - isOverride=false
+      - kafka=kafka1:9092
+      - schemaRegistry=http://schema_registry:8081
+      # 不配置默认是false
+      - plain=false
+      # 开启plain认证需要配置以下四项
+#      - securityProtocol=SASL_PLAINTEXT
+#      - saslMechanism=PLAIN
+#      - plainUserName=admin
+#      - plainPassword=admin
+      # 消费者组：不配置默认是dp-move-topic
+      - consumerGroup=dp-move-topic
+      # 迁移并行数：不配置默认是3
+      - parallelCount=3
+      # 没线程每批次消费条数：不配置默认是5000
+      - pollBatchCount=5000
+      # 检查lag使用有效的任务id，用逗号隔开，不配置会检查所有任务topic
+      - taskIds=
+    # 域名映射，类似与/etc/hosts文件，保证该容器知道kafka在哪，用主机名必须配置
+    extra_hosts:
+      - "kafka1:49.232.214.94"
+      - "schema_registry:49.232.214.94"
