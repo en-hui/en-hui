@@ -48,7 +48,7 @@ public class SocketBlockIO {
                     } else if (num == 0) {
                       System.out.println(client + "什么也没读到");
                     } else {
-                      System.out.println(client + "客户端断连");
+                      System.out.println(client + "客户端断连:" + num);
                       client.close();
                       break;
                     }

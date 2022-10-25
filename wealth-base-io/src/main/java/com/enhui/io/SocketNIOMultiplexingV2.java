@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -12,7 +14,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
-public class SocketNIOMultiplexingV1 {
+public class SocketNIOMultiplexingV2 {
   private ServerSocketChannel server = null;
   // 对应linux的多路复用器（select、poll、epoll）
   private Selector selector = null;
@@ -65,7 +67,11 @@ public class SocketNIOMultiplexingV1 {
             } else if (key.isReadable()) {
               // 单线程处理业务，如果查缓存，查库，计算，保存等特别耗时，那其他人的请求就会有很大延时
               // 所以要将 io 和 计算解耦，
+              key.cancel(); // cancel 也是系统调用，这样不好
               readHandler(key);
+            } else if (key.isWritable()) {
+              key.cancel();
+              writeHandle(key);
             }
           }
         }
@@ -76,51 +82,79 @@ public class SocketNIOMultiplexingV1 {
   }
 
   private void acceptHandler(SelectionKey key) {
-    try {
-      ServerSocketChannel channel = (ServerSocketChannel) key.channel();
-      /** 接收到请求，得到新的fd */
-      SocketChannel client = channel.accept();
-      client.configureBlocking(false);
-      ByteBuffer buffer = ByteBuffer.allocateDirect(8192);
-      /**
-       * select、poll：将fd放进jvm开辟的集合中<br>
-       * epoll：epoll_ctl(),将fd放进内核中的空间 <br>
-       */
-      client.register(selector, SelectionKey.OP_READ, buffer);
-      System.out.println("--------------------------------------");
-      System.out.println("处理连接请求，新客户端：" + client.getRemoteAddress());
-      System.out.println("--------------------------------------");
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+      try {
+        ServerSocketChannel channel = (ServerSocketChannel) key.channel();
+        /** 接收到请求，得到新的fd */
+        SocketChannel client = channel.accept();
+        client.configureBlocking(false);
+        ByteBuffer buffer = ByteBuffer.allocateDirect(8192);
+        /**
+         * select、poll：将fd放进jvm开辟的集合中<br>
+         * epoll：epoll_ctl(),将fd放进内核中的空间 <br>
+         */
+        client.register(selector, SelectionKey.OP_READ, buffer);
+        System.out.println("--------------------------------------");
+        System.out.println("处理连接请求，新客户端：" + client.getRemoteAddress());
+        System.out.println("--------------------------------------");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
   }
 
   private void readHandler(SelectionKey key) {
-    SocketChannel client = (SocketChannel) key.channel();
-    ByteBuffer buffer = (ByteBuffer) key.attachment();
-    buffer.clear();
-    int read = 0;
-    try {
-      while (true) {
-        read = client.read(buffer);
-        if (read > 0) {
-          buffer.flip();
-          while (buffer.hasRemaining()) {
-            System.out.println("读到的数据：" + buffer.toString());
-            client.write(buffer);
+    new Thread(()->{
+      System.out.println("read....");
+      SocketChannel client = (SocketChannel) key.channel();
+      ByteBuffer buffer = (ByteBuffer) key.attachment();
+      buffer.clear();
+      int read = 0;
+      try {
+        while (true) {
+          read = client.read(buffer);
+          if (read > 0) {
+            client.register(key.selector(),SelectionKey.OP_WRITE,buffer);
+          } else if (read == 0) {
+            break;
+          } else {
+            System.out.println("客户端断开连接");
+            // 客户端断连会返回-1
+            client.close();
+            break;
           }
-          buffer.clear();
-        } else if (read == 0) {
-          break;
-        } else {
-          System.out.println("客户端断开连接");
-          // 客户端断连会返回-1
-          client.close();
-          break;
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }).start();
+  }
+
+  public void writeHandle(SelectionKey key) {
+    new Thread(()->{
+      System.out.println("write....");
+      SocketChannel client = (SocketChannel)key.channel();
+      ByteBuffer buffer = (ByteBuffer)key.attachment();
+      buffer.flip();
+      while (buffer.hasRemaining()) {
+        try{
+          client.write(buffer);
+        }catch (IOException e) {
+          e.printStackTrace();
         }
       }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+      try {
+        Thread.sleep(2000);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+      buffer.clear();
+      key.cancel();
+      try {
+        System.out.println("服务端断开连接");
+        client.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }).start();
+
   }
 }
