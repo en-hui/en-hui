@@ -14,6 +14,11 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * 多路复用：初级的多线程模型<br>
+ * 将读写操作扔给新的线程处理，使用了.cancel()，这是系统调用<br>
+ * 此版本就是为了知道多线程的问题：accept和R/W 异步的时候会有重复进入handlerR/W 的问题
+ */
 public class SocketNIOMultiplexingV2 {
   private ServerSocketChannel server = null;
   // 对应linux的多路复用器（select、poll、epoll）
