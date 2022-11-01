@@ -72,6 +72,40 @@ public class SocketNIOSelectorV1 {
         }
     }
 
+    private void acceptHandle(SelectionKey key) throws IOException {
+        ServerSocketChannel server = (ServerSocketChannel) key.channel();
+        /** 接收到请求，得到新的fd */
+        SocketChannel client = server.accept();
+        client.configureBlocking(false);
+        ByteBuffer buffer = ByteBuffer.allocateDirect(8192);
+        /**
+         * select、poll：将fd放进jvm开辟的集合中<br>
+         * epoll：epoll_ctl(),将fd放进内核中的空间 <br>
+         */
+        client.register(key.selector(), SelectionKey.OP_READ, buffer);
+        System.out.printf("非阻塞模式，有连接到达：%s%n", client);
+    }
+
+    private void readHandle(SelectionKey key) throws IOException {
+        System.out.println("read...");
+        SocketChannel client = (SocketChannel) key.channel();
+        ByteBuffer buffer = (ByteBuffer) key.attachment();
+        buffer.clear();
+        while (true) {
+            int num = client.read(buffer);
+            if (num > 0) {
+                client.register(key.selector(), SelectionKey.OP_WRITE, buffer);
+            } else if (num == 0) {
+                break;
+            } else if (num == -1) {
+                System.out.printf("%s：客户端关闭%n", client);
+                // 客户端断连会返回-1
+                client.close();
+                break;
+            }
+        }
+    }
+
     private void writeHandle(SelectionKey key) throws Exception {
         System.out.println("write...");
         SocketChannel client = (SocketChannel) key.channel();
@@ -91,42 +125,5 @@ public class SocketNIOSelectorV1 {
         key.cancel();
         System.out.println("服务端断开连接");
         client.close();
-    }
-
-    private void readHandle(SelectionKey key) throws IOException {
-        System.out.println("read...");
-        SocketChannel client = (SocketChannel) key.channel();
-        ByteBuffer buffer = (ByteBuffer) key.attachment();
-        buffer.clear();
-        int read = 0;
-        while (true) {
-            read = client.read(buffer);
-            if (read > 0) {
-                client.register(key.selector(), SelectionKey.OP_WRITE, buffer);
-            } else if (read == 0) {
-                break;
-            } else {
-                System.out.printf("%s：客户端关闭%n", client);
-                // 客户端断连会返回-1
-                client.close();
-                break;
-            }
-        }
-    }
-
-    private void acceptHandle(SelectionKey key) throws IOException {
-        ServerSocketChannel server = (ServerSocketChannel) key.channel();
-        /** 接收到请求，得到新的fd */
-        SocketChannel client = server.accept();
-        client.configureBlocking(false);
-        ByteBuffer buffer = ByteBuffer.allocateDirect(8192);
-        Selector selector = key.selector();
-
-        /**
-         * select、poll：将fd放进jvm开辟的集合中<br>
-         * epoll：epoll_ctl(),将fd放进内核中的空间 <br>
-         */
-        client.register(selector, SelectionKey.OP_READ, buffer);
-        System.out.printf("非阻塞模式，有连接到达：%s%n", client);
     }
 }

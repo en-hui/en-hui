@@ -13,8 +13,8 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
 /**
- * 多路复用器练习，多线程模式，将accept和数据读写分开线程处理
- * 错误案例，不应该用 key.cancel(); // todo: cancel 也是系统调用，这样不好
+ * 多路复用器练习，多线程模式，将accept和数据读写分开线程处理(与v1相比，只是把R\W放进新线程，并使用key.cancel())
+ * 本程序为错误案例，不应该用 key.cancel(); // todo: cancel 也是系统调用，这样不好
  * 正确使用多线程，应该将连接分批，分别注册到不同的selector，每个selector一个线程，达到并行
  */
 public class SocketNIOSelectorV2 {
@@ -30,6 +30,7 @@ public class SocketNIOSelectorV2 {
         Selector selector = Selector.open();
         server.register(selector, SelectionKey.OP_ACCEPT);
 
+        System.out.printf("服务端启动...监听：%s %s%n", host, port);
         while (true) {
             while (selector.select(500) > 0) {
                 Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
@@ -63,11 +64,11 @@ public class SocketNIOSelectorV2 {
 
     private void readHandle(SelectionKey key) {
         new Thread(() -> {
-            System.out.println("read...");
-            SocketChannel client = (SocketChannel) key.channel();
-            ByteBuffer buffer = (ByteBuffer) key.attachment();
-            buffer.clear();
             try {
+                System.out.println("read...");
+                SocketChannel client = (SocketChannel) key.channel();
+                ByteBuffer buffer = (ByteBuffer) key.attachment();
+                buffer.clear();
                 while (true) {
                     int num = client.read(buffer);
                     if (num > 0) {
@@ -75,14 +76,12 @@ public class SocketNIOSelectorV2 {
                     } else if (num == 0) {
                         break;
                     } else if (num == -1) {
-                        System.out.printf("%s客户端断开连接\n", client);
+                        System.out.printf("%s：客户端关闭%n", client);
                         client.close();
                         break;
                     }
                 }
-            } catch (ClosedChannelException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }).start();
@@ -90,28 +89,26 @@ public class SocketNIOSelectorV2 {
 
     private void writeHandle(SelectionKey key) {
         new Thread(() -> {
-            System.out.println("write...");
-            SocketChannel client = (SocketChannel) key.channel();
-            ByteBuffer buffer = (ByteBuffer) key.attachment();
-            buffer.flip();
-            while (buffer.hasRemaining()) {
-                byte[] bytes = new byte[buffer.limit()];
-                buffer.get(bytes);
-                System.out.printf("%s：读到的数据写回：%s", client, new String(bytes));
-                buffer.rewind();
-                try {
-                    client.write(buffer);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            buffer.clear();
-            // temp
-            key.cancel();
-            System.out.println("服务端断开连接");
             try {
+                System.out.println("write...");
+                SocketChannel client = (SocketChannel) key.channel();
+                ByteBuffer buffer = (ByteBuffer) key.attachment();
+
+                buffer.flip();
+                while (buffer.hasRemaining()) {
+                    byte[] bytes = new byte[buffer.limit()];
+                    buffer.get(bytes);
+                    System.out.printf("%s：读到的数据写回：%s", client, new String(bytes));
+                    buffer.rewind();
+                    client.write(buffer);
+                }
+                buffer.clear();
+
+                // temp
+                key.cancel();
+                System.out.println("服务端断开连接");
                 client.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }).start();
