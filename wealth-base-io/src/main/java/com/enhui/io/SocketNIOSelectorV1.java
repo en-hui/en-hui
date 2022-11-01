@@ -12,7 +12,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
 /**
- * NIO，多路复用器
+ * NIO，多路复用器练习，单线程模式，accept和数据读写在一个线程
  */
 public class SocketNIOSelectorV1 {
 
@@ -43,7 +43,7 @@ public class SocketNIOSelectorV1 {
              */
             server.register(selector, SelectionKey.OP_ACCEPT);
 
-            System.out.printf("服务端启动...监听：%s:%s%n", host, port);
+            System.out.printf("服务端启动...监听：%s %s%n", host, port);
             while (true) {
                 /**
                  * java的select()方法对应内核的方法：<br>
@@ -61,7 +61,7 @@ public class SocketNIOSelectorV1 {
                             System.out.println("read handle...");
                             readHandle(key);
                         } else if (key.isWritable()) {
-                            System.out.println("read handle...");
+                            System.out.println("write handle...");
                             writeHandle(key);
                         }
                     }
