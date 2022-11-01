@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -17,7 +16,7 @@ import java.util.Iterator;
  * 本程序为错误案例，不应该用 key.cancel(); // todo: cancel 也是系统调用，这样不好
  * 正确使用多线程，应该将连接分批，分别注册到不同的selector，每个selector一个线程，达到并行
  */
-public class SocketNIOSelectorV2 {
+public class SocketNIOSingleSelectorV2 {
 
     String host = "127.0.0.1";
     int port = 9000;

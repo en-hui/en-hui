@@ -14,7 +14,7 @@ import java.util.Iterator;
 /**
  * NIO，多路复用器练习，单线程模式，accept和数据读写在一个线程
  */
-public class SocketNIOSelectorV1 {
+public class SocketNIOSingleSelectorV1 {
 
     String host = "127.0.0.1";
     int port = 9000;
