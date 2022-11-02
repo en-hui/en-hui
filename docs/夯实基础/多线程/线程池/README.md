@@ -307,7 +307,7 @@ IO密集型应多配置线程数
 
 2. CPU核数/(1-阻塞系数) **阻塞系数在0.8~0.9之间**
 
-# 死锁
+# DeadLock
 ![Alt](img/死锁.png)  
 
 ```java
@@ -316,8 +316,8 @@ package com.enhui.thread.base;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 死锁
- * 死锁是指两个或者以上的 进程/线程 在执行过程中,
+ * DeadLock
+ * DeadLock是指两个或者以上的 进程/线程 在执行过程中,
  * 因争夺资源而造成的一种相互等待的现象,
  * 若无外力干涉那他们都将无法推进下去
  *
