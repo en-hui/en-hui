@@ -9,11 +9,13 @@ import java.io.IOException;
 public class MyNetty {
 
     public static void main(String[] args) throws IOException {
-        EventLoopGroup boss = new EventLoopGroup(1, "bossThread-");
+        EventLoopGroup boss = new EventLoopGroup(3, "bossThread-");
         EventLoopGroup worker = new EventLoopGroup(3, "workerThread-");
         boss.setWorker(worker);
 
         boss.bind(9999);
+        boss.bind(9998);
+        boss.bind(9997);
 
     }
 
