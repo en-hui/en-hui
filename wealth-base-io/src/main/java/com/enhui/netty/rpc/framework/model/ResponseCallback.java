@@ -1,9 +1,6 @@
 package com.enhui.netty.rpc.framework.model;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class ResponseCallback {
     private static ConcurrentHashMap<Long, Runnable> mapping = new ConcurrentHashMap<>();

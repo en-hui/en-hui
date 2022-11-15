@@ -1,7 +1,6 @@
 package com.enhui.netty.rpc.framework.handler;
 
 import com.enhui.netty.rpc.framework.model.ResponseCallback;
-import com.enhui.netty.rpc.framework.model.RpcRequestContent;
 import com.enhui.netty.rpc.framework.model.RpcHeader;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -23,10 +22,10 @@ public class ClientResponseHandler extends ChannelInboundHandlerAdapter {
             ByteArrayInputStream headerIn = new ByteArrayInputStream(headerBytes);
             ObjectInputStream headerOin = new ObjectInputStream(headerIn);
             RpcHeader rpcHeader = (RpcHeader) headerOin.readObject();
-            System.out.println("client handler requestId: " + rpcHeader.getRequestId());
+            System.out.println("client handler header: " + rpcHeader);
 
             ResponseCallback.runCallback(rpcHeader.getRequestId());
-//            if (buf.readableBytes() > rpcHeader.getDataLen()) {
+//            if (buf.readableBytes() >= rpcHeader.getDataLen()) {
 //                byte[] dataBytes = new byte[(int) rpcHeader.getDataLen()];
 //                buf.readBytes(dataBytes);
 //                ByteArrayInputStream dataIn = new ByteArrayInputStream(dataBytes);

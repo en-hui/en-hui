@@ -2,8 +2,8 @@ package com.enhui.netty.rpc.framework.proxy;
 
 import com.enhui.netty.rpc.RpcApplication;
 import com.enhui.netty.rpc.framework.model.ResponseCallback;
-import com.enhui.netty.rpc.framework.model.RpcRequestContent;
 import com.enhui.netty.rpc.framework.model.RpcHeader;
+import com.enhui.netty.rpc.framework.model.RpcRequestContent;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;

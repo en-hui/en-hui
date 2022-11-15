@@ -12,5 +12,5 @@ public class RpcRequestContent implements Serializable {
     private String methodName;
     private Class<?>[] parameterTypes;
     private Object[] args;
-    
+
 }

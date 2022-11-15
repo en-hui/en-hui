@@ -47,10 +47,10 @@ public class RpcApplication {
      */
     @Test
     public void consumer() {
-        new Thread(()->{
-            provider();
-        }).start();
-        System.out.println("server start");
+//        new Thread(()->{
+//            provider();
+//        }).start();
+//        System.out.println("server start");
 
         UserApi userApi = JdkProxy.proxyGet(UserApi.class);
         UserModel userName = userApi.getByUserName("userName");

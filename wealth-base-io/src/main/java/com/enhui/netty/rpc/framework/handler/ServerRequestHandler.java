@@ -1,6 +1,5 @@
 package com.enhui.netty.rpc.framework.handler;
 
-import com.enhui.netty.rpc.framework.model.ResponseCallback;
 import com.enhui.netty.rpc.framework.model.RpcHeader;
 import com.enhui.netty.rpc.framework.model.RpcRequestContent;
 import io.netty.buffer.ByteBuf;
@@ -23,15 +22,16 @@ public class ServerRequestHandler extends ChannelInboundHandlerAdapter {
             buf.readBytes(headerBytes);
             ByteArrayInputStream headerIn = new ByteArrayInputStream(headerBytes);
             ObjectInputStream headerOin = new ObjectInputStream(headerIn);
-            RpcHeader rpcHeader = (RpcHeader)headerOin.readObject();
-            System.out.println("server handler requestId: " + rpcHeader.getRequestId());
+            RpcHeader rpcHeader = (RpcHeader) headerOin.readObject();
+            System.out.println("server handler header: " + rpcHeader);
 
-            if (buf.readableBytes() > rpcHeader.getDataLen()) {
+            if (buf.readableBytes() >= rpcHeader.getDataLen()) {
                 byte[] dataBytes = new byte[(int) rpcHeader.getDataLen()];
                 buf.readBytes(dataBytes);
                 ByteArrayInputStream dataIn = new ByteArrayInputStream(dataBytes);
                 ObjectInputStream dataOin = new ObjectInputStream(dataIn);
-                RpcRequestContent rpcData = (RpcRequestContent)dataOin.readObject();
+                RpcRequestContent rpcData = (RpcRequestContent) dataOin.readObject();
+                System.out.println("server handler body: " + rpcData);
             }
         }
         ChannelFuture channelFuture = ctx.writeAndFlush(copyBuf);
