@@ -11,6 +11,29 @@
 
 ## 生产环境问题排查
 
+innodb_locks表在8.0.13版本中由 performance_schema.data_locks表所代替，   
+innodb_lock_waits表则由 performance_schema.data_lock_waits表代替
+
+> 报错：com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException: 
+> Lock wait timeout exceeded; try restarting transaction\n;
+>  
+> -- 查看数据库当前的进程    
+> show processlist;   或者sql：select * from information_schema.processlist where Info is not null;      
+> -- 当前运行的所有事务    
+> select * from information_schema.INNODB_LOCKS;     
+> -- 当前出现的锁   
+> select * from information_schema.INNODB_LOCK_waits;    
+> -- 锁等待的对应关系    
+> select * from information_schema.INNODB_TRX;    
+> -- 查询产生锁的具体sql    
+> select a.trx_id 事务id,a.trx_mysql_thread_id 事务线程id,a.trx_query 事务sql 
+> from INFORMATION_SCHEMA.INNODB_LOCKS b,INFORMATION_SCHEMA.innodb_trx a
+> where b.lock_trx_id=a.trx_id;    
+> 
+> -- 杀掉死锁线程 innodb_trx表的trx_requested_lock_id   
+> kill {thread_id};
+> 
+
 ### 操作系统层面
 
 ### JVM层面
