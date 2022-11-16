@@ -53,7 +53,8 @@ public class RpcApplication {
 //        System.out.println("server start");
 
         UserApi userApi = JdkProxy.proxyGet(UserApi.class);
-        UserModel userName = userApi.getByUserName("userName");
+        UserModel userModel = userApi.getByUserName("userName");
+        System.out.println(userModel);
         userApi.addUser();
     }
 }
