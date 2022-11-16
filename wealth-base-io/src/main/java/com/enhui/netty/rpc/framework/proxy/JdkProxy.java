@@ -63,7 +63,7 @@ public class JdkProxy {
                     ResponseCallback.addCallback(header.getRequestId(), () -> {
                         countDownLatch.countDown();
                     });
-                    countDownLatch.wait();
+                    countDownLatch.await();
                 } catch (Exception e) {
                     System.out.println("proxy error:");
                     e.printStackTrace();
