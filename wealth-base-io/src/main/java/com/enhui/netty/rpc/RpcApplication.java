@@ -1,17 +1,19 @@
 package com.enhui.netty.rpc;
 
 import com.enhui.netty.rpc.api.UserApi;
+import com.enhui.netty.rpc.framework.handler.DecodeHandler;
 import com.enhui.netty.rpc.framework.handler.ServerRequestHandler;
 import com.enhui.netty.rpc.framework.proxy.JdkProxy;
-import com.enhui.netty.rpc.model.UserModel;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public class RpcApplication {
@@ -25,14 +27,16 @@ public class RpcApplication {
     @Test
     public void provider() {
         NioEventLoopGroup boss = new NioEventLoopGroup(1);
+        NioEventLoopGroup worker = new NioEventLoopGroup(3);
         ServerBootstrap bootstrap = new ServerBootstrap();
-        ChannelFuture bind = bootstrap.group(boss, boss)
+        ChannelFuture bind = bootstrap.group(boss, worker)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel channel) throws Exception {
-                        System.out.println("server accept client port: " + channel.remoteAddress().getPort());
-                        channel.pipeline().addLast(new ServerRequestHandler());
+                        ChannelPipeline pipeline = channel.pipeline();
+                        pipeline.addLast(new DecodeHandler());
+                        pipeline.addLast(new ServerRequestHandler());
                     }
                 }).bind(new InetSocketAddress(host, port));
         try {
@@ -46,15 +50,15 @@ public class RpcApplication {
      * 服务消费者
      */
     @Test
-    public void consumer() {
-//        new Thread(()->{
-//            provider();
-//        }).start();
-//        System.out.println("server start");
-
+    public void consumer() throws IOException {
         UserApi userApi = JdkProxy.proxyGet(UserApi.class);
-        UserModel userModel = userApi.getByUserName("userName");
-        System.out.println(userModel);
-        userApi.addUser();
+        for (int i = 0; i < 30; i++) {
+            int finalI = i;
+            new Thread(() -> {
+                String param = "userName" + finalI;
+                System.out.println(param + "--" + userApi.getByUserName(param));
+            }).start();
+        }
+        System.in.read();
     }
 }

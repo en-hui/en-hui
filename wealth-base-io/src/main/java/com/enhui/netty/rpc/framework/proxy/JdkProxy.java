@@ -4,6 +4,7 @@ import com.enhui.netty.rpc.RpcApplication;
 import com.enhui.netty.rpc.framework.model.ResponseCallback;
 import com.enhui.netty.rpc.framework.model.RpcHeader;
 import com.enhui.netty.rpc.framework.model.RpcRequestContent;
+import com.enhui.netty.rpc.framework.utils.SerdeUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
@@ -16,6 +17,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 public class JdkProxy {
@@ -33,22 +35,12 @@ public class JdkProxy {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) {
                 try {
-                    RpcRequestContent content = new RpcRequestContent();
-                    content.setArgs(args);
-                    content.setServiceName(clazz.getName());
-                    content.setMethodName(method.getName());
-                    content.setParameterTypes(method.getParameterTypes());
+                    RpcRequestContent content =
+                            new RpcRequestContent(clazz.getName(), method.getName(), method.getParameterTypes(), args);
 
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    ObjectOutputStream oout = new ObjectOutputStream(out);
-                    oout.writeObject(content);
-                    byte[] msgBody = out.toByteArray();
-
+                    byte[] msgBody = SerdeUtil.serde(content);
                     RpcHeader header = createHeader(msgBody);
-                    out.reset();
-                    oout = new ObjectOutputStream(out);
-                    oout.writeObject(header);
-                    byte[] msgHeader = out.toByteArray();
+                    byte[] msgHeader = SerdeUtil.serde(header);
 
                     NioSocketChannel client = ClientFactory.getInstance().getClient(new InetSocketAddress(RpcApplication.host, RpcApplication.port));
                     ByteBuf buf = PooledByteBufAllocator.DEFAULT.directBuffer(msgHeader.length + msgBody.length);
@@ -58,12 +50,10 @@ public class JdkProxy {
                     // io是双向的，这里只能等到out结束，不能等到返回
                     ChannelFuture sync = channelFuture.sync();
 
-                    CountDownLatch countDownLatch = new CountDownLatch(1);
 
-                    ResponseCallback.addCallback(header.getRequestId(), () -> {
-                        countDownLatch.countDown();
-                    });
-                    countDownLatch.await();
+                    CompletableFuture<String> completableFuture = new CompletableFuture<>();
+                    ResponseCallback.addCallback(header.getRequestId(), completableFuture);
+                    return completableFuture.get();
                 } catch (Exception e) {
                     System.out.println("proxy error:");
                     e.printStackTrace();
@@ -77,6 +67,7 @@ public class JdkProxy {
         RpcHeader header = new RpcHeader();
         header.setRequestId(Math.abs(UUID.randomUUID().getLeastSignificantBits()));
         header.setDataLen(msgBody.length);
+        header.setFlag(RpcHeader.client_flag);
         return header;
     }
 }

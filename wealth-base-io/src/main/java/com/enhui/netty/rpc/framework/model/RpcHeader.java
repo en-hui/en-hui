@@ -1,6 +1,8 @@
 package com.enhui.netty.rpc.framework.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.ByteArrayOutputStream;
@@ -9,8 +11,13 @@ import java.io.Serializable;
 
 @Data
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class RpcHeader implements Serializable {
+    public static final int server_flag = 0xffff;
+    public static final int client_flag = 0xff00;
     public static final int headerLen = getLen();
+    private int flag;
     private long requestId;
     private long dataLen;
 
