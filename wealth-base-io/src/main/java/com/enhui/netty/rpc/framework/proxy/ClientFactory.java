@@ -15,10 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientFactory {
 
-    int poolSize = 1;
-    NioEventLoopGroup loopGroup = new NioEventLoopGroup(1);
+    int poolSize = 5;
     private ConcurrentHashMap<InetSocketAddress, ClientPool> poll = new ConcurrentHashMap<>();
     Random random = new Random();
+    NioEventLoopGroup loopGroup = new NioEventLoopGroup(1);
 
 
     /**
@@ -50,6 +50,7 @@ public class ClientFactory {
                 .handler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel channel) throws Exception {
+                        System.out.printf("%s 接收到服务端的响应\n", Thread.currentThread().getName());
                         ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new DecodeHandler());
                         pipeline.addLast(new ClientResponseHandler());

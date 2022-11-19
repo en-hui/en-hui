@@ -34,6 +34,7 @@ public class RpcApplication {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel channel) throws Exception {
+                        System.out.printf("%s 接收到客户端 %s 的请求\n", Thread.currentThread().getName(), channel.remoteAddress().getPort());
                         ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new DecodeHandler());
                         pipeline.addLast(new ServerRequestHandler());

@@ -17,15 +17,15 @@ import java.io.ObjectOutputStream;
 public class ServerRequestHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
         RpcMsgPackge packge = (RpcMsgPackge) msg;
-
+        System.out.printf("server read: %s\n", packge);
         String ioThreadName = Thread.currentThread().getName();
         // 1、直接在当前方法处理
         // 2、使用netty当前的eventLoop来处理
-//        ctx.executor().execute(
+        ctx.executor().execute(()->{
         // 3、使用netty其他的eventLoop来处理
-        ctx.executor().parent().next().execute(() -> {
+        // todo，按理说应该用下面这种让线程忙碌程度均衡，但是使用下面这种，会出现问题：channelRead被调用30次，但下面这部分的打印只有 有限几次
+//        ctx.executor().parent().next().execute(() -> {
             try {
                 String execThreadName = Thread.currentThread().getName();
                 Object reqArg = ((RpcRequestContent) (packge.getContent())).getArgs()[0];
@@ -42,6 +42,8 @@ public class ServerRequestHandler extends ChannelInboundHandlerAdapter {
                 buf.writeBytes(msgBody);
                 ChannelFuture channelFuture = ctx.writeAndFlush(buf);
                 channelFuture.sync();
+                System.out.printf("flush success . ioThread: %s,execThread: %s , param: %s , result: %s\n",
+                        ioThreadName, execThreadName, reqArg, content.getResult());
             } catch (Exception e) {
                 e.printStackTrace();
             }

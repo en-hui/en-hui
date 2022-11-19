@@ -37,9 +37,11 @@ public class DecodeHandler extends ByteToMessageDecoder {
                 if (rpcHeader.getFlag() == RpcHeader.server_flag) {
                     RpcResponseContent rpcContent = (RpcResponseContent) dataOin.readObject();
                     packge.setContent(rpcContent);
+                    System.out.println("client decode——" + packge);
                 } else if (rpcHeader.getFlag() == RpcHeader.client_flag) {
                     RpcRequestContent rpcContent = (RpcRequestContent) dataOin.readObject();
                     packge.setContent(rpcContent);
+                    System.out.println("server decode——" + packge);
                 }
                 list.add(packge);
             } else {

@@ -10,6 +10,7 @@ public class ClientResponseHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         RpcMsgPackge packge = (RpcMsgPackge) msg;
+        System.out.println("client read " + packge.getContent());
         ResponseCallback.runCallback(packge);
     }
 }
