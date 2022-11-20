@@ -2,6 +2,7 @@ package com.enhui.netty.rpc;
 
 import com.enhui.netty.rpc.api.UserApi;
 import com.enhui.netty.rpc.framework.handler.DecodeHandler;
+import com.enhui.netty.rpc.framework.handler.HttpServerRequestHandler;
 import com.enhui.netty.rpc.framework.handler.ServerRequestHandler;
 import com.enhui.netty.rpc.framework.model.Dispatcher;
 import com.enhui.netty.rpc.framework.proxy.JdkProxy;
@@ -13,6 +14,8 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -22,6 +25,7 @@ public class RpcApplication {
 
     public static String host = "127.0.0.1";
     public static int port = 9090;
+    public static String protocol = "http";
 
     /**
      * 服务提供者
@@ -41,8 +45,16 @@ public class RpcApplication {
                     protected void initChannel(NioSocketChannel channel) throws Exception {
                         System.out.printf("%s 接收到客户端 %s 的请求\n", Thread.currentThread().getName(), channel.remoteAddress().getPort());
                         ChannelPipeline pipeline = channel.pipeline();
-                        pipeline.addLast(new DecodeHandler());
-                        pipeline.addLast(new ServerRequestHandler());
+                        if (protocol.equals("http")) {
+                            // http编解码
+                            pipeline.addLast(new HttpServerCodec());
+                            pipeline.addLast(new HttpObjectAggregator(1024*512));
+                            pipeline.addLast(new HttpServerRequestHandler());
+                        }else {
+                            // 自定义编解码
+                            pipeline.addLast(new DecodeHandler());
+                            pipeline.addLast(new ServerRequestHandler());
+                        }
                     }
                 }).bind(new InetSocketAddress(host, port));
         try {

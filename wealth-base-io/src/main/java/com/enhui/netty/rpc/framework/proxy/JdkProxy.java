@@ -38,7 +38,7 @@ public class JdkProxy {
                     RpcRequestContent content =
                             new RpcRequestContent(clazz.getName(), method.getName(), method.getParameterTypes(), args);
 
-                    CompletableFuture<Object> cf = ClientFactory.transport(content, "rpc");
+                    CompletableFuture<Object> cf = ClientFactory.transport(content, RpcApplication.protocol);
                     return cf.get();
                 } catch (Exception e) {
                     System.out.println("proxy error:");
