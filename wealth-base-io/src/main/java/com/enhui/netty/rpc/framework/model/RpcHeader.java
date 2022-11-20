@@ -8,6 +8,7 @@ import lombok.ToString;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Data
 @ToString
@@ -34,5 +35,13 @@ public class RpcHeader implements Serializable {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static RpcHeader createHeader(byte[] msgBody) {
+        RpcHeader header = new RpcHeader();
+        header.setRequestId(Math.abs(UUID.randomUUID().getLeastSignificantBits()));
+        header.setDataLen(msgBody.length);
+        header.setFlag(RpcHeader.client_flag);
+        return header;
     }
 }

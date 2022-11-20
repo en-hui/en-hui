@@ -3,7 +3,9 @@ package com.enhui.netty.rpc;
 import com.enhui.netty.rpc.api.UserApi;
 import com.enhui.netty.rpc.framework.handler.DecodeHandler;
 import com.enhui.netty.rpc.framework.handler.ServerRequestHandler;
+import com.enhui.netty.rpc.framework.model.Dispatcher;
 import com.enhui.netty.rpc.framework.proxy.JdkProxy;
+import com.enhui.netty.rpc.provider.UserServiceProvider;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -26,6 +28,9 @@ public class RpcApplication {
      */
     @Test
     public void provider() {
+        // 类似spring 用注解将对象放进容器
+        Dispatcher.getDis().register(UserApi.class.getName(), new UserServiceProvider());
+
         NioEventLoopGroup boss = new NioEventLoopGroup(1);
         NioEventLoopGroup worker = new NioEventLoopGroup(3);
         ServerBootstrap bootstrap = new ServerBootstrap();
@@ -53,6 +58,7 @@ public class RpcApplication {
     @Test
     public void consumer() throws IOException {
         UserApi userApi = JdkProxy.proxyGet(UserApi.class);
+        System.out.println("client start");
         for (int i = 0; i < 30; i++) {
             int finalI = i;
             new Thread(() -> {

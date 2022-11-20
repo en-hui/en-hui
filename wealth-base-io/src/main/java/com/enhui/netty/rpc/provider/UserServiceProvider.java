@@ -7,6 +7,6 @@ public class UserServiceProvider implements UserApi {
     @Override
     public String getByUserName(String userName) {
         // 真正的方法实现
-        return userName;
+        return "result_" + userName;
     }
 }

@@ -10,5 +10,5 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class RpcResponseContent extends RpcContent {
-    private String result;
+    private Object result;
 }
