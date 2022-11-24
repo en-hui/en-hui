@@ -152,4 +152,23 @@ public class JavaClientTest {
       log.info("使用seek调整偏移，直接读取最后一个块的数据，读一行：【{}】",open.readLine());
     }
   }
+
+  @Test
+  public void testBlock() throws IOException {
+    String remotePath = "/user/root/big.txt";
+    FileStatus fileStatus = fileSystem.getFileStatus(new Path(remotePath));
+    BlockLocation[] fileBlockLocations =
+            fileSystem.getFileBlockLocations(fileStatus, 0, fileStatus.getLen());
+    List<Long> offsetList = new ArrayList<>();
+    for (BlockLocation fileBlockLocation : fileBlockLocations) {
+      log.info("偏移量：{}，块大小：{}，节点位置：{}",fileBlockLocation.getOffset(),fileBlockLocation.getLength(),fileBlockLocation.getHosts());
+      offsetList.add(fileBlockLocation.getOffset());
+    }
+    if (offsetList.size() > 1) {
+      FSDataInputStream open = fileSystem.open(new Path(remotePath));
+      // 使用seek 将偏移量调整
+      open.seek(offsetList.get(offsetList.size() - 1));
+      log.info("使用seek调整偏移，直接读取最后一个块的数据，读一行：【{}】",open.readLine());
+    }
+  }
 }

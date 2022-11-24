@@ -19,22 +19,27 @@
 <configuration>
   <property>
     <name>dfs.replication</name>
+    <!-- 伪分布式，副本数量设置为了1 -->
     <value>1</value>
   </property>
   <property>
     <name>dfs.namenode.name.dir</name>
-    <value>/var/bigdata/hadoop/local/dfs/name</value>
+    <!-- NameNode 数据存放路径 -->
+    <value>/data/hadoop/dfs/name</value>
   </property>
   <property>
     <name>dfs.datanode.data.dir</name>
-    <value>/var/bigdata/hadoop/local/dfs/data</value>
+    <!-- NameNode 数据存放路径 -->
+    <value>/data/hadoop/dfs/data</value>
   </property>
   <property>
     <name>dfs.namenode.secondary.http-address</name>
+    <!-- SecondaryNode 在哪里启动,不设置也会在本机启动 -->
     <value>heh-node02:50090</value>
   </property>
   <property>
     <name>dfs.namenode.checkpoint.dir</name>
-    <value>/var/bigdata/hadoop/local/dfs/secondary</value>
+    <!-- SecondaryNode 数据存放路径 -->
+    <value>/data/hadoop/dfs/secondary</value>
   </property>
 </configuration>
