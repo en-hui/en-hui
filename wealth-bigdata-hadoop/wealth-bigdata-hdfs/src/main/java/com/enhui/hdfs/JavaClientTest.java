@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.BlockLocation;
@@ -36,7 +35,7 @@ public class JavaClientTest {
     // 客户端与datanode 使用主机名通信
     config.set("dfs.client.use.datanode.hostname", "true");
     // 设置块大小
-    config.set("dfs.blocksize","1m");
+    config.set("dfs.blocksize", "1m");
     System.setProperty("HADOOP_USER_NAME", "root");
     // fileSystem = FileSystem.get(URI.create("hdfs://heh-node02:9000"), configuration, "root");
     fileSystem = FileSystem.get(config);
@@ -132,43 +131,30 @@ public class JavaClientTest {
     for (int i = 0; i < 50000; i++) {
       writer.write("hello world,hello hadoop " + i + "\r\n");
     }
-
+    // 很关键～
+    writer.flush();
     String remotePath = "/user/root/big.txt";
     fileSystem.copyFromLocalFile(new Path(localPath), new Path(remotePath));
     log.info("本地文件 【{}】 上传至 【{}】", localPath, remotePath);
 
     FileStatus fileStatus = fileSystem.getFileStatus(new Path(remotePath));
     BlockLocation[] fileBlockLocations =
-            fileSystem.getFileBlockLocations(fileStatus, 0, fileStatus.getLen());
+        fileSystem.getFileBlockLocations(fileStatus, 0, fileStatus.getLen());
     List<Long> offsetList = new ArrayList<>();
     for (BlockLocation fileBlockLocation : fileBlockLocations) {
-      log.info("偏移量：{}，块大小：{}，节点位置：{}",fileBlockLocation.getOffset(),fileBlockLocation.getLength(),fileBlockLocation.getHosts());
+      log.info(
+          "偏移量：{}，块大小：{}，节点位置：{}",
+          fileBlockLocation.getOffset(),
+          fileBlockLocation.getLength(),
+          fileBlockLocation.getHosts());
       offsetList.add(fileBlockLocation.getOffset());
     }
     if (offsetList.size() > 1) {
       FSDataInputStream open = fileSystem.open(new Path(remotePath));
       // 使用seek 将偏移量调整
       open.seek(offsetList.get(offsetList.size() - 1));
-      log.info("使用seek调整偏移，直接读取最后一个块的数据，读一行：【{}】",open.readLine());
+      log.info("使用seek调整偏移，直接读取最后一个块的数据，读一行：【{}】", open.readLine());
     }
   }
 
-  @Test
-  public void testBlock() throws IOException {
-    String remotePath = "/user/root/big.txt";
-    FileStatus fileStatus = fileSystem.getFileStatus(new Path(remotePath));
-    BlockLocation[] fileBlockLocations =
-            fileSystem.getFileBlockLocations(fileStatus, 0, fileStatus.getLen());
-    List<Long> offsetList = new ArrayList<>();
-    for (BlockLocation fileBlockLocation : fileBlockLocations) {
-      log.info("偏移量：{}，块大小：{}，节点位置：{}",fileBlockLocation.getOffset(),fileBlockLocation.getLength(),fileBlockLocation.getHosts());
-      offsetList.add(fileBlockLocation.getOffset());
-    }
-    if (offsetList.size() > 1) {
-      FSDataInputStream open = fileSystem.open(new Path(remotePath));
-      // 使用seek 将偏移量调整
-      open.seek(offsetList.get(offsetList.size() - 1));
-      log.info("使用seek调整偏移，直接读取最后一个块的数据，读一行：【{}】",open.readLine());
-    }
-  }
 }
