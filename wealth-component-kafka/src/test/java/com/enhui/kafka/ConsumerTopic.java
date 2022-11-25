@@ -29,19 +29,19 @@ public class ConsumerTopic {
   public void testConsumer() throws UnsupportedEncodingException, JsonProcessingException {
     ObjectMapper mapper = new ObjectMapper();
     KafkaConsumer<String, GenericRecord> consumer = null;
-    boolean isAgent = true;
+    boolean isAgent = false;
     String topic = "";
     String groupId = "huenhui_test_group";
     Properties properties = new Properties();
     if (isAgent) {
-      topic = "DP_9_.db2inst1.lnlnsjrn";
+      topic = "DP_12_.db2inst1.lnlnsjrn";
       properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "82.157.170.197:9092");
       properties.put(
           AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
           String.format("http://%s:%s", "82.157.170.197", 8081));
     } else {
-      topic = "v2_dptask_9.DP_GBK.DB2INST1.LNLNSJRN.9959";
-      //      topic = "test_gbk_avro";
+//      topic = "v2_dptask_12.DP_GBK.DB2INST1.LNLNSJRN.9959";
+            topic = "test1";
       properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9092");
       properties.put(
           AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
@@ -110,6 +110,7 @@ public class ConsumerTopic {
         System.out.printf("utf8编码十六进制：%s\n", utfBinaryValue);
         System.out.printf("gbk编码十六进制：%s\n", gbkBinaryValue);
         System.out.println();
+        System.out.println(record);
       }
     }
   }
