@@ -19,6 +19,7 @@
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>hdfs://heh-node02:9000</value>
+    <!-- 给出NameNode在哪里启动，ip、端口,尽量不要用localhost -->
+    <value>hdfs://heh-node02:8020</value>
   </property>
 </configuration>
