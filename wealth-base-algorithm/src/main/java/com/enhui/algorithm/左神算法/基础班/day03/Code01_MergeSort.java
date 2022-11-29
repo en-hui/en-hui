@@ -21,7 +21,7 @@ public class Code01_MergeSort {
         if (L == R) {
             return;
         }
-        int mid = L + ((R - L) >> 2);
+        int mid = L + ((R - L) >> 1);
         mergeSort(arr, L, mid);
         mergeSort(arr, mid + 1, R);
         merge(arr, L, mid, R);

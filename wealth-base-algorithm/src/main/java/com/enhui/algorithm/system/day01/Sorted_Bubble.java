@@ -32,7 +32,6 @@ public class Sorted_Bubble extends Sorted {
                     swap(arr1, j, j + 1);
                 }
             }
-
         }
 
     }

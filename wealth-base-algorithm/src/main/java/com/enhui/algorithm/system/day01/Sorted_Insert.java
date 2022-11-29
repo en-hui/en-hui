@@ -2,8 +2,6 @@ package com.enhui.algorithm.system.day01;
 
 import com.enhui.algorithm.common.Sorted;
 
-import java.util.Arrays;
-
 
 public class Sorted_Insert extends Sorted {
 

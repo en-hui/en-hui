@@ -26,11 +26,11 @@ public abstract class Sorted {
     public void template() {
         boolean success = true;
         for (int i = 0; i < testTimes; i++) {
-            int[] arr1 = generateRandomArray(maxSize, maxValue);
+            int[] arr1 = RandomUtil.generateRandomArray(maxSize, maxValue);
             int[] arr2 = Arrays.copyOf(arr1, arr1.length);
 
             sort(arr1);
-            Arrays.sort(arr2);
+            check(arr2);
 
             if (!compareArr(arr1, arr2)) {
                 success = false;
@@ -41,6 +41,15 @@ public abstract class Sorted {
         if (success) {
             System.out.printf("算法正确，测试次数：「%s」", testTimes);
         }
+    }
+
+    /**
+     * 对数器
+     *
+     * @param arr2 数组
+     */
+    private void check(int[] arr2) {
+        Arrays.sort(arr2);
     }
 
     /**
@@ -62,23 +71,6 @@ public abstract class Sorted {
      * @param arr1 数组
      */
     public abstract void sort(int[] arr1);
-
-    /**
-     * 随机样本生成器
-     *
-     * @param maxSize  数组最大长度
-     * @param maxValue 数组中的最大值
-     * @return 随机长度且内容随机的数组
-     */
-    public int[] generateRandomArray(int maxSize, int maxValue) {
-        // 随机长度
-        int len = (int) (maxSize * Math.random());
-        int[] arr = new int[len];
-        for (int i = 0; i < len; i++) {
-            arr[i] = (int) (maxValue * Math.random()) - (int) (maxValue * Math.random());
-        }
-        return arr;
-    }
 
     /**
      * 比较两个数组是否一致
