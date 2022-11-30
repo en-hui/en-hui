@@ -1,8 +1,12 @@
 package com.enhui.algorithm.common;
 
 import java.util.Arrays;
-import java.util.List;
 
+/**
+ * 排序算法的抽象类-模版方法设计模式
+ * <p>
+ * 提供了 template，实现 sort 方法后，调用template即可
+ */
 public abstract class Sorted {
     /**
      * 测试次数

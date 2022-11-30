@@ -2,6 +2,9 @@ package com.enhui.algorithm.common;
 
 import java.util.Arrays;
 
+/**
+ * 随机数相关的工具类
+ */
 public class RandomUtil {
 
     /**
