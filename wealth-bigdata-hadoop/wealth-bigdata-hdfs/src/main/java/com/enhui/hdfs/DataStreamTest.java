@@ -100,10 +100,10 @@ public class DataStreamTest {
     initIO();
     // 该线程往源文件持续写数据
     Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "HDFS--srcAppendThread"))
-        .scheduleAtFixedRate(this::productionData, 500, 500, TimeUnit.MILLISECONDS);
+        .scheduleAtFixedRate(this::productionData, 5, 5, TimeUnit.SECONDS);
     // 该线程持续读取源文件，缓存至本地队列
     Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "HDFS--srcReadThread"))
-        .scheduleAtFixedRate(this::dataPipelineProducer, 100, 100, TimeUnit.MILLISECONDS);
+        .scheduleAtFixedRate(this::dataPipelineProducer, 1, 1, TimeUnit.SECONDS);
     // 该线程持续将本地队列的数据写到目的文件
     Executors.newSingleThreadExecutor(r -> new Thread(r, "HDFS--destAppendThread"))
         .submit(this::dataPipelineConsumer);
@@ -115,14 +115,13 @@ public class DataStreamTest {
   /** 生产数据 */
   public void productionData() {
     try {
-      byte[] bytes =
-          ("productionData追加写——" + sourceDataNum.getAndIncrement() + "\r\n")
-              .getBytes(StandardCharsets.UTF_8);
+      String msg = "productionData追加写——" + sourceDataNum.getAndIncrement() + "\r\n";
+      byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
       srcAppend.write(bytes);
       srcAppend.flush();
 
       FileStatus srcFileStatus = fileSystem.getFileStatus(srcRemotePath);
-      log.info("源文件追加写「{}」,源文件实际大小：{}", bytes.length, srcFileStatus.getLen());
+      log.info("源文件追加写「{}」,源文件实际大小：{},内容为：{}", bytes.length, srcFileStatus.getLen(), msg);
     } catch (Exception e) {
       e.printStackTrace();
     }
