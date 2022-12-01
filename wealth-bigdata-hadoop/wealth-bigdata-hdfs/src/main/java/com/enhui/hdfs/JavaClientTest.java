@@ -122,22 +122,6 @@ public class JavaClientTest {
     log.info("【{}】 下载至 【{}】", remotePath, localPath);
   }
 
-  /**
-   * 追加写文件
-   *
-   * @throws IOException
-   */
-  @Test
-  public void appendFile() throws IOException {
-    try (FSDataOutputStream destAppend = fileSystem.append(new Path("/user/root/hello.txt"))) {
-      for (int i = 0; i < 5; i++) {
-        // 写入目的
-        destAppend.write(("你好" + i + "\r\n").getBytes(StandardCharsets.UTF_8));
-        destAppend.flush();
-      }
-    }
-  }
-
   /** 对于多个块的操作 */
   @Test
   public void putMultipleBlock() throws IOException {

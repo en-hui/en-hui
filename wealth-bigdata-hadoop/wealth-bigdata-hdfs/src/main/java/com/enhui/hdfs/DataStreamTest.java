@@ -27,13 +27,14 @@ public class DataStreamTest {
   final String destRemotePathStr = "/user/root/big_dest.txt";
   final Path srcRemotePath = new Path(srcRemotePathStr);
   final Path destRemotePath = new Path(destRemotePathStr);
-  long srcOffset = 0;
+  long srcOffsetGlobal = 0;
+  long srcOffsetUnit = 0;
   AtomicInteger sourceDataNum = new AtomicInteger(1);
   LinkedBlockingDeque<byte[]> localQueue = new LinkedBlockingDeque<>(5000);
-  FSDataOutputStream srcAppend = null;
-  FSDataOutputStream destAppend = null;
-  FSDataInputStream srcOpenStream = null;
-  ByteBuffer buffer = ByteBuffer.allocate(1024);
+  FSDataInputStream srcOpenStreamGlobal = null;
+  // 1M = 1024 * 1024 = 1048576字节
+  ByteBuffer bufferGlobal = ByteBuffer.allocate(1024 * 1024 * 10);
+  ByteBuffer bufferUnit = ByteBuffer.allocate(1024 * 1024 * 10);
   long statisticsWriteBytes = 0;
 
   @Before
@@ -55,34 +56,29 @@ public class DataStreamTest {
       // 不存在先本地直接copy过去一个
       String localPath = "./data/upload/big.txt";
       FileWriter writer = new FileWriter(localPath);
-      for (int i = 0; i < 500; i++) {
-        writer.write("hello world,hello hadoop " + i + "\r\n");
+      for (int i = 0; i < 5 * 10000; i++) {
+        writer.write("init data——hello world,hello hadoop " + i + "\r\n");
       }
       // 很关键～
       writer.flush();
       fileSystem.copyFromLocalFile(new Path(localPath), srcRemotePath);
       log.info("初始化源文件");
     }
-    srcAppend = fileSystem.append(srcRemotePath);
-    srcOpenStream = fileSystem.open(srcRemotePath);
+    srcOpenStreamGlobal = fileSystem.open(srcRemotePath);
 
     // dest 初始化
     if (!fileSystem.exists(destRemotePath)) {
       FSDataOutputStream out = fileSystem.create(destRemotePath);
-      // out 和 下面的append 不能同时开启，否则会报错AlreadyBeingCreatedException
+      // out 和 下面的append 不能同时开启两个写入流，否则会报错AlreadyBeingCreatedException
       out.close();
       log.info("初始化目的文件");
     }
-    destAppend = fileSystem.append(destRemotePath);
   }
 
   @After
   public void close() throws IOException {
-    if (srcAppend != null) {
-      srcAppend.close();
-    }
-    if (destAppend != null) {
-      destAppend.close();
+    if (srcOpenStreamGlobal != null) {
+      srcOpenStreamGlobal.close();
     }
     if (fileSystem != null) {
       fileSystem.close();
@@ -100,10 +96,16 @@ public class DataStreamTest {
     initIO();
     // 该线程往源文件持续写数据
     Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "HDFS--srcAppendThread"))
-        .scheduleAtFixedRate(this::productionData, 5, 5, TimeUnit.SECONDS);
+        .scheduleAtFixedRate(this::productionData, 500, 500, TimeUnit.MILLISECONDS);
+    // 是否测试：每次都重新打开文件 vs 全局打开一次
+    boolean isTest = false;
     // 该线程持续读取源文件，缓存至本地队列
     Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "HDFS--srcReadThread"))
-        .scheduleAtFixedRate(this::dataPipelineProducer, 1, 1, TimeUnit.SECONDS);
+        .scheduleAtFixedRate(
+            isTest ? this::dataPipelineProducerTestGlobal : this::dataPipelineProducer,
+            100,
+            100,
+            TimeUnit.MILLISECONDS);
     // 该线程持续将本地队列的数据写到目的文件
     Executors.newSingleThreadExecutor(r -> new Thread(r, "HDFS--destAppendThread"))
         .submit(this::dataPipelineConsumer);
@@ -115,13 +117,21 @@ public class DataStreamTest {
   /** 生产数据 */
   public void productionData() {
     try {
-      String msg = "productionData追加写——" + sourceDataNum.getAndIncrement() + "\r\n";
-      byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
+      FSDataOutputStream srcAppend = fileSystem.append(srcRemotePath);
+      int n = 10;
+      String msg = "productionData追加写";
+      String repeatMsg = getRepeatContent(msg, n, sourceDataNum);
+      byte[] bytes = repeatMsg.getBytes(StandardCharsets.UTF_8);
       srcAppend.write(bytes);
       srcAppend.flush();
+      srcAppend.close();
 
       FileStatus srcFileStatus = fileSystem.getFileStatus(srcRemotePath);
-      log.info("源文件追加写「{}」,源文件实际大小：{},内容为：{}", bytes.length, srcFileStatus.getLen(), msg);
+      if (n == 1) {
+        log.info("源文件追加写「{}」,源文件实际大小：{},内容为：{}", bytes.length, srcFileStatus.getLen(), msg);
+      } else {
+        log.info("源文件追加写「{}」,源文件实际大小：{}", bytes.length, srcFileStatus.getLen());
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -132,26 +142,90 @@ public class DataStreamTest {
     try {
       FileStatus fileStatus = fileSystem.getFileStatus(srcRemotePath);
       long len = fileStatus.getLen();
-      if (srcOffset < len) {
+      // 每次都重新打开文件 vs 全局打开一次
+      // 每次都重新打开文件
+      if (srcOffsetUnit < len) {
+        FSDataInputStream srcOpenStreamUnit = fileSystem.open(srcRemotePath);
         // 使用seek 将偏移量调整
-        srcOpenStream.seek(srcOffset);
-        buffer.clear();
-        srcOpenStream.read(buffer);
-        if (buffer.hasArray()) {
+        srcOpenStreamUnit.seek(srcOffsetUnit);
+        bufferUnit.clear();
+        srcOpenStreamUnit.read(bufferUnit);
+        srcOpenStreamUnit.close();
+        if (bufferUnit.hasArray()) {
           byte[] array;
-          if (buffer.hasRemaining()) {
+          if (bufferUnit.hasRemaining()) {
             // 不满的字节数组
-            array = new byte[buffer.position()];
-            for (int i = 0; i < buffer.position(); i++) {
-              array[i] = buffer.get(i);
+            array = new byte[bufferUnit.position()];
+            for (int i = 0; i < bufferUnit.position(); i++) {
+              array[i] = bufferUnit.get(i);
             }
           } else {
-            array = buffer.array();
+            array = bufferUnit.array();
           }
-          localQueue.offer(array);
-          // 放进队列后，记录源的进度偏移
-          srcOffset += array.length;
-          log.info("源文件大小：{},读取源文件后，新的偏移是：【{}】，本次写入阻塞队列的大小为：{}", len, srcOffset, array.length);
+          if (array.length != 0) {
+            localQueue.offer(array);
+            // 放进队列后，记录源的进度偏移
+            srcOffsetUnit += array.length;
+            log.info(
+                "局部每次打开，读源问题——源文件大小：{},读取源文件后，新的偏移是：【{}】，本次写入阻塞队列的大小为：{}",
+                len,
+                srcOffsetUnit,
+                array.length);
+          } else {
+            log.info(
+                "局部每次打开，读源问题——源文件大小：{},读到的最新偏移是：【{}】,读到的position大小为：{}",
+                len,
+                srcOffsetUnit,
+                bufferUnit.position());
+          }
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * 读源文件<br>
+   * 每次都重新打开文件 vs 全局打开一次<br>
+   * 测试结果--应该每次都重新打开文件，否则源文件的增量read不到
+   */
+  public void dataPipelineProducerTestGlobal() {
+    // 每次都重新打开文件
+    dataPipelineProducer();
+    try {
+      FileStatus fileStatus = fileSystem.getFileStatus(srcRemotePath);
+      long len = fileStatus.getLen();
+      // 全局打开一次
+      if (srcOffsetGlobal < len) {
+        srcOpenStreamGlobal.seek(srcOffsetGlobal);
+        bufferGlobal.clear();
+        srcOpenStreamGlobal.read(bufferGlobal);
+        if (bufferGlobal.hasArray()) {
+          byte[] array;
+          if (bufferGlobal.hasRemaining()) {
+            // 不满的字节数组
+            array = new byte[bufferGlobal.position()];
+            for (int i = 0; i < bufferGlobal.position(); i++) {
+              array[i] = bufferGlobal.get(i);
+            }
+          } else {
+            array = bufferGlobal.array();
+          }
+          if (array.length != 0) {
+            srcOffsetGlobal += array.length;
+            log.info(
+                "全局打开一次，读源文件——源文件大小：{},读取源文件后，新的偏移是：【{}】，本次写入阻塞队列的大小为：{}",
+                len,
+                srcOffsetGlobal,
+                array.length);
+          } else {
+            log.info(
+                "全局打开一次，读源文件——源文件大小：{},读到的最新偏移是：【{}】,读到的position大小为：{}",
+                len,
+                srcOffsetGlobal,
+                bufferGlobal.position());
+          }
         }
       }
     } catch (Exception e) {
@@ -166,9 +240,11 @@ public class DataStreamTest {
         // 取出，不移除
         byte[] peek = localQueue.peek();
         if (peek != null) {
+          FSDataOutputStream destAppend = fileSystem.append(destRemotePath);
           // 写入目的
           destAppend.write(peek);
           destAppend.flush();
+          destAppend.close();
           // 写入完毕，从队列删除
           localQueue.remove();
           statisticsWriteBytes += peek.length;
@@ -184,6 +260,62 @@ public class DataStreamTest {
       }
     } catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  /**
+   * 获取某字符串重复n次的结果<br>
+   * 每条一行 \r\n 分割
+   *
+   * @param msg 单条内容
+   * @param n 重复n次
+   * @param atomicInteger 后缀数字
+   * @return
+   */
+  public static String getRepeatContent(String msg, int n, AtomicInteger atomicInteger) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < n; i++) {
+      sb.append(msg).append("——").append(atomicInteger.getAndIncrement()).append("\r\n");
+    }
+    return sb.toString();
+  }
+
+  /**
+   * 测试追加写文件<br>
+   * 只有close流对象，内容才被真正写入，才能查到文件大小变化
+   *
+   * @throws IOException
+   */
+  @Test
+  public void appendFile() throws IOException {
+    Path path = new Path("/user/root/hello.txt");
+    // 场景1：不每次都关闭流对象
+    FSDataOutputStream destAppend = fileSystem.append(path);
+    System.out.printf("写入前，文件大小为：%s \n", fileSystem.getFileStatus(path).getLen());
+    for (int i = 0; i < 3; i++) {
+      // 写入目的
+      String msg = "你好" + i;
+      byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
+      destAppend.write(bytes);
+      destAppend.flush();
+      System.out.printf(
+          "不关闭流，写入数据：{%s},大小为：%s,写入后文件大小为：{%s} \n",
+          msg, bytes.length, fileSystem.getFileStatus(path).getLen());
+    }
+    destAppend.close();
+    System.out.println("关闭流后，文件大小为：" + fileSystem.getFileStatus(path).getLen());
+    // 场景2：每次都关闭流对象
+    for (int i = 0; i < 3; i++) {
+      destAppend = fileSystem.append(path);
+      // 写入目的
+      String msg = "你好" + i;
+      byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
+      destAppend.write(bytes);
+      destAppend.flush();
+      destAppend.close();
+      System.out.printf(
+          "关闭流，写入数据：{%s},大小为：%s,写入后文件大小为：{%s} \n",
+          msg, bytes.length, fileSystem.getFileStatus(path).getLen());
     }
   }
 
