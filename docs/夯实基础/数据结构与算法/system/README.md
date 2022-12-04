@@ -26,23 +26,24 @@
 > 4.一个数组中有一种数出现K次，其他数都出现M次，M>1,K<M.找到出现了K次的数，要求时间复杂度O(n),额外空间复杂度O(1)（Eor_OneKOtherM）   
 
 ## day03
-2022-11-30～2022-12-01
+2022-11-30、2022-12-01、2022-12-04
 > 单向链表和双向链表    
-> 1.单链表的反转    
-> 2.双链表的反转    
-> 3.单链表把给定值都删除     
-> 4.双链表把给定值都删除
+> 1.单链表的反转（SingleLinked_Reverse）    
+> 2.双链表的反转（DoubleLinked_Reverse）    
+> 3.单链表把给定值都删除（SingleLinked_DeleteNum）     
+> 4.双链表把给定值都删除（DoubleLinked_DeleteNum）
 >
 > 栈和队列    
 > 栈：push-进栈 pop-出栈     
 > 队列：offer-进队列 poll-出队列   
-> 1.双向链表实现栈    
-> 2.双向链表实现队列   
-> 3.数组实现栈    
-> 4.数组实现队列   
-> 5.实现一个特殊栈，除了常规都pop和push，在提供一个getMin，可以使用现成的栈结构，要求三个方法的时间复杂度都是O(1)     
-> 6.如何使用栈结构实现队列结构    
-> 7.如何使用队列结构实现栈结构    
+> 1.双向链表实现栈（StackFromDoubleLinked）    
+> 2.双向链表实现队列（QueueFromDoubleLinked）   
+> 3.数组实现栈（StackFromArray）    
+> 4.数组实现队列（QueueFromArray）   
+> 5.实现一个特殊栈，除了常规都pop和push，在提供一个getMin，
+> 可以使用现成的栈结构，要求三个方法的时间复杂度都是O(1)（MinStackFromStack）     
+> 6.如何使用栈结构实现队列结构（QueueFromStack）    
+> 7.如何使用队列结构实现栈结构（StackFromQueue）    
 > 
 > 递归    
 > 1.一个数组找最大值，用递归实现(理解递归)    
@@ -51,7 +52,10 @@
 > 哈希表和有序表
 
 ## day04
-2022-12-0
-> 归并排序   
-> 
-> 
+2022-12-04
+> 归并排序 O(N * logN)   
+> 1.递归实现归并（Sorted_Merge）    
+> 2.非递归实现归并(步长)（Sorted_Merge）   
+> 3.小和问题，一个数组，计算每个位置左边比他小的数据的和，要求O(N * logN)（SortedMerge_Sum）   
+> 4.数组中有多少个逆序对，逆序对：任意两个数据（不用相邻），右边比左边小（SortedMerge_ReversePair）      
+> 5.数组中某一位置的num右边有多少个数，乘以2依然比num小，求整个数组中每个数的这种个数的总和（StortedMerge_Twice）
