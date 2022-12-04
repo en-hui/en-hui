@@ -59,3 +59,14 @@
 > 3.小和问题，一个数组，计算每个位置左边比他小的数据的和，要求O(N * logN)（SortedMerge_Sum）   
 > 4.数组中有多少个逆序对，逆序对：任意两个数据（不用相邻），右边比左边小（SortedMerge_ReversePair）      
 > 5.数组中某一位置的num右边有多少个数，乘以2依然比num小，求整个数组中每个数的这种个数的总和（StortedMerge_Twice）
+
+## day05
+2022-12-04
+> 归并排序（TODO：太难了，没理解，有时间多看几遍）   
+> 6.给定一个数组arr，两个整数lower和upper，返回arr中有多少个子数组的累加和在 [lower,upper] 范围上   
+> leetcode题目：https://leetcode.cn/problems/count-of-range-sum/       
+> 解法1：归并+前缀和（）      
+> 解法2：有序表，TODO   
+> 
+> 快速排序   
+> 1.荷兰国旗问题
