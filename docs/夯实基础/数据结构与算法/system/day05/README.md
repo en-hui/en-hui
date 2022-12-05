@@ -1,4 +1,4 @@
-# day04
+# day05
 
 ## 归并
 ### 给定一个数组arr，两个正数lower和upper，返回arr中有多少个子数组的累加和在 [lower,upper] 范围上
@@ -53,4 +53,4 @@ https://leetcode.cn/problems/count-of-range-sum/
 
 ### 快速排序（3.0-随机快排）
 > 快排2.0改版，随意位置的数和最右侧的交换，然后在用最右侧的数进行v2的操作   
-> 这样的时间复杂度是 O(logN)，v1和v2都是O(n的平方)
+> 这样的时间复杂度是 O(N * logN)，v1和v2都是O(n的平方)
