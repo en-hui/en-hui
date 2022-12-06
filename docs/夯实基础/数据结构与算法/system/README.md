@@ -98,7 +98,9 @@
 ## day07
 [day07](夯实基础/数据结构与算法/system/day07/)   
 2022-12-06
-> 
-> 
+> 堆   
+> 1.最大线段重合问题   
+> 2.加强堆（实现一个堆结构，支持isEmpty、size、contains、peek、pop、push、remove操作）   
+> 3.加强堆（模拟电商topk得奖）
 
 ## day08
