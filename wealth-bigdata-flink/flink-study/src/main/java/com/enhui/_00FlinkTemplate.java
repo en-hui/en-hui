@@ -3,30 +3,26 @@ package com.enhui;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Collector;
 
-/**
- * nc -lk 9999<br>
- * 通过socket数据源，去请求一个socket服务，得到数据流<br>
- * 然后统计数据流中出现的单词及个数
- */
-public class _01WorkCount {
-
+public class _00FlinkTemplate {
+  /**
+   * flink编程模版：<br>
+   * 1、创建一个编程入口环境env<br>
+   * 2、通过source算子，映射数据源为dataStream<br>
+   * 3、通过算子对数据流进行各种转换（计算逻辑）<br>
+   * 4、通过sink算子，将数据流输出<br>
+   * 5、触发程序的提交运行
+   *
+   * @param args
+   */
   public static void main(String[] args) throws Exception {
-    // 本地运行开启web
-    Configuration configuration = new Configuration();
-    configuration.setInteger("rest.port", 8081);
-    final StreamExecutionEnvironment env =
-        StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
     // 1、流批一体的入口环境
-    //    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-
-    env.setParallelism(1); // 本地运行可以指定使用几个并行线程，默认cpu核数
+    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
     // 2、连接 socket 得到数据流
     DataStreamSource<String> dataStream = env.socketTextStream("127.0.0.1", 9999);
     // 3.1、单词切割
