@@ -63,7 +63,7 @@ public abstract class Sorted {
      * @param i   位置1
      * @param j   位置2
      */
-    public void swap(int[] arr, int i, int j) {
+    public static void swap(int[] arr, int i, int j) {
         int temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
