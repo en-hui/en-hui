@@ -9,6 +9,7 @@
     <modules>
       <module>flink-example</module>
         <module>flink-hudi</module>
+        <module>flink-study</module>
     </modules>
 
 </project>
