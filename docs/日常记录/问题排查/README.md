@@ -37,5 +37,18 @@ innodb_lock_waits表则由 performance_schema.data_lock_waits表代替
 ### 操作系统层面
 
 ### JVM层面
+> jdb:    
+1.修改compose文件，打开debug：KAFKA_DEBUG=true(和开发机使用一样，source、sink、manager是kafka_debug。web是debug)    
+2.重启容器，让debug配置生效    
+3.进入对应容器：docker exec -it sourcedp1 bash     
+4.使用jdb连接服务，jdb -attach localhost:5005    
+5.打断点：stop at com.datapipeline.base.connector.source.DpAbstractReader:209    
+6.查看当前断点停留位置：where    
+7.查看变量名称：eval e.getMessage()     
+8.查看有哪些线程：threads    
+9.thread 线程名称     
+10.执行下一行：next    
+11.查看有哪些断点：clear     
+12.执行到下一个断点：run    
 
 ### 工具
