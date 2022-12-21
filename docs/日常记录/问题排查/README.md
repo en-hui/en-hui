@@ -50,5 +50,8 @@ innodb_lock_waits表则由 performance_schema.data_lock_waits表代替
 10.执行下一行：next    
 11.查看有哪些断点：clear     
 12.执行到下一个断点：run    
+13.查看当前局部变量：locals
 
+
+查看进程中线程数：ps -p pid -lfT | wc -l
 ### 工具
