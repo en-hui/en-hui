@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+//package com.enhui.netty.research.simple.proto;
+//option java_package = "com.enhui.netty.research.simple.proto";
+option java_outer_classname = "MsgProto";
+
+enum MsgCode {
+  FILE_CONTENT_CMD = 0;
+  FILE_CONTENT_RESULT = 1;
+};
+
+
+
+message FileContentCmd {
+  // 文件名称
+  string fileName = 1;
+}
+
+message FileContentResult {
+  // 文件名称
+  string fileName = 1;
+  // 文件内容
+  string fileContent = 2;
+}
