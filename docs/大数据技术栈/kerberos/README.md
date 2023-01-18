@@ -1,5 +1,9 @@
 # kerberos
 
+test/admin@EXAMPLE.COM   
+各部分含义   
+account / instance @ 域   
+
 ## 服务端安装
 ```text
 # 下载安装krb5服务端
@@ -93,8 +97,12 @@ yum -y install krb5-libs krb5-workstation
 # 尝试用 新建的test登陆
 kinit test/admin@EXAMPLE
 # 输入密码：EXAMPLE
-# 验证
+# 验证,显示票据及过期时间，即表示成功了
 klist
+# 登陆kadmin管理后台
+kadmin
+# 登陆成功后，和服务端一样，可以用一些命令了
+listprincs
 ```
 
 ## 常用命令
