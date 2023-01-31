@@ -10,6 +10,8 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 public class ServerAHandler extends ChannelInitializer<SocketChannel> {
     @Override
@@ -17,6 +19,7 @@ public class ServerAHandler extends ChannelInitializer<SocketChannel> {
         socketChannel
                 .pipeline()
                 .addLast(
+                        new LoggingHandler(LogLevel.DEBUG),
                         new HttpServerCodec(), // Http 服务器编解码器
                         new HttpObjectAggregator(65535), // 内容长度限制
                         new WebSocketServerProtocolHandler("/websocket") // WebSocket 协议处理器, 在这里处理握手、ping、pong 等消息

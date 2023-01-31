@@ -7,15 +7,19 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 public class ServerBHandler extends ChannelInitializer<SocketChannel> {
-    @Override
-    protected void initChannel(SocketChannel socketChannel) throws Exception {
-        socketChannel.pipeline()
-                .addLast(new ProtobufVarint32FrameDecoder()) // io.netty.handler.codec
-                .addLast(new ProtobufDecoder(MsgProto.FileContentResult.getDefaultInstance()))
-                .addLast(new ProtobufVarint32LengthFieldPrepender())
-                .addLast(new ProtobufEncoder())
-                .addLast(new ServiceBReadHandler());
-    }
+  @Override
+  protected void initChannel(SocketChannel socketChannel) throws Exception {
+    socketChannel
+        .pipeline()
+        .addLast(new LoggingHandler(LogLevel.DEBUG))
+        .addLast(new ProtobufVarint32FrameDecoder()) // io.netty.handler.codec
+        .addLast(new ProtobufDecoder(MsgProto.FileContentResult.getDefaultInstance()))
+        .addLast(new ProtobufVarint32LengthFieldPrepender())
+        .addLast(new ProtobufEncoder())
+        .addLast(new ServiceBReadHandler());
+  }
 }

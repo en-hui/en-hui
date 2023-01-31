@@ -47,8 +47,8 @@ public class RpcApplication {
                         ChannelPipeline pipeline = channel.pipeline();
                         if (protocol.equals("http")) {
                             // http编解码
-                            pipeline.addLast(new HttpServerCodec());
-                            pipeline.addLast(new HttpObjectAggregator(1024*512));
+                            pipeline.addLast(new HttpServerCodec()); // http的编解码；一个请求会得到两个部分向下面的handler
+                            pipeline.addLast(new HttpObjectAggregator(1024*512)); // 会把两个部分组合成一个完整的消息
                             pipeline.addLast(new HttpServerRequestHandler());
                         }else {
                             // 自定义编解码
