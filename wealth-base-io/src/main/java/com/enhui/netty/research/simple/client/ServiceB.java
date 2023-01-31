@@ -40,8 +40,11 @@ public class ServiceB {
             Channel client = channelFuture.sync().channel();
 
             MsgProto.FileContentCmd fileContentCmd = MsgProto.FileContentCmd.newBuilder().setFileName("file1").build();
-            byte[] cmdBytes = fileContentCmd.toByteArray();
-            ByteBuf buf = Unpooled.copiedBuffer(cmdBytes);
+            MsgProto.DpMessage message = MsgProto.DpMessage.newBuilder()
+                    .setMsgType(MsgProto.DpMessage.DpMsgType.FILE_CONTENT_CMD)
+                    .setFileContentCmd(fileContentCmd).build();
+            byte[] msgBytes = message.toByteArray();
+            ByteBuf buf = Unpooled.copiedBuffer(msgBytes);
             client.writeAndFlush(buf).sync();
 
             client.closeFuture().sync();

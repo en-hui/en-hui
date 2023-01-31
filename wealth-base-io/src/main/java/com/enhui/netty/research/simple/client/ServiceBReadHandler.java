@@ -6,7 +6,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ServiceBReadHandler extends SimpleChannelInboundHandler<Object> {
+public class ServiceBReadHandler extends SimpleChannelInboundHandler<MsgProto.DpMessage> {
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
@@ -19,9 +19,9 @@ public class ServiceBReadHandler extends SimpleChannelInboundHandler<Object> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Object obj) throws Exception {
-        if (obj instanceof MsgProto.FileContentResult) {
-            MsgProto.FileContentResult msg = (MsgProto.FileContentResult) obj;
+    protected void channelRead0(ChannelHandlerContext ctx, MsgProto.DpMessage message) throws Exception {
+        if (message.getMsgType() == MsgProto.DpMessage.DpMsgType.FILE_CONTENT_RESULT) {
+            MsgProto.FileContentResult msg = message.getFileContentResult();
             log.info("客户端得到响应：{}", msg);
         } else {
             log.info("暂不支持的类型");

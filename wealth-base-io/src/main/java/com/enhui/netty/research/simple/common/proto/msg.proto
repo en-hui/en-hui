@@ -4,12 +4,19 @@ syntax = "proto3";
 //option java_package = "com.enhui.netty.research.simple.proto";
 option java_outer_classname = "MsgProto";
 
-enum MsgCode {
-  FILE_CONTENT_CMD = 0;
-  FILE_CONTENT_RESULT = 1;
-};
+message DpMessage {
+  enum DpMsgType{
+    FILE_CONTENT_CMD = 0;
+    FILE_CONTENT_RESULT = 1;
+  }
 
-
+  DpMsgType msg_type = 1;
+  // 以下类型最多只能出现一个
+  oneof dataBody {
+    FileContentCmd fileContentCmd = 2;
+    FileContentResult fileContentResult = 3;
+  }
+}
 
 message FileContentCmd {
   // 文件名称
