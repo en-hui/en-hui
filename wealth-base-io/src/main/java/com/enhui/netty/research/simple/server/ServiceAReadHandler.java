@@ -1,6 +1,6 @@
 package com.enhui.netty.research.simple.server;
 
-import com.enhui.netty.research.simple.common.proto.MsgProto;
+import com.enhui.netty.research.simple.proto.MsgProto;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;

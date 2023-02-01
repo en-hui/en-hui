@@ -1,0 +1,2 @@
+hello hadoop.
+你好，hadoop。

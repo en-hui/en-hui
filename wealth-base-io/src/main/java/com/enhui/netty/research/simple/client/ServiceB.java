@@ -1,23 +1,15 @@
 package com.enhui.netty.research.simple.client;
 
-import com.enhui.netty.research.simple.common.proto.MsgProto;
+import com.enhui.netty.research.simple.proto.MsgProto;
 import com.enhui.netty.research.simple.server.ServiceA;
-import com.enhui.netty.rpc.framework.utils.SerdeUtil;
-import com.google.protobuf.GeneratedMessageV3;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpVersion;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

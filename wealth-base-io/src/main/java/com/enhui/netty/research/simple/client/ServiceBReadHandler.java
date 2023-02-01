@@ -1,6 +1,6 @@
 package com.enhui.netty.research.simple.client;
 
-import com.enhui.netty.research.simple.common.proto.MsgProto;
+import com.enhui.netty.research.simple.proto.MsgProto;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;

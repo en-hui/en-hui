@@ -1,6 +1,6 @@
 package com.enhui.netty.research.simple.server;
 
-import com.enhui.netty.research.simple.common.proto.MsgProto;
+import com.enhui.netty.research.simple.proto.MsgProto;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;

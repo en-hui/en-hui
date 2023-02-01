@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option java_outer_classname = "RpcProto";
+
+message DpMessage {
+  enum DpMsgType{
+    FILE_CONTENT_CMD = 0;
+    FILE_CONTENT_RESULT = 1;
+  }
+
+  int64 request_id = 1;
+  DpMsgType msg_type = 2;
+  // 以下类型最多只能出现一个
+  oneof dataBody {
+    FileContentCmd fileContentCmd = 3;
+    FileContentResult fileContentResult = 4;
+  }
+}
+
+message FileContentCmd {
+  // 文件名称
+  string fileName = 1;
+}
+
+message FileContentResult {
+  // 文件名称
+  string fileName = 1;
+  // 文件内容
+  string fileContent = 2;
+}
