@@ -32,11 +32,11 @@ public class RpcFileService implements FileSource {
                 .setFileContentCmd(RpcProto.FileContentCmd.newBuilder().setFileName(tableName).build()).build();
         ChannelFuture channelFuture = client.writeAndFlush(message);
         ResponseCallback.addCallback(requestId, cf);
-        log.info("{}:请求消息已发出，等待响应", requestId);
+        log.info("requestId:{},clientId:{} 请求消息已发出，等待响应", requestId, client.id());
         channelFuture.sync();
         String content = cf.get();
         List<String> lines = Arrays.asList(content.split("\r\n"));
-        log.info("{}:rpc 模式，远程调用结束", requestId);
+        log.info("requestId:{},clientId:{} rpc 模式，远程调用结束", requestId, client.id());
         return lines;
     }
 
