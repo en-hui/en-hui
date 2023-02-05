@@ -12,5 +12,6 @@
 * 夯实基础：多线程、JVM、设计模式、数据结构与算法
 
 
-[GitHub](https://gitee.com/huenhui/)
+[Gitee](https://gitee.com/huenhui/)
+[GitHub](https://github.com/en-hui/en-hui)
 [Get Started](README.md)
