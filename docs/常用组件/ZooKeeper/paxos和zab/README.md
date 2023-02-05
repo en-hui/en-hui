@@ -3,6 +3,7 @@
 > zab：原子广播协议，是zk基于paxos的实现。
 
 ## paxos一致性算法
+```java 
 > 文章取自：douban.com/note/208430424/
 > 
 > Paxos描述了这样一个场景，有一个叫做Paxos的小岛(Island)上面住了一批居民，
@@ -67,3 +68,4 @@
 > 但这些情况总是能在Paxos的算法中找到原型并加以解决。
 > 这也正是我们认为Paxos是Zookeeper的灵魂的原因。
 > 当然ZK Server还有很多属于自己特性的东西：Session, Watcher，Version等等等等
+```
