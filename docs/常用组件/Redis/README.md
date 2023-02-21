@@ -28,7 +28,7 @@
 
 ### msb-redis
 - [Redis入门与应用](常用组件/Redis/msb/1、Redis入门与应用.md)
-- [Redis高级特性和应用(发布 订阅、Stream)](常用组件/Redis/msb/Redis高级特性和应用(发布 订阅、Stream).md)
+- [Redis高级特性和应用(发布 订阅、Stream)](常用组件/Redis/msb/2、Redis高级特性和应用(发布 订阅、Stream).md)
 - [Redis高级特性和应用(慢查询、Pipeline、事务、Lua)](常用组件/Redis/msb/2、Redis高级特性和应用(慢查询、Pipeline、事务、Lua).md)
 - [Redis底层原理（持久化+分布式锁）](常用组件/Redis/msb/3、Redis底层原理（持久化+分布式锁）.md)
 - [Redis高并发高可用（集群)](常用组件/Redis/msb/4、Redis高并发高可用（集群）.md)
