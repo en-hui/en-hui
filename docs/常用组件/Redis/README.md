@@ -26,13 +26,3 @@
 - [Redis作为数据库&缓存](常用组件/Redis/Redis作为数据库&缓存/)
 - [Redis高可用&集群](常用组件/Redis/Redis高可用&集群/)
 
-### msb-redis
-- [Redis入门与应用](常用组件/Redis/msb/1、Redis入门与应用.md)
-- [Redis高级特性和应用(发布、订阅、Stream)](常用组件/Redis/msb/2、Redis高级特性和应用(发布、订阅、Stream).md)
-- [Redis高级特性和应用(慢查询、Pipeline、事务、Lua)](常用组件/Redis/msb/2、Redis高级特性和应用(慢查询、Pipeline、事务、Lua).md)
-- [Redis底层原理（持久化+分布式锁）](常用组件/Redis/msb/3、Redis底层原理（持久化+分布式锁）.md)
-- [Redis高并发高可用（集群)](常用组件/Redis/msb/4、Redis高并发高可用（集群）.md)
-- [Redis高并发高可用（主从复制、哨兵）](常用组件/Redis/msb/4、Redis高并发高可用（主从复制、哨兵）.md)
-- [Redis缓存使用问题及互联网运用](常用组件/Redis/msb/5、Redis缓存使用问题及互联网运用.md)
-- [Redis设计、实现](常用组件/Redis/msb/6、Redis设计、实现.md)
-
