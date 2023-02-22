@@ -69,6 +69,7 @@
 - 在服务端（node01）上传mysql驱动包（最好与mysql版本一致），放在hive的lib目录下
 - 在服务端初始化：schematool -dbType mysql -initSchema
 - 启动服务端（node01）阻塞式窗口：hive --service metastore
+- 后台启动 metastore 服务器端，默认使用 9083 端口: nohup hive --service metastore &
 - 客户端连接（node02）：hive
 
 node01:服务端

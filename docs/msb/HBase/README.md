@@ -1,13 +1,13 @@
 # HBase模块-马士兵教育原笔记
 
-- [HBase介绍](msb/01%20HBase介绍.md)
-- [HBase搭建--Standalone](msb/02%20HBase搭建--Standalone.md)
-- [HBase搭建--Fully-distributed](msb/03%20HBase搭建--Fully-distributed.md)
-- [Protobuf简介](msb/04%20Protobuf简介.md)
-- [HBase基本操作](msb/05%20HBase基本操作.md)
-- [LSM树存储结构](msb/06%20HBase%20LSM树存储结构.md)
-- [HBase数据读取流程](msb/07%20HBase数据读取流程.md)
-- [HBase优化设计](msb/08%20HBase优化设计.md)
+- [HBase介绍](msb/HBase/01%20HBase介绍.md)
+- [HBase搭建--Standalone](msb/HBase/02%20HBase搭建--Standalone.md)
+- [HBase搭建--Fully-distributed](msb/HBase/03%20HBase搭建--Fully-distributed.md)
+- [Protobuf简介](msb/HBase/04%20Protobuf简介.md)
+- [HBase基本操作](msb/HBase/05%20HBase基本操作.md)
+- [LSM树存储结构](msb/HBase/06%20HBase%20LSM树存储结构.md)
+- [HBase数据读取流程](msb/HBase/07%20HBase数据读取流程.md)
+- [HBase优化设计](msb/HBase/08%20HBase优化设计.md)
 
 
 hbase 表设计
