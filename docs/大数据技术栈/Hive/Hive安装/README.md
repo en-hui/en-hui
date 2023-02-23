@@ -228,6 +228,7 @@ public class HiveJdbcClient {
   - 查看表信息：desc formatted tbl;
   - 插入数据：insert into tbl values(1,1);
   - 查看数据：select * from tbl;
+  - hive命令行中可以直接使用hdfs的命令：dfs -ls /
   - 查看hdfs的文件 hdfs dfs -cat /user/hive/warehouse/tbl/*
     - 下载hdfs的文件 hdfs dfs -get /user/hive/warehouse/tbl/*
     - 查看带分隔符的文件内容：cat -A 000000_0
