@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <artifactId>wealth</artifactId>
+    <groupId>com.enhui</groupId>
+    <version>${project.version}</version>
+    <modelVersion>${model.version}</modelVersion>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>wealth-auto-test</module>
+        <module>wealth-base-algorithm</module>
+        <module>wealth-base-design</module>
+        <module>wealth-base-io</module>
+        <module>wealth-bigdata-flink</module>
+        <module>wealth-bigdata-hadoop</module>
+        <module>wealth-component-kafka</module>
+        <module>wealth-component-kafka-connector</module>
+        <module>wealth-component-kafka-move-topic</module>
+        <module>wealth-component-zk</module>
+        <module>wealth-util</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.version>1.0.0</project.version>
+        <model.version>4.0.0</model.version>
+    </properties>
+
+
+    <repositories>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>https://maven.aliyun.com/nexus/content/repositories/central/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>https://maven.aliyun.com/nexus/content/repositories/central/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+</project>

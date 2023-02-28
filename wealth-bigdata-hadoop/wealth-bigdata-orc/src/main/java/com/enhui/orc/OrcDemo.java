@@ -1,11 +1,10 @@
-package com.enhui;
+package com.enhui.orc;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
-import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
 import org.apache.orc.*;
 import org.testng.annotations.Test;
 
