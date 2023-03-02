@@ -1,6 +1,6 @@
 package com.enhui.algorithm.system.day04;
 
-import com.enhui.algorithm.common.RandomUtil;
+import com.enhui.algorithm.util.RandomUtil;
 import org.junit.Test;
 
 import java.util.Arrays;

@@ -1,7 +1,7 @@
 package com.enhui.algorithm.system.day03;
 
-import com.enhui.algorithm.common.DoubleLinkedNode;
-import com.enhui.algorithm.common.RandomUtil;
+import com.enhui.algorithm.structure.DoubleLinkedNode;
+import com.enhui.algorithm.util.RandomUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
 
-import static com.enhui.algorithm.common.DoubleLinkedNode.printRevertLinked;
+import static com.enhui.algorithm.structure.DoubleLinkedNode.printRevertLinked;
 
 /**
  * 双向链表实现队列

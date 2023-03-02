@@ -1,6 +1,6 @@
 package com.enhui.algorithm.system.day01;
 
-import com.enhui.algorithm.common.RandomUtil;
+import com.enhui.algorithm.util.RandomUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;

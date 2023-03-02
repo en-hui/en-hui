@@ -1,13 +1,13 @@
 package com.enhui.algorithm.system.day03;
 
-import com.enhui.algorithm.common.RandomUtil;
-import com.enhui.algorithm.common.SingleLinkedNode;
+import com.enhui.algorithm.util.RandomUtil;
+import com.enhui.algorithm.structure.SingleLinkedNode;
 
 import java.util.ArrayList;
 
-import static com.enhui.algorithm.common.SingleLinkedNode.comparyLinked;
-import static com.enhui.algorithm.common.SingleLinkedNode.generateRandomLinked;
-import static com.enhui.algorithm.common.SingleLinkedNode.printLinked;
+import static com.enhui.algorithm.structure.SingleLinkedNode.comparyLinked;
+import static com.enhui.algorithm.structure.SingleLinkedNode.generateRandomLinked;
+import static com.enhui.algorithm.structure.SingleLinkedNode.printLinked;
 
 /**
  * 单链表把给定值都删除

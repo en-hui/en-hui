@@ -1,13 +1,13 @@
 package com.enhui.algorithm.system.day03;
 
-import com.enhui.algorithm.common.DoubleLinkedNode;
-import com.enhui.algorithm.common.RandomUtil;
+import com.enhui.algorithm.structure.DoubleLinkedNode;
+import com.enhui.algorithm.util.RandomUtil;
 
 import java.util.ArrayList;
 
-import static com.enhui.algorithm.common.DoubleLinkedNode.comparyLinked;
-import static com.enhui.algorithm.common.DoubleLinkedNode.generateRandomLinked;
-import static com.enhui.algorithm.common.DoubleLinkedNode.printLinked;
+import static com.enhui.algorithm.structure.DoubleLinkedNode.comparyLinked;
+import static com.enhui.algorithm.structure.DoubleLinkedNode.generateRandomLinked;
+import static com.enhui.algorithm.structure.DoubleLinkedNode.printLinked;
 
 /**
  * 双链表把给定值都删除

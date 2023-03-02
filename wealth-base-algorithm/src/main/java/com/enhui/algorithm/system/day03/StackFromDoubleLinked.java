@@ -1,12 +1,12 @@
 package com.enhui.algorithm.system.day03;
 
-import com.enhui.algorithm.common.DoubleLinkedNode;
-import com.enhui.algorithm.common.RandomUtil;
+import com.enhui.algorithm.structure.DoubleLinkedNode;
+import com.enhui.algorithm.util.RandomUtil;
 
 import java.util.Arrays;
 import java.util.Stack;
 
-import static com.enhui.algorithm.common.DoubleLinkedNode.printLinked;
+import static com.enhui.algorithm.structure.DoubleLinkedNode.printLinked;
 
 
 /**
