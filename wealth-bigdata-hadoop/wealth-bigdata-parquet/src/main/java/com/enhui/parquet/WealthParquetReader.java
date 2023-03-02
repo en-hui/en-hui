@@ -13,7 +13,7 @@ import org.apache.parquet.schema.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParquetReaderUtil {
+public class WealthParquetReader {
 
     Configuration conf;
 
