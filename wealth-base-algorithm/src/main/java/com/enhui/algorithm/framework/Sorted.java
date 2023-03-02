@@ -9,7 +9,7 @@ import java.util.Arrays;
  * <p>
  * 提供了 template，实现 sort 方法后，调用template即可
  */
-public abstract class SortedFramework {
+public abstract class Sorted {
     /**
      * 测试次数
      */
@@ -23,7 +23,7 @@ public abstract class SortedFramework {
      */
     private int maxValue;
 
-    public SortedFramework(int testTimes, int maxSize, int maxValue) {
+    public Sorted(int testTimes, int maxSize, int maxValue) {
         this.testTimes = testTimes;
         this.maxSize = maxSize;
         this.maxValue = maxValue;

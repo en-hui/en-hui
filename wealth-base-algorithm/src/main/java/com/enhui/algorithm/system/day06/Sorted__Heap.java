@@ -1,13 +1,13 @@
 package com.enhui.algorithm.system.day06;
 
-import com.enhui.algorithm.framework.SortedFramework;
+import com.enhui.algorithm.framework.Sorted;
 
 /**
  * 堆排序
  */
-public class Sorted_Framework_Heap extends SortedFramework {
+public class Sorted__Heap extends Sorted {
 
-    public Sorted_Framework_Heap(int testTimes, int maxSize, int maxValue) {
+    public Sorted__Heap(int testTimes, int maxSize, int maxValue) {
         super(testTimes, maxSize, maxValue);
     }
 
@@ -15,7 +15,7 @@ public class Sorted_Framework_Heap extends SortedFramework {
         int testTimes = 10000;
         int maxSize = 1000;
         int maxValue = 1000;
-        SortedFramework sorted = new Sorted_Framework_Heap(testTimes, maxSize, maxValue);
+        Sorted sorted = new Sorted__Heap(testTimes, maxSize, maxValue);
         sorted.template();
     }
 
@@ -34,7 +34,7 @@ public class Sorted_Framework_Heap extends SortedFramework {
             Heap.heapify(arr, i, arr.length);
         }
         int heapSize = arr.length;
-        SortedFramework.swap(arr,0,--heapSize);
+        Sorted.swap(arr,0,--heapSize);
         while (heapSize > 0) {
             Heap.heapify(arr, 0, heapSize);
             swap(arr, 0, --heapSize);

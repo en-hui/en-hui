@@ -1,7 +1,7 @@
 package com.enhui.algorithm.system.day06;
 
 import com.enhui.algorithm.util.RandomUtil;
-import com.enhui.algorithm.framework.SortedFramework;
+import com.enhui.algorithm.framework.Sorted;
 
 import java.util.Objects;
 import java.util.PriorityQueue;
@@ -68,7 +68,7 @@ public class Heap {
         if (heapSize > 0) {
             max = arr[0];
             // 0位置交换到最后，heapSize 堆变小一个距离
-            SortedFramework.swap(arr, 0, --heapSize);
+            Sorted.swap(arr, 0, --heapSize);
             // 把0位置调整到合适为止
             heapify(arr, 0, heapSize);
         }
@@ -79,7 +79,7 @@ public class Heap {
         // 当前节点大于子节点交换，不大于时停
         // 0位置的父节点还是0，不大于 也停
         while (heap[index] > heap[(index - 1) / 2]) {
-            SortedFramework.swap(heap, index, (index - 1) / 2);
+            Sorted.swap(heap, index, (index - 1) / 2);
             index = (index - 1) / 2;
         }
     }
@@ -91,7 +91,7 @@ public class Heap {
             // 左右孩子挑出大的来
             int largest = left + 1 < heapSize && heap[left + 1] > heap[left] ? left + 1 : left;
             if (heap[largest] > heap[index]) {
-                SortedFramework.swap(heap, largest, index);
+                Sorted.swap(heap, largest, index);
                 index = largest;
                 left = index * 2 + 1;
             } else {

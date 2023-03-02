@@ -1,10 +1,10 @@
 package com.enhui.algorithm.system.day05;
 
-import com.enhui.algorithm.framework.SortedFramework;
+import com.enhui.algorithm.framework.Sorted;
 
-public class Sorted_Framework_Quick extends SortedFramework {
+public class Sorted__Quick extends Sorted {
 
-    public Sorted_Framework_Quick(int testTimes, int maxSize, int maxValue) {
+    public Sorted__Quick(int testTimes, int maxSize, int maxValue) {
         super(testTimes, maxSize, maxValue);
     }
 
@@ -12,7 +12,7 @@ public class Sorted_Framework_Quick extends SortedFramework {
         int testTimes = 10000;
         int maxSize = 1000;
         int maxValue = 1000;
-        SortedFramework sorted = new Sorted_Framework_Quick(testTimes, maxSize, maxValue);
+        Sorted sorted = new Sorted__Quick(testTimes, maxSize, maxValue);
         sorted.template();
     }
 

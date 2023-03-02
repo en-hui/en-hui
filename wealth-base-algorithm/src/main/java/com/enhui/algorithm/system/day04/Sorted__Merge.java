@@ -1,11 +1,11 @@
 package com.enhui.algorithm.system.day04;
 
-import com.enhui.algorithm.framework.SortedFramework;
+import com.enhui.algorithm.framework.Sorted;
 
 import java.util.Arrays;
 
-public class Sorted_Framework_Merge extends SortedFramework {
-    public Sorted_Framework_Merge(int testTimes, int maxSize, int maxValue) {
+public class Sorted__Merge extends Sorted {
+    public Sorted__Merge(int testTimes, int maxSize, int maxValue) {
         super(testTimes, maxSize, maxValue);
     }
 
@@ -13,7 +13,7 @@ public class Sorted_Framework_Merge extends SortedFramework {
         int testTimes = 10000;
         int maxSize = 100;
         int maxValue = 1000;
-        SortedFramework sorted = new Sorted_Framework_Merge(testTimes, maxSize, maxValue);
+        Sorted sorted = new Sorted__Merge(testTimes, maxSize, maxValue);
         sorted.template();
     }
 
