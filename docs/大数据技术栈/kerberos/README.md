@@ -15,8 +15,13 @@ vim /var/kerberos/krb5kdc/kadm5.acl  # 默认，即符合/admin@EXAMPLE的用户
 # 初始化数据库
 kdb5_util create -s -r EXAMPLE.COM
 输入密码：EXAMPLE   然后会生成几个文件：principal  principal.kadm5  principal.kadm5.lock  principal.ok
-# 从服务端进入管理后台
+
+# 从服务端进入管理后台,不用输入密码（只有服务端可以这样进入）
 kadmin.local
+
+# 查看所有的princ
+listprincs
+
 # 创建用户:密码都设置为EXAMPLE
 addprinc root/admin@EXAMPLE.COM
 addprinc test/admin@EXAMPLE.COM
@@ -25,7 +30,7 @@ addprinc test/admin@EXAMPLE.COM
 service krb5kdc restart
 service kadmin restart
 # 上面的不行试试这个
-systemctl  restart krb5kdc.service
+systemctl restart krb5kdc.service
 systemctl restart kadmin.service
 
 # 设置开机自启
@@ -57,8 +62,8 @@ includedir /etc/krb5.conf.d/
 [realms]
 # 只能大写
 EXAMPLE.COM = {
- kdc = kerberos.example.com
- admin_server = kerberos.example.com
+ kdc = heh-node01
+ admin_server = heh-node01
 }
 
 [domain_realm]
@@ -95,16 +100,17 @@ yum -y install krb5-libs krb5-workstation
 把服务端的/etc/krb5.conf 复制到客户端的同目录
 
 # 尝试用 新建的test登陆
+# kinit test/admin@CMBC —— 需要输入密码    
+# kinit -kt xxx.keytab test/admin@CMBC —— 不需要密码
 kinit test/admin@EXAMPLE
-# 输入密码：EXAMPLE
+# 输入密码(没有任何输出说明是正常的)：EXAMPLE
+
 # 验证,显示票据及过期时间，即表示成功了
 klist
-# 登陆kadmin管理后台
+
+# 登陆kadmin管理后台，需要输入密码
 kadmin
+
 # 登陆成功后，和服务端一样，可以用一些命令了
 listprincs
 ```
-
-## 常用命令
-> 
-> 
