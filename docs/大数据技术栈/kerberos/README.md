@@ -100,12 +100,12 @@ yum -y install krb5-libs krb5-workstation
 把服务端的/etc/krb5.conf 复制到客户端的同目录
 
 # 尝试用 新建的test登陆
-# kinit test/admin@CMBC —— 需要输入密码    
-# kinit -kt xxx.keytab test/admin@CMBC —— 不需要密码
+# kinit hdfs/admin@CMBC —— 需要输入密码    
+# kinit -kt xxx.keytab test/hdfs@CMBC —— 不需要密码
 kinit test/admin@EXAMPLE
 # 输入密码(没有任何输出说明是正常的)：EXAMPLE
 
-# 验证,显示票据及过期时间，即表示成功了
+# 显示当前登录用户信息
 klist
 
 # 登陆kadmin管理后台，需要输入密码
@@ -113,4 +113,7 @@ kadmin
 
 # 登陆成功后，和服务端一样，可以用一些命令了
 listprincs
+
+# 销毁登录
+kdestroy
 ```

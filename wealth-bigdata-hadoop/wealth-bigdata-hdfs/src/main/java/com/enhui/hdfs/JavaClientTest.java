@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -27,18 +28,19 @@ import org.junit.Test;
 public class JavaClientTest {
 
   FileSystem fileSystem = null;
-  Configuration config = null;
+  Configuration configuration = null;
 
   @Before
-  public void initClient() throws IOException {
-    config = new Configuration(true);
+  public void initClient() throws IOException, InterruptedException {
+    // 不加载配置文件
+    configuration = new Configuration(false);
     // 客户端与datanode 使用主机名通信
-    config.set("dfs.client.use.datanode.hostname", "true");
+    configuration.set("dfs.client.use.datanode.hostname", "true");
     // 设置块大小
-    config.set("dfs.blocksize", "1m");
+    configuration.set("dfs.blocksize", "1m");
     System.setProperty("HADOOP_USER_NAME", "root");
-    // fileSystem = FileSystem.get(URI.create("hdfs://heh-node02:9000"), configuration, "root");
-    fileSystem = FileSystem.get(config);
+    fileSystem = FileSystem.get(URI.create("hdfs://heh-node02:8020"), configuration, "root");
+    //    fileSystem = FileSystem.get(config);
     log.info("=======客户端初始化=======");
   }
 
@@ -87,7 +89,7 @@ public class JavaClientTest {
         new BufferedInputStream(new ByteArrayInputStream(req.getBytes(StandardCharsets.UTF_8)));
     Path outFile = new Path(remotePath);
     FSDataOutputStream output = fileSystem.create(outFile, true);
-    IOUtils.copyBytes(input, output, config, true);
+    IOUtils.copyBytes(input, output, configuration, true);
     log.info("io形式将字符串内容 【{}】 上传至文件 {}", req, remotePath);
 
     FileStatus[] files = fileSystem.listStatus(new Path("/user/root/"));
@@ -95,7 +97,7 @@ public class JavaClientTest {
       if (remotePath.equals(file.getPath().toUri().getPath())) {
         FSDataInputStream open = fileSystem.open(new Path(remotePath));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        IOUtils.copyBytes(open, outputStream, config, true);
+        IOUtils.copyBytes(open, outputStream, configuration, true);
         res = new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
         log.info("打开文件并读取内容: 【{}】", res);
       }
