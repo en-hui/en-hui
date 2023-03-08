@@ -2,7 +2,6 @@ package com.enhui.hdfs;
 
 import com.sun.security.auth.module.Krb5LoginModule;
 import java.io.IOException;
-import java.net.URI;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 import java.time.LocalDateTime;
@@ -16,8 +15,6 @@ import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.security.AnnotatedSecurityInfo;
-import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authentication.util.KerberosName;
 import org.junit.After;
@@ -63,10 +60,7 @@ public class HdfsKerberosClient {
         UserGroupInformation.loginUserFromKeytabAndReturnUGI(principal, keytab);
 
     config = ugi.doAs((PrivilegedAction<Configuration>) () -> config);
-    fileSystem =
-        ugi.doAs(
-            (PrivilegedExceptionAction<FileSystem>)
-                () -> FileSystem.newInstance(URI.create("hdfs://heh-node01:9000"), config, "root"));
+    fileSystem = ugi.doAs((PrivilegedExceptionAction<FileSystem>) () -> FileSystem.get(config));
 
     log.info("=======客户端初始化=======");
   }
