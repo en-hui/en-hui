@@ -1,5 +1,7 @@
 # kerberos
 
+- [HDFS集成Kerberos](大数据技术栈/kerberos/HDFS&Kerberos.md)
+
 test/admin@EXAMPLE.COM   
 各部分含义   
 account / instance @ 域   
