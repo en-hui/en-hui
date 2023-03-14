@@ -1,6 +1,9 @@
 # HDFS客户端
 
 ## 命令行客户端
+**用户没权限的时候，可以操作环境变量来达到模拟切换用户**   
+export HADOOP_USER_NAME=hdfs
+
 在任意一台hdfs的安装节点上直接运行     
 常用命令示例：
 1. 查看目录信息：hdfs dfs -ls /
