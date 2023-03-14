@@ -10,7 +10,7 @@ public abstract class DoubleParamFramework<P1, P2, R> implements CodeFramework {
    * 模版方法模式<br>
    * 运行指定次数，根据随机参数比较题解与对数器的结果
    */
-  void methodTemplate() {
+  protected void methodTemplate() {
     int testTimes = getTestTimes();
     boolean success = true;
     for (int i = 0; i < testTimes; i++) {
@@ -35,7 +35,7 @@ public abstract class DoubleParamFramework<P1, P2, R> implements CodeFramework {
    *
    * @return 参数1
    */
-  public abstract P1 randomParam1();
+  protected abstract P1 randomParam1();
   /**
    * 生成随机参数
    *
@@ -59,7 +59,7 @@ public abstract class DoubleParamFramework<P1, P2, R> implements CodeFramework {
    *
    * @return 次数
    */
-  public int getTestTimes() {
+  protected int getTestTimes() {
     return 100;
   }
 
@@ -70,7 +70,7 @@ public abstract class DoubleParamFramework<P1, P2, R> implements CodeFramework {
    * @param param2 参数2
    * @return 计算结果
    */
-  abstract R solution(P1 param1, P2 param2);
+  protected abstract R solution(P1 param1, P2 param2);
 
   /**
    * 对数器：一个暴力解法
@@ -79,5 +79,5 @@ public abstract class DoubleParamFramework<P1, P2, R> implements CodeFramework {
    * @param param2 参数2
    * @return 计算结果
    */
-  abstract R check(P1 param1, P2 param2);
+  protected abstract R check(P1 param1, P2 param2);
 }
