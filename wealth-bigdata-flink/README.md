@@ -1,10 +1,23 @@
 ```txt
-* flink编程模版：<br>
-* 1、创建一个编程入口环境env<br>
-* 2、通过source算子，映射数据源为dataStream<br>
-* 3、通过算子对数据流进行各种转换（计算逻辑）<br>
-* 4、通过sink算子，将数据流输出<br>
-* 5、触发程序的提交运行
+* flink编程模版：流和批的api不同，但建议直接使用流的api   
+* 1、获取flink的执行环境 env  
+* 2、加载数据 -- source
+* 3、对加载的数据转换 -- transformation
+* 4、对结果进行保存或打印 -- sink
+* 5、触发程序的提交运行 -- env.execute() --> 只有流的api需要
+
+获取env的三种写法：
+// 1.准备flink环境：如果在本地启动就会创建本地env；如果在集群中启动就会创建集群env
+StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+// 2.指定并行度创建本地env
+LocalStreamEnvironment localEnv = StreamExecutionEnvironment.createLocalEnvironment(5);
+// 3.指定远程JobManagerIp和RPC端口，及运行程序所在jar包及其依赖包
+StreamExecutionEnvironment remoteEnv = StreamExecutionEnvironment.createRemoteEnvironment("hostname", 6021, 5, "application.jar");
+
+
+
+Unable to make field private final byte[] java.lang.String.value accessible: module java.base does not "opens java.lang" to unnamed module
+报错说明jdk版本太高，换为jdk1.8
 ```
 
 ```text
