@@ -1,3 +1,12 @@
+```txt
+* flink编程模版：<br>
+* 1、创建一个编程入口环境env<br>
+* 2、通过source算子，映射数据源为dataStream<br>
+* 3、通过算子对数据流进行各种转换（计算逻辑）<br>
+* 4、通过sink算子，将数据流输出<br>
+* 5、触发程序的提交运行
+```
+
 ```text
 # flink-example 是官网初始化命令创建出来的
 
@@ -15,3 +24,4 @@ mvn archetype:generate \
 > 在 IDE 中运行该项目可能会遇到 java.langNoClassDefFoundError 的异常。这很可能是因为运行所需要的 Flink 的依赖库没有默认被全部加载到类路径（classpath）里。
 > 
 > IntelliJ IDE：前往 运行 > 编辑配置 > 修改选项 > 选中 将带有 “provided” 范围的依赖项添加到类路径。这样的话，运行配置将会包含所有在 IDE 中运行所必须的类。
+
