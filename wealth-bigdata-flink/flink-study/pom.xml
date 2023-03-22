@@ -39,6 +39,13 @@
             <artifactId>flink-clients</artifactId>
             <version>${flink.version}</version>
         </dependency>
+
+        <!-- flink1.15后 只加这个依赖 本地模式时支持web ui -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-runtime-web</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

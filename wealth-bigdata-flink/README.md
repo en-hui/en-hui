@@ -17,6 +17,9 @@ StreamExecutionEnvironment remoteEnv = StreamExecutionEnvironment.createRemoteEn
 // 流式api可以指定模式,可以在代码中指定，也可以在提交任务时指定：flink run -Dexecution.runtime-mode=BATCH xxx.jar
 env.setRuntimeMode(RuntimeExecutionMode.BATCH);
 
+提交任务的方式：node1是JobManager所在机器
+1、flink run -m node1:8081 -c com.enhui.MSB04_SocketWordCount /root/xxx.jar
+
 Unable to make field private final byte[] java.lang.String.value accessible: module java.base does not "opens java.lang" to unnamed module
 报错说明jdk版本太高，换为jdk1.8
 ```
