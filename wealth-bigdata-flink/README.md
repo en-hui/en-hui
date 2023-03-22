@@ -14,7 +14,8 @@ LocalStreamEnvironment localEnv = StreamExecutionEnvironment.createLocalEnvironm
 // 3.指定远程JobManagerIp和RPC端口，及运行程序所在jar包及其依赖包
 StreamExecutionEnvironment remoteEnv = StreamExecutionEnvironment.createRemoteEnvironment("hostname", 6021, 5, "application.jar");
 
-
+// 流式api可以指定模式,可以在代码中指定，也可以在提交任务时指定：flink run -Dexecution.runtime-mode=BATCH xxx.jar
+env.setRuntimeMode(RuntimeExecutionMode.BATCH);
 
 Unable to make field private final byte[] java.lang.String.value accessible: module java.base does not "opens java.lang" to unnamed module
 报错说明jdk版本太高，换为jdk1.8

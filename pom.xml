@@ -5,8 +5,8 @@
 
     <artifactId>wealth</artifactId>
     <groupId>com.enhui</groupId>
-    <version>${project.version}</version>
-    <modelVersion>${model.version}</modelVersion>
+    <version>1.0.0</version>
+    <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
 
     <modules>

@@ -10,10 +10,8 @@
 
     <artifactId>wealth-bigdata-flink</artifactId>
     <packaging>pom</packaging>
-    <version>${project.version}</version>
+    <version>1.0.0</version>
     <modules>
-      <module>flink-example</module>
-        <module>flink-hudi</module>
         <module>flink-study</module>
     </modules>
 

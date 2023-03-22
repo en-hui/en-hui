@@ -7,6 +7,9 @@ import org.apache.flink.api.java.operators.FlatMapOperator;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.util.Collector;
 
+/**
+ * 批处理的api，读取文件统计word count
+ */
 public class MSB01_BatchWordCount {
 
     public static void main(String[] args) throws Exception {

@@ -1,5 +1,6 @@
 package com.enhui;
 
+import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -7,13 +8,18 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Collector;
+
 /**
- * 流处理的api，读取文件统计word count
+ * 流处理的api 的batch模式，读取文件统计word count
  */
-public class MSB02_StreamWordCount {
+public class MSB03_StreamBatchMode {
+
     public static void main(String[] args) throws Exception {
         // 1.准备flink环境：如果在本地启动就会创建本地env；如果在集群中启动就会创建集群env
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+        // 流式api指定模式,可以在代码中指定，也可以在提交任务时指定：flink run -Dexecution.runtime-mode=BATCH
+        env.setRuntimeMode(RuntimeExecutionMode.BATCH);
 
         // 2.读取文件数据
         DataStreamSource<String> lineDS = env.readTextFile("./wealth-bigdata-flink/data/word.txt");

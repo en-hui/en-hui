@@ -13,7 +13,7 @@
     <groupId>com.enhui</groupId>
     <artifactId>wealth-bigdata-hadoop</artifactId>
     <packaging>pom</packaging>
-    <version>${project.version}</version>
+    <version>1.0.0</version>
     <modules>
         <module>wealth-bigdata-hbase</module>
         <module>wealth-bigdata-hdfs</module>

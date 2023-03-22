@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>wealth-base-algorithm</artifactId>
-    <version>${project.version}</version>
+    <version>1.0.0</version>
 
     <dependencies>
         <dependency>
