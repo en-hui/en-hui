@@ -1,7 +1,6 @@
-package com.enhui;
+package com.enhui.example;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
-import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;

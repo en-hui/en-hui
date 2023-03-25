@@ -1,4 +1,4 @@
-package com.enhui;
+package com.enhui.example;
 
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.ExecutionEnvironment;

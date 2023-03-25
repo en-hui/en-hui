@@ -16,6 +16,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <flink.version>1.16.0</flink.version>
+        <flink-cdc.version>2.3.0</flink-cdc.version>
         <slf4j.version>1.7.36</slf4j.version>
         <log4j.version>2.17.2</log4j.version>
     </properties>
@@ -46,6 +47,49 @@
             <artifactId>flink-runtime-web</artifactId>
             <version>${flink.version}</version>
         </dependency>
+
+        <!-- flink cdc -->
+        <dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-connector-mysql-cdc</artifactId>
+            <version>${flink-cdc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-sql-connector-mysql-cdc</artifactId>
+            <version>${flink-cdc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-api-java</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+        <!-- jdbc sink -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-jdbc</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.25</version>
+        </dependency>
+
+        <!-- kafka sink -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-kafka</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+        <!-- kafka source -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-base</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -61,7 +105,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.enhui.MSB04_SocketWordCount</mainClass>
+                            <mainClass>com.enhui.example.MSB04_SocketWordCount</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

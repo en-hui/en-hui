@@ -1,4 +1,4 @@
-package com.enhui;
+package com.enhui.example;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.functions.FlatMapFunction;
