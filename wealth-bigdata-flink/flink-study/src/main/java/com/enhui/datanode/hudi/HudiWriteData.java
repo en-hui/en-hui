@@ -1,24 +1,25 @@
 package com.enhui.datanode.hudi;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.enhui.datanode.hudi.table.HudiTable1;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.RowData;
+import org.apache.hudi.util.HoodiePipeline;
 
-public class HudiWriteData implements HudiInterface {
+import java.util.List;
 
-  public static void main(String[] args) throws Exception {
-    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+public class HudiWriteData {
 
-    List<RowData> list = new ArrayList<>();
+    public static void main(String[] args) throws Exception {
+        System.setProperty("HADOOP_USER_NAME", "hdfs");
+        // configuration.set("dfs.client.use.datanode.hostname", "true"); 使用主机名通信，否则本地无法连接内网ip
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-    DataStream<RowData> dataStream = env.fromCollection(list);
+        List<RowData> dataList = HudiTable1.getDataList();
+        HoodiePipeline.Builder builder = HudiTable1.getBuilder();
+        DataStream<RowData> dataStream = env.fromCollection(dataList);
 
-    HudiInterface.getBuilder()
-        .sink(
-            dataStream,
-            false); // The second parameter indicating whether the input data stream is bounded
-    env.execute("Api_Sink");
-  }
+        builder.sink(dataStream, false); // The second parameter indicating whether the input data stream is bounded
+        env.execute("Api_Sink");
+    }
 }
