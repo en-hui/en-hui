@@ -19,6 +19,7 @@
         <flink-cdc.version>2.3.0</flink-cdc.version>
         <hudi.version>0.13.0</hudi.version>
         <hadoop.version>2.10.1</hadoop.version>
+        <hive.version>2.3.7</hive.version>
         <slf4j.version>1.7.36</slf4j.version>
         <log4j.version>2.17.2</log4j.version>
     </properties>
@@ -117,6 +118,16 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
             <version>${hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-exec</artifactId>
+            <version>${hive.version}</version>
         </dependency>
     </dependencies>
 

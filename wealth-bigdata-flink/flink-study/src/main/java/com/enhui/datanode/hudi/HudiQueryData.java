@@ -7,10 +7,10 @@ import org.apache.flink.table.data.RowData;
 
 public class HudiQueryData {
   public static void main(String[] args) throws Exception {
+    System.setProperty("HADOOP_USER_NAME", "hdfs");
     StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-
-    DataStream<RowData> rowDataDataStream = HudiTable1.getBuilder().source(env);
-    rowDataDataStream.print();
-    env.execute("Api_Source");
+    DataStream<RowData> rowDataDataStream = HudiTable1.getBuilder(true).source(env);
+    rowDataDataStream.print("查询到的数据");
+    env.execute("hudi-source");
   }
 }
