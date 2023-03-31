@@ -1,42 +1,24 @@
-## 日常问题
+# 问题排查专题
 
-- 开发机服务启动了，浏览器不能访问页面，本地telnet等都无法连接，可以ping通
+## 常用命令
 
-> 问题查看：sysctl -p | grep net.ipv4.ip_forward     
-> 问题分析：得到的结果如果是0，修改为1     
-> 问题解决：sysctl 直接回车，查看帮助，看到-w是修改（临时修改，还需修改配置文件）   
-> sysctl -w net.ipv4.ip_forward=1   
-> 修改配置文件 /etc/sysctl.conf
+### kafka相关命令
+``` 
+# 查看topic列表
+kafka-topics --bootstrap-server kafka1:9092 --list
 
+# 查看topic[offset_connect_source_dp]的信息（分区数、副本因子、配置项-数据回收时间、大小两个策略、每个分区的leader、isr）
+kafka-topics --bootstrap-server kafka1:9092 --describe --topic offset_connect_sink_dp
 
-## 生产环境问题排查
+# 从头消费topic[offset_connect_source_dp]，带着时间戳和key
+kafka-console-consumer --bootstrap-server kafka1:9092 --topic offset_connect_source_dp --from-beginning --property print.key=true --property print.timestamp=true
 
-innodb_locks表在8.0.13版本中由 performance_schema.data_locks表所代替，   
-innodb_lock_waits表则由 performance_schema.data_lock_waits表代替
+# 从指定分区的指定偏移开始消费，只消费1条
+kafka-console-consumer --bootstrap-server kafka1:9092 --topic offset_connect_source_dp --partition 1 --offset 1 --max-messages 1
 
-> 报错：com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException: 
-> Lock wait timeout exceeded; try restarting transaction\n;
->  
-> -- 查看数据库当前的进程    
-> show processlist;   或者sql：select * from information_schema.processlist where Info is not null;      
-> -- 当前运行的所有事务    
-> select * from information_schema.INNODB_LOCKS;     
-> -- 当前出现的锁   
-> select * from information_schema.INNODB_LOCK_waits;    
-> -- 锁等待的对应关系    
-> select * from information_schema.INNODB_TRX;    
-> -- 查询产生锁的具体sql    
-> select a.trx_id 事务id,a.trx_mysql_thread_id 事务线程id,a.trx_query 事务sql 
-> from INFORMATION_SCHEMA.INNODB_LOCKS b,INFORMATION_SCHEMA.innodb_trx a
-> where b.lock_trx_id=a.trx_id;    
-> 
-> -- 杀掉死锁线程 innodb_trx表的trx_requested_lock_id   
-> kill {thread_id};
-> 
+```
 
-### 操作系统层面
-
-### JVM层面
+### 在线debug（尽量不要在生产环境使用）
 > jdb:    
 1.修改compose文件，打开debug：KAFKA_DEBUG=true(和开发机使用一样，source、sink、manager是kafka_debug。web是debug)    
 2.重启容器，让debug配置生效    
@@ -51,7 +33,3 @@ innodb_lock_waits表则由 performance_schema.data_lock_waits表代替
 11.查看有哪些断点：clear     
 12.执行到下一个断点：run    
 13.查看当前局部变量：locals
-
-
-查看进程中线程数：ps -p pid -lfT | wc -l
-### 工具
