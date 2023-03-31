@@ -84,7 +84,7 @@ cd {DataX_source_code_home}/target/datax/datax/bin
 python datax.py ./mysql2mysql.json   
 ```
 
-### 疑问
+## 疑问
 1、想要不使用脚本启动，而是直接在程序中传参启动从而debug应该如何做？    
 启动类： com.alibaba.datax.core.Engine    
 VM options：-Ddatax.home=/Users/huenhui/IdeaProjects/DataX/target/datax/datax    
@@ -102,4 +102,15 @@ Program arguments：-job /Users/huenhui/IdeaProjects/DataX/target/datax/datax/bi
 
 ## datax 开发宝典
 https://github.com/alibaba/DataX/blob/master/dataxPluginDev.md
+
+## 分析
+
+datax对于企业中没有相关配套设施，且只需一次性数据迁移的场景比较合适 
+
+有哪些限制 ？  
+
+不支持增量日志捕获数据      
+完全基于内存，不支持类似断点续传的功能，任务报错后重新启动，需要重来（不过相当于只有全量快照阶段，没有增量阶段，可能其他产品的全量阶段也是重来）   
+修改各类数据库节点配置时，直接修改json文件，如何填写配置及填写错了如何排查较为复杂      
+
 
