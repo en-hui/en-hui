@@ -2810,7 +2810,7 @@ RUN apk add --no-cache gcc musl-dev linux-headers
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 EXPOSE 5000
-COPY ../../常用组件/Docker/msb-notes .
+COPY ../../常用组件/容器及编排工具/Docker/msb-notes .
 CMD ["flask", "run"]
 ```
 

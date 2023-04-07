@@ -1,24 +1,7 @@
-# centos 安装 docker
+# centos 安装 docker-compose
 
 > copy 于菜鸟教程
 
-## 安装docker
-安装docker
-```
-curl -sSL https://get.daocloud.io/docker | sh
-```
-
-启动docker
-``` 
-sudo systemctl start docker
-```
-
-卸载docker
-``` 
-yum remove docker-ce
-```
-## 安装docker-compose
-Compose 安装
 ``` 
 curl -L https://get.daocloud.io/docker/compose/releases/download/v2.4.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
 ```
