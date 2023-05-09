@@ -43,7 +43,7 @@ public class TestWrite {
       for (int i = min; i <= max; i++) {
         List<TestData> testData =
             TestData.listData(entityFieldsMap.get(table.getFullName()), i * step, (i + 1) * step);
-        tdSqlMysqlClient.handleWrite(TestData.TestType.INSERT, testData);
+        tdSqlMysqlClient.handleWrite(TestData.TestType.INSERT, table, testData);
       }
 
       final List<EntityWeight> entityWeights = tdSqlMysqlClient.entityWeights(tables);

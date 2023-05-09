@@ -27,8 +27,6 @@ public class EntityField implements Serializable {
   //  @Schema(description = "默认值")
   private String defaultValue;
 
-  private String value;
-
   //  @Schema(description = "是否必填")
   private boolean optional;
 
