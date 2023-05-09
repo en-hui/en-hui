@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>wealth</artifactId>
+        <groupId>com.enhui</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>wealth-data-node</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>wealth-data-node-tdsql-mysql</module>
+        <module>wealth-data-node-jdbc</module>
+        <module>wealth-data-node-mysql</module>
+    </modules>
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <hikaricp.version>4.0.3</hikaricp.version>
+        <mysql.driver.version>8.0.23</mysql.driver.version>
+        <tdsql-mysql.version>1.5.0</tdsql-mysql.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikaricp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.driver.version}</version>
+            </dependency>
+            <!--
+            将jar安装到本地maven仓库
+            mvn install:install-file -Dfile=/Users/huenhui/Documents/tdsql-mysql-connector-java8-1.5.0.jar -DgroupId=com.tencentcloud.tdsql -DartifactId=tdsql-mysql-connector-java8 -Dversion=1.5.0 -Dpackaging=jar
+            -->
+            <dependency>
+                <groupId>com.tencentcloud.tdsql</groupId>
+                <artifactId>tdsql-mysql-connector-java8</artifactId>
+                <version>${tdsql-mysql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.26</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.12.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

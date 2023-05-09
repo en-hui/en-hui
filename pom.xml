@@ -21,6 +21,7 @@
         <module>wealth-component-kafka-move-topic</module>
         <module>wealth-component-zk</module>
         <module>wealth-util</module>
+        <module>wealth-data-node</module>
     </modules>
 
     <properties>
