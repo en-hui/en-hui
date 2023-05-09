@@ -1,7 +1,6 @@
 package com.enhui;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +27,8 @@ public class EntityField implements Serializable {
   //  @Schema(description = "默认值")
   private String defaultValue;
 
+  private String value;
+
   //  @Schema(description = "是否必填")
   private boolean optional;
 
@@ -47,5 +48,5 @@ public class EntityField implements Serializable {
   private boolean isPk;
 
   //  @Schema(description = "字符集")
-  private Charset charset;
+  private String charset;
 }

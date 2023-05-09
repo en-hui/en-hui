@@ -3,9 +3,12 @@ package com.enhui;
 import java.io.Serializable;
 import java.util.List;
 import java.util.StringJoiner;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,17 +16,20 @@ import org.apache.commons.lang3.StringUtils;
 @EqualsAndHashCode
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Table implements Serializable {
 
   private static final long serialVersionUID = -7815849818556667000L;
-
+  public enum EntityType {
+    TABLE,
+    VIEW,
+  }
   private String database;
   private String schema;
   private String name;
   private String comment;
   private EntityType type = EntityType.TABLE;
-  private List<String> headers;
-  private List<EntityIndex> indices;
 
   public static Table ofSchema(String schema, String name) {
     return new Table(null, schema, name);

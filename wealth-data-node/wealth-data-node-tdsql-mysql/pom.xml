@@ -19,10 +19,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.tencentcloud.tdsql</groupId>
             <artifactId>tdsql-mysql-connector-java8</artifactId>
         </dependency>
@@ -30,6 +26,10 @@
             <groupId>com.enhui</groupId>
             <artifactId>wealth-data-node-mysql</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
         </dependency>
     </dependencies>
 </project>

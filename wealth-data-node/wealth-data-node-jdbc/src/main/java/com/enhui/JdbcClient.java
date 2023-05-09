@@ -2,9 +2,12 @@ package com.enhui;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import java.util.List;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Data
 public abstract class JdbcClient {
 
   protected HikariDataSource dataSource;
@@ -37,5 +40,31 @@ public abstract class JdbcClient {
     dataSource = new HikariDataSource(configuration);
   }
 
-  public void insert() {}
+  public void handleWrite(TestData.TestType testType, List<TestData> list) {
+    final long start = System.currentTimeMillis();
+    switch (testType) {
+      case INSERT:
+        insert(list);
+        break;
+      case UPDATE:
+        update(list);
+        break;
+      case UPSERT:
+        upsert(list);
+        break;
+      case DELETE:
+        delete(list);
+        break;
+    }
+    final long end = System.currentTimeMillis();
+    log.info("handle {} {} records consume {} ms", testType.name(), list.size(), (end - start));
+  }
+
+  public void insert(List<TestData> list) {}
+
+  public void update(List<TestData> list) {}
+
+  public void upsert(List<TestData> list) {}
+
+  public void delete(List<TestData> list) {}
 }

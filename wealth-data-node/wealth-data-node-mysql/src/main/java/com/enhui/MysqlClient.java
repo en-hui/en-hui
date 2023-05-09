@@ -1,6 +1,10 @@
 package com.enhui;
 
-import java.nio.charset.Charset;
+import static java.util.Collections.emptyList;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import com.google.common.collect.Iterables;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,12 +15,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
+@Data
 public class MysqlClient extends JdbcClient {
 
   protected static final String CHECK_TABLE_SQL =
@@ -32,6 +41,7 @@ public class MysqlClient extends JdbcClient {
 
   protected static final String GET_TABLE_INDEX_SQL =
       "select * from INFORMATION_SCHEMA.STATISTICS WHERE (TABLE_SCHEMA,TABLE_NAME) in (%s)";
+
   protected static final String GET_TABLE_DATA_LENGTH_SQL =
       "SELECT TABLE_SCHEMA,TABLE_NAME,SUM(DATA_LENGTH) AS SIZE FROM INFORMATION_SCHEMA.TABLES WHERE"
           + " (TABLE_SCHEMA,TABLE_NAME) in (%s) GROUP BY TABLE_SCHEMA, TABLE_NAME";
@@ -44,24 +54,30 @@ public class MysqlClient extends JdbcClient {
           + " information_schema.COLLATION_CHARACTER_SET_APPLICABILITY t2 on t1.TABLE_COLLATION ="
           + " t2.COLLATION_NAME ";
 
+  protected static final String GET_ALL_TABLES_SQL_CONDITION =
+      "WHERE TABLE_SCHEMA not in ('mysql','information_schema','performance_schema','sys');";
+
+  protected static final String GET_ALL_TABLES_SQL_SINGLE_SCHEMA_CONDITION =
+      "WHERE TABLE_SCHEMA = '%s';";
+
   @Override
   protected String getJdbcUrl() {
-    return null;
+    return "jdbc:mysql://82.157.66.105:3306?userunicode=true";
   }
 
   @Override
   protected String getDriverClassName() {
-    return null;
+    return "com.mysql.cj.jdbc.Driver";
   }
 
   @Override
   protected String getUserName() {
-    return null;
+    return "root";
   }
 
   @Override
   protected String getPassword() {
-    return null;
+    return "123456";
   }
 
   public boolean tableExists(String dbName, String tableName) throws SQLException {
@@ -88,7 +104,7 @@ public class MysqlClient extends JdbcClient {
                     Function.identity()));
     try (Connection connection = dataSource.getConnection();
         Statement statement = connection.createStatement()) {
-      statement.execute("USE INFORMATION_SCHEMA");
+      //      statement.execute("USE INFORMATION_SCHEMA");
       ResultSet rs =
           statement.executeQuery(
               String.format(GET_TABLE_SCHEMA_SQL, String.join(",", statementTableMap.keySet())));
@@ -138,7 +154,7 @@ public class MysqlClient extends JdbcClient {
           tableFieldBuilder.type(dataType + " unsigned");
         }
         String charsetAlias = rs.getString("CHARACTER_SET_NAME");
-        tableFieldBuilder.charset(Charset.forName(charsetAlias));
+        tableFieldBuilder.charset(charsetAlias);
 
         tableFieldsMap
             .computeIfAbsent(table.getFullName(), k -> new ArrayList<>())
@@ -204,5 +220,89 @@ public class MysqlClient extends JdbcClient {
       }
     }
     return tableIndexMap;
+  }
+
+  public List<EntityWeight> entityWeights(Collection<Table> tables) {
+    if (isEmpty(tables)) {
+      return emptyList();
+    }
+    List<EntityWeight> entityWeights = new ArrayList<>(tables.size());
+    try {
+      List<List<Table>> partitions = partitionTables(tables);
+      for (List<Table> partition : partitions) {
+        Map<String, Double> tableWeightMap = new HashMap<>(partition.size(), 1);
+        try (Connection connection = dataSource.getConnection();
+            Statement statement = connection.createStatement()) {
+          final ResultSet rs =
+              statement.executeQuery(
+                  String.format(
+                      GET_TABLE_DATA_LENGTH_SQL,
+                      partition.stream()
+                          .map(
+                              table ->
+                                  String.format("('%s', '%s')", table.getSchema(), table.getName()))
+                          .collect(Collectors.joining(","))));
+
+          while (rs.next()) {
+            String tableSchema = rs.getString("TABLE_SCHEMA");
+            String tableName = rs.getString("TABLE_NAME");
+            String fullTableName = Table.ofSchema(tableSchema, tableName).getFullName();
+            double tableSize = rs.getDouble("SIZE");
+            tableWeightMap.put(fullTableName, tableSize);
+          }
+        }
+
+        partition.forEach(
+            table ->
+                entityWeights.add(
+                    new EntityWeight(
+                        table,
+                        Optional.ofNullable(tableWeightMap.get(table.getFullName())).orElse(0.0))));
+      }
+      return entityWeights;
+    } catch (Exception e) {
+      throw new RuntimeException("获取表权重信息查询失败", e);
+    }
+  }
+
+  protected List<List<Table>> partitionTables(Collection<Table> tables) {
+    return tables.stream()
+        // 1. 先按照database和schema进行分组
+        // 分组内容必须包括schema，sqlserver对于非当前用户的表，查询索引时，无法获取schema name
+        .collect(
+            Collectors.groupingBy(
+                table -> String.format("%s.%s", table.getDatabase(), table.getSchema())))
+        .values()
+        .stream()
+        .map(ts -> Iterables.partition(ts, 100))
+        .flatMap(p -> StreamSupport.stream(p.spliterator(), false))
+        .collect(Collectors.toList());
+  }
+
+  public List<Table> getAllTables(String database) throws SQLException {
+    try {
+      List<Table> tables = new ArrayList<>(100);
+      try (final Connection connection = dataSource.getConnection();
+          final Statement statement = connection.createStatement()) {
+        final ResultSet rst =
+            statement.executeQuery(
+                GET_ALL_TABLES_SQL
+                    + (isBlank(database)
+                        ? GET_ALL_TABLES_SQL_CONDITION
+                        : String.format(GET_ALL_TABLES_SQL_SINGLE_SCHEMA_CONDITION, database)));
+        while (rst.next()) {
+          String comment = rst.getString("TABLE_COMMENT");
+          Table table = Table.ofSchema(rst.getString("TABLE_SCHEMA"), rst.getString("TABLE_NAME"));
+          table.setComment(comment == null ? "" : comment);
+          tables.add(table);
+          if (Objects.equals(rst.getString("TABLE_TYPE"), "VIEW")) {
+            table.setType(Table.EntityType.VIEW);
+          }
+        }
+      }
+      return tables;
+    } catch (Exception e) {
+      throw new RuntimeException("获取表名信息查询失败", e);
+    }
   }
 }
