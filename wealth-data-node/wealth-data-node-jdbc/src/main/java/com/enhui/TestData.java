@@ -35,22 +35,20 @@ public class TestData {
         final EntityField entityField = fields.get(j);
         final String name = entityField.getName();
         final String type = entityField.getType();
-        colNames.set(j, name);
-        colTypes.set(j, type);
-        if (entityField.isPk()) {
-          // 序号做主键
-          colVals.set(j, String.valueOf(i));
-        } else {
-          switch (type) {
-            case "STRING":
-              final int random = RandomUtil.randomJust(66);
-              colVals.set(
-                  j,
-                  IntStream.range(0, random)
-                      .mapToObj(index -> "这是一个字符串-" + index + ".")
-                      .collect(Collectors.joining()));
-              break;
-          }
+        colNames.add(name);
+        colTypes.add(type);
+        switch (type) {
+          case "int":
+            colVals.add(String.valueOf(i));
+            break;
+          case "varchar":
+          default:
+            final int random = RandomUtil.randomJust(6);
+            colVals.add(
+                IntStream.range(0, random)
+                    .mapToObj(index -> "这是一个字符串-" + index + ".")
+                    .collect(Collectors.joining()));
+            break;
         }
       }
     }

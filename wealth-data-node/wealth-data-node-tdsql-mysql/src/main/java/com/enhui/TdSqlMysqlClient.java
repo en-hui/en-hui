@@ -1,28 +1,19 @@
 package com.enhui;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Data
 public class TdSqlMysqlClient extends MysqlClient {
-  protected String getJdbcUrl() {
-    //    return "jdbc:tdsql-mysql://127.0.0.1:3306/dbname";
-    return super.getJdbcUrl();
+  public TdSqlMysqlClient(String ip, int port, String userName, String password) {
+    super(ip, port, userName, password);
   }
 
+  protected String getJdbcUrlTemplate() {
+    return "jdbc:tdsql-mysql://%s:%s";
+  }
+
+  @Override
   protected String getDriverClassName() {
-    //    return "com.tencentcloud.tdsql.mysql.cj.jdbc.Driver";
-    return super.getDriverClassName();
-  }
-
-  @Override
-  protected String getUserName() {
-    return "root";
-  }
-
-  @Override
-  protected String getPassword() {
-    return "123456";
+    return "com.tencentcloud.tdsql.mysql.cj.jdbc.Driver";
   }
 }

@@ -1,11 +1,9 @@
 package com.enhui;
 
-import static java.util.Collections.emptyList;
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import com.google.common.collect.Iterables;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,17 +14,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.Properties;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-import lombok.Data;
+import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
-@Data
 public class MysqlClient extends JdbcClient {
+
+  public MysqlClient(String ip, int port, String userName, String password) {
+    super(ip, port, userName, password);
+  }
+
+  @Override
+  protected String getJdbcUrlTemplate() {
+    return "jdbc:mysql://%s:%s?userunicode=true";
+  }
+
+  @Override
+  protected String getDriverClassName() {
+    return "com.mysql.cj.jdbc.Driver";
+  }
+
+  protected Properties getJdbcProperties() {
+    Properties properties = new Properties();
+    properties.setProperty("useSSL", "false");
+    properties.setProperty("autoReconnect", "true");
+
+    properties.setProperty("allowMultiQueries", "true");
+    properties.setProperty("rewriteBatchedStatements", "true");
+    return properties;
+  }
 
   protected static final String CHECK_TABLE_SQL =
       "SELECT * FROM information_schema.tables WHERE table_schema = '%s' AND table_name = '%s'"
@@ -43,8 +62,9 @@ public class MysqlClient extends JdbcClient {
       "select * from INFORMATION_SCHEMA.STATISTICS WHERE (TABLE_SCHEMA,TABLE_NAME) in (%s)";
 
   protected static final String GET_TABLE_DATA_LENGTH_SQL =
-      "SELECT TABLE_SCHEMA,TABLE_NAME,SUM(DATA_LENGTH) AS SIZE FROM INFORMATION_SCHEMA.TABLES WHERE"
-          + " (TABLE_SCHEMA,TABLE_NAME) in (%s) GROUP BY TABLE_SCHEMA, TABLE_NAME";
+      "SELECT TABLE_SCHEMA,TABLE_NAME, round(((data_length + index_length) / 1024 / 1024), 2)"
+          + " `表大小(MB)`\n"
+          + " FROM information_schema.TABLES WHERE table_schema = '%s' AND table_name = '%s';";
 
   protected static final String SHOW_ALL_SCHEMA_SQL =
       "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA";
@@ -61,23 +81,30 @@ public class MysqlClient extends JdbcClient {
       "WHERE TABLE_SCHEMA = '%s';";
 
   @Override
-  protected String getJdbcUrl() {
-    return "jdbc:mysql://82.157.66.105:3306?userunicode=true";
-  }
-
-  @Override
-  protected String getDriverClassName() {
-    return "com.mysql.cj.jdbc.Driver";
-  }
-
-  @Override
-  protected String getUserName() {
-    return "root";
-  }
-
-  @Override
-  protected String getPassword() {
-    return "123456";
+  public void insert(Table table, List<TestData> list) throws SQLException {
+    final TestData testData = list.get(0);
+    String sql =
+        String.format(
+            "insert into %s (%s) VALUES (%s)",
+            table.getSchema() + "." + table.getName(),
+            String.join(",", testData.getColNames()),
+            IntStream.range(0, testData.getColNames().size())
+                .mapToObj(index -> "?")
+                .collect(Collectors.joining(",")));
+    try (final Connection connection = dataSource.getConnection();
+        final PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+      for (final TestData data : list) {
+        for (int j = 0; j < data.getColNames().size(); j++) {
+          if ("INT".equals(data.getColTypes().get(j))) {
+            preparedStatement.setInt(j + 1, Integer.parseInt(data.getColVals().get(j)));
+          } else {
+            preparedStatement.setString(j + 1, data.getColVals().get(j));
+          }
+        }
+        preparedStatement.addBatch();
+      }
+      preparedStatement.executeBatch();
+    }
   }
 
   public boolean tableExists(String dbName, String tableName) throws SQLException {
@@ -91,6 +118,14 @@ public class MysqlClient extends JdbcClient {
       }
     }
     return result;
+  }
+
+  @Override
+  public void truncateTable(Table table) throws SQLException {
+    try (final Connection connection = dataSource.getConnection();
+        final Statement statement = connection.createStatement()) {
+      statement.execute(String.format("truncate table %s.%s", table.getSchema(), table.getName()));
+    }
   }
 
   public Map<String, List<EntityField>> getEntityFieldsMap(Collection<Table> tables)
@@ -181,102 +216,31 @@ public class MysqlClient extends JdbcClient {
     }
   }
 
-  protected Map<String, List<EntityIndex>> getIndices(String tableCondition) throws SQLException {
-    Map<String, List<EntityIndex>> tableIndexMap = new HashMap<>(100, 1);
-    try (Connection connection = dataSource.getConnection();
-        Statement statement = connection.createStatement()) {
-      final ResultSet rs =
-          statement.executeQuery(String.format(GET_TABLE_INDEX_SQL, tableCondition));
-      while (rs.next()) {
-        String tableSchema = rs.getString("TABLE_SCHEMA");
-        String tableName = rs.getString("TABLE_NAME");
-        String fullTableName = Table.ofSchema(tableSchema, tableName).getFullName();
-        String fieldName = rs.getString("COLUMN_NAME");
-        try {
-          // 5.7之前版本没这字段
-          String expression = rs.getString("EXPRESSION");
-          if (fieldName == null && expression != null) {
-            continue;
-          }
-        } catch (Exception e) {
-          log.warn("数据节点的版本无此字段：EXPRESSION", e);
-        }
-        boolean unique = rs.getInt("NON_UNIQUE") == 0;
-        String indexName = rs.getString("INDEX_NAME");
-        boolean primary = "PRIMARY".equals(indexName);
-        String collation = rs.getString("COLLATION");
-        boolean isDesc = "D".equals(collation);
-        tableIndexMap
-            .computeIfAbsent(fullTableName, k -> new ArrayList<>())
-            .add(
-                new EntityIndex(
-                    indexName,
-                    fieldName,
-                    Integer.valueOf(rs.getString("SEQ_IN_INDEX")),
-                    StringUtils.isBlank(collation) ? null : (isDesc ? "DESC" : "ASC"),
-                    unique,
-                    primary,
-                    rs.getString("INDEX_TYPE")));
-      }
-    }
-    return tableIndexMap;
-  }
-
-  public List<EntityWeight> entityWeights(Collection<Table> tables) {
-    if (isEmpty(tables)) {
-      return emptyList();
-    }
-    List<EntityWeight> entityWeights = new ArrayList<>(tables.size());
+  /**
+   * SELECT table_name AS `表名`, round(((data_length + index_length) / 1024 / 1024), 2) `表大小(MB)`
+   * FROM information_schema.TABLES WHERE table_schema = '[数据库名]' AND table_name = '[表名]';
+   *
+   * @param table
+   * @return
+   */
+  public EntityWeight entityWeights(Table table) {
+    EntityWeight entityWeight = new EntityWeight();
     try {
-      List<List<Table>> partitions = partitionTables(tables);
-      for (List<Table> partition : partitions) {
-        Map<String, Double> tableWeightMap = new HashMap<>(partition.size(), 1);
-        try (Connection connection = dataSource.getConnection();
-            Statement statement = connection.createStatement()) {
-          final ResultSet rs =
-              statement.executeQuery(
-                  String.format(
-                      GET_TABLE_DATA_LENGTH_SQL,
-                      partition.stream()
-                          .map(
-                              table ->
-                                  String.format("('%s', '%s')", table.getSchema(), table.getName()))
-                          .collect(Collectors.joining(","))));
-
-          while (rs.next()) {
-            String tableSchema = rs.getString("TABLE_SCHEMA");
-            String tableName = rs.getString("TABLE_NAME");
-            String fullTableName = Table.ofSchema(tableSchema, tableName).getFullName();
-            double tableSize = rs.getDouble("SIZE");
-            tableWeightMap.put(fullTableName, tableSize);
-          }
+      try (Connection connection = dataSource.getConnection();
+          Statement statement = connection.createStatement()) {
+        final ResultSet rs =
+            statement.executeQuery(
+                String.format(GET_TABLE_DATA_LENGTH_SQL, table.getSchema(), table.getName()));
+        while (rs.next()) {
+          double tableSize = rs.getDouble("表大小(MB)");
+          entityWeight.setTable(table);
+          entityWeight.setWeight(tableSize);
         }
-
-        partition.forEach(
-            table ->
-                entityWeights.add(
-                    new EntityWeight(
-                        table,
-                        Optional.ofNullable(tableWeightMap.get(table.getFullName())).orElse(0.0))));
       }
-      return entityWeights;
+      return entityWeight;
     } catch (Exception e) {
       throw new RuntimeException("获取表权重信息查询失败", e);
     }
-  }
-
-  protected List<List<Table>> partitionTables(Collection<Table> tables) {
-    return tables.stream()
-        // 1. 先按照database和schema进行分组
-        // 分组内容必须包括schema，sqlserver对于非当前用户的表，查询索引时，无法获取schema name
-        .collect(
-            Collectors.groupingBy(
-                table -> String.format("%s.%s", table.getDatabase(), table.getSchema())))
-        .values()
-        .stream()
-        .map(ts -> Iterables.partition(ts, 100))
-        .flatMap(p -> StreamSupport.stream(p.spliterator(), false))
-        .collect(Collectors.toList());
   }
 
   public List<Table> getAllTables(String database) throws SQLException {

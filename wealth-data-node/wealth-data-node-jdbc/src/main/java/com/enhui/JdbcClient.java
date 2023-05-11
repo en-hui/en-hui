@@ -2,12 +2,9 @@ package com.enhui;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Properties;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,18 +12,30 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 public abstract class JdbcClient {
 
+  protected String ip;
+  protected int port;
+  protected String userName;
+  protected String password;
   protected HikariDataSource dataSource;
 
-  protected abstract String getJdbcUrl();
+  public JdbcClient(String ip, int port, String userName, String password) {
+    this.ip = ip;
+    this.port = port;
+    this.userName = userName;
+    this.password = password;
+    init();
+  }
+
+  protected String getJdbcUrl() {
+    return String.format(getJdbcUrlTemplate(), ip, port);
+  }
+
+  protected abstract String getJdbcUrlTemplate();
 
   protected abstract String getDriverClassName();
 
-  protected abstract String getUserName();
-
-  protected abstract String getPassword();
-
-  public JdbcClient() {
-    init();
+  protected Properties getJdbcProperties() {
+    return null;
   }
 
   public void init() {
@@ -42,10 +51,13 @@ public abstract class JdbcClient {
     configuration.setIdleTimeout(30 * 1000);
     configuration.setPoolName(
         this.getClass().getName() + "-connection-pool-" + System.currentTimeMillis());
+    if (getJdbcProperties() != null) {
+      configuration.setDataSourceProperties(getJdbcProperties());
+    }
     dataSource = new HikariDataSource(configuration);
   }
 
-  public void handleWrite(TestData.TestType testType, Table table, List<TestData> list)
+  public long handleWrite(TestData.TestType testType, Table table, List<TestData> list)
       throws SQLException {
     final long start = System.currentTimeMillis();
     switch (testType) {
@@ -63,39 +75,31 @@ public abstract class JdbcClient {
         break;
     }
     final long end = System.currentTimeMillis();
-    log.info("handle {} {} records consume {} ms", testType.name(), list.size(), (end - start));
+    final long cost = end - start;
+    final double sum =
+        list.stream()
+                .mapToDouble(
+                    one -> one.getColVals().stream().mapToDouble(o -> o.getBytes().length).sum())
+                .sum()
+            / 1024.0
+            / 1024.0;
+    log.info(
+        "handle {} : {} records, {} MB, consume {} ms, speed {} MB/s",
+        testType.name(),
+        list.size(),
+        sum,
+        cost,
+        sum / (cost / 1000.0));
+    return cost;
   }
 
-  public void insert(Table table, List<TestData> list) throws SQLException {
-    final TestData testData = list.get(0);
-    String sql =
-        String.format(
-            "insert into %s (%s) VALUES (%s)",
-            table.getName(),
-            String.join(",", testData.getColNames()),
-            IntStream.range(0, testData.getColNames().size())
-                .mapToObj(index -> "?")
-                .collect(Collectors.joining()));
-    try (final Connection connection = dataSource.getConnection();
-        final PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-      for (int i = 0; i < list.size(); i++) {
-        final TestData data = list.get(i);
-        for (int j = 0; j < data.getColNames().size(); j++) {
-          if ("INT".equals(data.getColTypes().get(j))) {
-            preparedStatement.setInt(j, Integer.parseInt(data.getColVals().get(i)));
-          } else {
-            preparedStatement.setString(j, data.getColVals().get(i));
-          }
-        }
-        preparedStatement.addBatch();
-      }
-      preparedStatement.executeBatch();
-    }
-  }
+  public abstract void insert(Table table, List<TestData> list) throws SQLException;
 
   public void update(Table table, List<TestData> list) {}
 
   public void upsert(Table table, List<TestData> list) {}
 
   public void delete(Table table, List<TestData> list) {}
+
+  public abstract void truncateTable(Table table) throws SQLException;
 }
