@@ -43,7 +43,7 @@ public class TestData {
             break;
           case "varchar":
           default:
-            final int random = RandomUtil.randomJust(6);
+            final int random = RandomUtil.randomJust(20);
             colVals.add(
                 IntStream.range(0, random)
                     .mapToObj(index -> "这是一个字符串-" + index + ".")

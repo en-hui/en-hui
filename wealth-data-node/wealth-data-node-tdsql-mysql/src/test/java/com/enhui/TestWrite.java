@@ -46,8 +46,8 @@ public class TestWrite {
       final Map<String, List<EntityField>> entityFieldsMap =
           tdSqlMysqlClient.getEntityFieldsMap(tables);
       int min = 1;
-      int max = 1;
-      int step = 50000;
+      int max = 10;
+      int step = 5000;
       long cost = 0;
       // 数据准备 && 数据写入
       for (int i = min; i <= max; i++) {
