@@ -18,6 +18,14 @@ kafka-console-consumer --bootstrap-server kafka1:9092 --topic offset_connect_sou
 
 ```
 
+### 网络抓包相关
+> 抓本机与某ip的网络交互，以明文展示：tcpdump net xx_ip_xx -A     
+> 
+> 使用场景 ：    
+> 1、需要分析发的网络包是否为预期内容；     
+>  
+> 2、可以根据握手和挥手的细节，分析网络相关报错，由谁发起的断连，从而分析网络报错是否有客户端编码导致      
+
 ### 在线debug（尽量不要在生产环境使用）
 > jdb:    
 1.修改compose文件，打开debug：KAFKA_DEBUG=true(和开发机使用一样，source、sink、manager是kafka_debug。web是debug)    
