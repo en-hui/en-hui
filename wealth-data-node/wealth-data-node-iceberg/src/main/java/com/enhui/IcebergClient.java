@@ -1,6 +1,7 @@
 package com.enhui;
 
 import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.iceberg.FileFormat;
 import org.apache.iceberg.PartitionSpec;
@@ -8,42 +9,82 @@ import org.apache.iceberg.Schema;
 import org.apache.iceberg.Table;
 import org.apache.iceberg.TableProperties;
 import org.apache.iceberg.catalog.TableIdentifier;
+import org.apache.iceberg.data.IcebergGenerics;
+import org.apache.iceberg.data.Record;
 import org.apache.iceberg.hadoop.HadoopCatalog;
+import org.apache.iceberg.io.CloseableIterable;
 import org.apache.iceberg.types.Types;
 
 public class IcebergClient {
 
-    public static void main(String[] args) {
-        Configuration conf = new Configuration();
-        System.setProperty("HADOOP_USER_NAME", "hdfs");
-        conf.set("dfs.client.use.datanode.hostname", "true");
-        String warehousePath = "hdfs://cdh1:8020/user/heh/iceberg";
-        HadoopCatalog catalog = new HadoopCatalog(conf, warehousePath);
+  // hive
 
-        TableIdentifier name = TableIdentifier.of("icebergdb", "iceberg_test_tbl1");
-        // 创建Iceberg表的schema
-        Schema schema = new Schema(
-                Types.NestedField.required(1, "id", Types.IntegerType.get()),
-                Types.NestedField.required(2, "name", Types.StringType.get()),
-                Types.NestedField.required(3,"loc",Types.StringType.get())
-        );
+  //  add jar
+  // /opt/cloudera/parcels/CDH-6.1.1-1.cdh6.1.1.p0.875250/lib/iceberg/iceberg-hive-runtime-1.3.0.jar
 
-        // 没有分区
-        PartitionSpec spec = PartitionSpec.unpartitioned();
-        PartitionSpec.builderFor(schema).identity("loc").build();
-        // 指定iceberg表数据格式化为parquet
-        ImmutableMap<String, String> props = ImmutableMap.of(TableProperties.DEFAULT_FILE_FORMAT, FileFormat.PARQUET.name());
+  //  create table iceberg_nopar_tbl1(
+  //  id int,
+  //  name string,
+  //  loc string)
+  //  stored by 'org.apache.iceberg.mr.hive.HiveIcebergStorageHandler'
+  //  LOCATION 'hdfs://cdh1:8020/user/heh/iceberg/icebergdb/iceberg_nopar_tbl1'
+  //  TBLPROPERTIES('iceberg.catalog'='location_based_table');
 
-        Table table = null;
-        // 创建或加载现有的Iceberg表
-        if (!catalog.tableExists(name)) {
-            System.out.println("创建新表");
-            table = catalog.createTable(name, schema, spec,props);
-        } else {
-            System.out.println("加载已有表");
-            table = catalog.loadTable(name);
-        }
+  //  select * from iceberg_test_tbl1;
+  public static void main(String[] args) throws IOException {
+    Configuration conf = new Configuration();
+    System.setProperty("HADOOP_USER_NAME", "hdfs");
+    conf.set("dfs.client.use.datanode.hostname", "true");
+    String warehousePath = "hdfs://cdh1:8020/user/heh/iceberg";
+    HadoopCatalog catalog = new HadoopCatalog(conf, warehousePath);
 
+    String namespace = "icebergdb";
+    //    String tableName = "iceberg_test_tbl1";
+    String tableName = "iceberg_nopar_tbl1";
+    TableIdentifier name = TableIdentifier.of(namespace, tableName);
 
+    // 创建或加载表
+    boolean isPartition = false;
+    Table table = createOrLoadTable(catalog, name, isPartition);
+
+    // 数据增删
+//    table.newAppend().appendFile()
+
+    // 查询数据
+    System.out.println("schema：" + table.schema());
+    CloseableIterable<Record> result = IcebergGenerics.read(table).build();
+    for (Record record : result) {
+      System.out.println("查询到的数据：" + record);
     }
+  }
+
+  public static Table createOrLoadTable(
+      HadoopCatalog catalog, TableIdentifier name, boolean isPartition) {
+    Table table = null;
+    // 创建或加载现有的Iceberg表
+    if (!catalog.tableExists(name)) {
+      System.out.println("创建新表,是否有分区:" + isPartition);
+      // 创建Iceberg表的schema
+      Schema schema =
+          new Schema(
+              Types.NestedField.required(1, "id", Types.IntegerType.get()),
+              Types.NestedField.required(2, "name", Types.StringType.get()),
+              Types.NestedField.required(3, "loc", Types.StringType.get()));
+      PartitionSpec spec = null;
+      if (isPartition) {
+        spec = PartitionSpec.builderFor(schema).identity("loc").build();
+      } else {
+        // 没有分区
+        spec = PartitionSpec.unpartitioned();
+      }
+      // 指定iceberg表数据格式化为parquet
+      ImmutableMap<String, String> props =
+          ImmutableMap.of(TableProperties.DEFAULT_FILE_FORMAT, FileFormat.PARQUET.name());
+      table = catalog.createTable(name, schema, spec, props);
+    } else {
+      System.out.println("加载已有表");
+      table = catalog.loadTable(name);
+    }
+    return table;
+  }
 }
