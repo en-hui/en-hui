@@ -13,6 +13,7 @@ import org.apache.iceberg.data.IcebergGenerics;
 import org.apache.iceberg.data.Record;
 import org.apache.iceberg.hadoop.HadoopCatalog;
 import org.apache.iceberg.io.CloseableIterable;
+import org.apache.iceberg.types.Type;
 import org.apache.iceberg.types.Types;
 
 public class IcebergClient {
@@ -39,23 +40,42 @@ public class IcebergClient {
     HadoopCatalog catalog = new HadoopCatalog(conf, warehousePath);
 
     String namespace = "icebergdb";
-    //    String tableName = "iceberg_test_tbl1";
     String tableName = "iceberg_nopar_tbl1";
     TableIdentifier name = TableIdentifier.of(namespace, tableName);
 
-    // 创建或加载表
-    boolean isPartition = false;
-    Table table = createOrLoadTable(catalog, name, isPartition);
+    // 删除表
+    System.out.println("删除表：" + tableName);
+    catalog.dropTable(name);
 
+    // 创建或加载表
+    Table table = createOrLoadTable(catalog, name, false);
     // 数据增删
 //    table.newAppend().appendFile()
 
     // 查询数据
-    System.out.println("schema：" + table.schema());
-    CloseableIterable<Record> result = IcebergGenerics.read(table).build();
-    for (Record record : result) {
-      System.out.println("查询到的数据：" + record);
-    }
+    selectAndPrint(table);
+
+    // 添加列，新增数据，查看
+    table.updateSchema().addColumn("add_column", Types.IntegerType.get()).commit();
+    System.out.println("添加列");
+    selectAndPrint(table);
+
+    // 重命名列，新增数据，查看
+    table.updateSchema().renameColumn("add_column","operate_column").commit();
+    System.out.println("重命名列");
+    selectAndPrint(table);
+
+    // 更新列，新增数据，查看
+    table.updateSchema().updateColumn("operate_column",Types.LongType.get()).commit();
+    System.out.println("更新列");
+    selectAndPrint(table);
+
+    // 删除列，新增数据，查看
+    table.updateSchema().deleteColumn("operate_column").commit();
+    System.out.println("删除列");
+    selectAndPrint(table);
+
+
   }
 
   public static Table createOrLoadTable(
@@ -87,4 +107,14 @@ public class IcebergClient {
     }
     return table;
   }
+
+  public static void selectAndPrint(Table table) {
+    System.out.println("schema：" + table.schema());
+    CloseableIterable<Record> result = IcebergGenerics.read(table).build();
+    for (Record record : result) {
+      System.out.println("查询到的数据：" + record);
+    }
+    System.out.println();
+  }
+
 }
