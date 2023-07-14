@@ -2,28 +2,44 @@ package com.enhui;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.iceberg.DataFile;
 import org.apache.iceberg.FileFormat;
+import org.apache.iceberg.FileScanTask;
+import org.apache.iceberg.MetadataColumns;
 import org.apache.iceberg.PartitionSpec;
 import org.apache.iceberg.Schema;
 import org.apache.iceberg.Table;
 import org.apache.iceberg.TableProperties;
+import org.apache.iceberg.TableScan;
+import org.apache.iceberg.avro.Avro;
 import org.apache.iceberg.catalog.Namespace;
 import org.apache.iceberg.catalog.TableIdentifier;
 import org.apache.iceberg.data.GenericRecord;
 import org.apache.iceberg.data.IcebergGenerics;
+import org.apache.iceberg.data.IdentityPartitionConverters;
 import org.apache.iceberg.data.Record;
+import org.apache.iceberg.data.avro.DataReader;
+import org.apache.iceberg.data.orc.GenericOrcReader;
+import org.apache.iceberg.data.parquet.GenericParquetReaders;
 import org.apache.iceberg.data.parquet.GenericParquetWriter;
 import org.apache.iceberg.hadoop.HadoopCatalog;
 import org.apache.iceberg.io.CloseableIterable;
+import org.apache.iceberg.io.CloseableIterator;
 import org.apache.iceberg.io.DataWriter;
+import org.apache.iceberg.io.FileIO;
+import org.apache.iceberg.io.InputFile;
 import org.apache.iceberg.io.OutputFile;
+import org.apache.iceberg.orc.ORC;
 import org.apache.iceberg.parquet.Parquet;
+import org.apache.iceberg.types.TypeUtil;
 import org.apache.iceberg.types.Types;
+import org.apache.iceberg.util.PartitionUtil;
 
 public class IcebergClient {
 
@@ -104,7 +120,6 @@ public class IcebergClient {
     record1.setField("name", String.valueOf(i));
     record1.setField("loc", String.valueOf(i));
 
-
     ImmutableList.Builder<GenericRecord> builder = ImmutableList.builder();
     builder.add(record);
     builder.add(record1);
@@ -164,11 +179,84 @@ public class IcebergClient {
   }
 
   public static void selectAndPrint(Table table) {
-    System.out.println("schema：" + table.schema());
+    System.out.println("name：" + table.name() + ",schema：" + table.schema());
+    System.out.println("行级别查询");
     CloseableIterable<Record> result = IcebergGenerics.read(table).build();
     for (Record record : result) {
       System.out.println("查询到的数据：" + record);
     }
-    System.out.println();
+
+    System.out.println("文件级别查询");
+    TableScan scan = table.newScan();
+    CloseableIterable<FileScanTask> fileScanTasks = scan.planFiles();
+    for (FileScanTask fileScanTask : fileScanTasks) {
+      System.out.println("数据文件：" + fileScanTask);
+      try(final FileIO io = table.io()) {
+        final CloseableIterable<Record> records = openFile(io, fileScanTask, table.schema());
+        final CloseableIterator<Record> iterator = records.iterator();
+        System.out.println("数据文件内容：" );
+        while (iterator.hasNext()) {
+          System.out.println(iterator.next());
+        }
+      }
+      System.out.println();
+    }
+  }
+
+  public static CloseableIterable<Record> openFile(FileIO fileIo,FileScanTask task, Schema fileProjection) {
+    boolean reuseContainers = true;
+    boolean caseSensitive = true;
+    if (task.isDataTask()) {
+      throw new RuntimeException("Cannot read data task.");
+    }
+    InputFile input = fileIo.newInputFile(task.file().path().toString());
+    Map<Integer, ?> partition =
+        PartitionUtil.constantsMap(task, IdentityPartitionConverters::convertConstant);
+
+    switch (task.file().format()) {
+      case AVRO:
+        Avro.ReadBuilder avro =
+            Avro.read(input)
+                .project(fileProjection)
+                .createReaderFunc(
+                    avroSchema -> DataReader.create(fileProjection, avroSchema, partition))
+                .split(task.start(), task.length());
+        if (reuseContainers) {
+          avro.reuseContainers();
+        }
+        return avro.build();
+      case PARQUET:
+        Parquet.ReadBuilder parquet =
+            Parquet.read(input)
+                .caseSensitive(caseSensitive)
+                .project(fileProjection)
+                .createReaderFunc(
+                    fileSchema ->
+                        GenericParquetReaders.buildReader(fileProjection, fileSchema, partition))
+                .split(task.start(), task.length())
+                .filter(task.residual());
+        if (reuseContainers) {
+          parquet.reuseContainers();
+        }
+        return parquet.build();
+      case ORC:
+        Schema projectionWithoutConstantAndMetadataFields =
+            TypeUtil.selectNot(
+                fileProjection, Sets.union(partition.keySet(), MetadataColumns.metadataFieldIds()));
+        ORC.ReadBuilder orc =
+            ORC.read(input)
+                .caseSensitive(caseSensitive)
+                .project(projectionWithoutConstantAndMetadataFields)
+                .createReaderFunc(
+                    fileSchema ->
+                        GenericOrcReader.buildReader(fileProjection, fileSchema, partition))
+                .split(task.start(), task.length())
+                .filter(task.residual());
+        return orc.build();
+      default:
+        throw new RuntimeException(
+            String.format(
+                "Cannot read %s file: %s", task.file().format().name(), task.file().path()));
+    }
   }
 }
