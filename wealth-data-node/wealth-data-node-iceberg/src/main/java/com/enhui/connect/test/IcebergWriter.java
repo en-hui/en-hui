@@ -42,13 +42,19 @@ public class IcebergWriter {
     String tableName = "writer_test_" + isPartition + "_" + isDelta;
     TableIdentifier name = TableIdentifier.of(namespace, tableName);
 
-    //        catalog.dropTable(name);
+    catalog.dropTable(name);
 
-    final Table table = IcebergClient.createOrLoadTable(catalog, name, isPartition);
+    Table table = IcebergClient.createOrLoadTable(catalog, name, isPartition);
 
-    TaskWriter<Record> taskWriter = null;
+    // 事务，先插入，在删除(删除不能针对行)
+    //    Transaction transaction = table.newTransaction();
+    //    DataFile dataFile = IcebergClient.getDataFileWithRecords(table, table.schema(), 30);
+    //
+    //    transaction.newAppend().appendFile(dataFile).commit();
+    //    transaction.newDelete().deleteFromRowFilter(Expressions.in("id",20,30)).commit();
+    //    transaction.commitTransaction();
 
-    taskWriter =
+    TaskWriter<Record> taskWriter =
         icebergWriter.getUnpartitionedWriter(table, FileFormat.PARQUET, isPartition, isDelta);
     for (int i = 0; i < 5000; i++) {
       taskWriter.write(icebergWriter.getRecord(table, i));

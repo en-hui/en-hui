@@ -82,7 +82,9 @@ public class IcebergClient {
     // 创建或加载表
     Table table = createOrLoadTable(catalog, name, false);
 
-    insert(table, table.schema(), 1);
+    DataFile dataFile = getDataFileWithRecords(table, table.schema(), 2);
+    table.newAppend().appendFile(dataFile).commit();
+
     // 查询数据
     selectAndPrint(table);
 
@@ -107,23 +109,27 @@ public class IcebergClient {
     selectAndPrint(table);
   }
 
-  public static void insert(Table table, Schema schema, int i) throws IOException {
-    // 1. 构建记录
+  public static GenericRecord getRecord(Schema schema, int num) {
     GenericRecord record = GenericRecord.create(schema);
-    record.setField("id", i);
-    record.setField("name", String.valueOf(i));
-    record.setField("loc", String.valueOf(i));
+    record.setField("id", num);
+    record.setField("name", String.valueOf(num));
+    record.setField("loc", String.valueOf(num));
+    return record;
+  }
 
-    i++;
-    GenericRecord record1 = GenericRecord.create(schema);
-    record1.setField("id", i);
-    record1.setField("name", String.valueOf(i));
-    record1.setField("loc", String.valueOf(i));
-
+  public static ImmutableList<GenericRecord> listRecord(Schema schema, int max) {
     ImmutableList.Builder<GenericRecord> builder = ImmutableList.builder();
-    builder.add(record);
-    builder.add(record1);
-    ImmutableList<GenericRecord> records = builder.build();
+    for (int i = 0; i < max; i++) {
+      GenericRecord record = getRecord(schema, i);
+      builder.add(record);
+    }
+    return builder.build();
+  }
+
+  public static DataFile getDataFileWithRecords(Table table, Schema schema, int max)
+      throws IOException {
+    // 1. 构建记录
+    ImmutableList<GenericRecord> records = listRecord(schema, max);
 
     // 2. 将记录写入parquet文件
     String filepath = table.location() + "/data/" + UUID.randomUUID().toString();
@@ -144,8 +150,7 @@ public class IcebergClient {
     }
 
     // 3. 将文件写入table中
-    DataFile dataFile = dataWriter.toDataFile();
-    table.newAppend().appendFile(dataFile).commit();
+    return dataWriter.toDataFile();
   }
 
   public static Table createOrLoadTable(
@@ -191,10 +196,10 @@ public class IcebergClient {
     CloseableIterable<FileScanTask> fileScanTasks = scan.planFiles();
     for (FileScanTask fileScanTask : fileScanTasks) {
       System.out.println("数据文件：" + fileScanTask);
-      try(final FileIO io = table.io()) {
+      try (final FileIO io = table.io()) {
         final CloseableIterable<Record> records = openFile(io, fileScanTask, table.schema());
         final CloseableIterator<Record> iterator = records.iterator();
-        System.out.println("数据文件内容：" );
+        System.out.println("数据文件内容：");
         while (iterator.hasNext()) {
           System.out.println(iterator.next());
         }
@@ -203,7 +208,8 @@ public class IcebergClient {
     }
   }
 
-  public static CloseableIterable<Record> openFile(FileIO fileIo,FileScanTask task, Schema fileProjection) {
+  public static CloseableIterable<Record> openFile(
+      FileIO fileIo, FileScanTask task, Schema fileProjection) {
     boolean reuseContainers = true;
     boolean caseSensitive = true;
     if (task.isDataTask()) {
