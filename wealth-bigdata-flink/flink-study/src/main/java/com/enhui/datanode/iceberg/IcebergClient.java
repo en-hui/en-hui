@@ -40,6 +40,7 @@ public class IcebergClient {
 
     System.setProperty("HADOOP_USER_NAME", "hdfs");
     // 3.Flink 读取Kafka 中数据
+    // kafka-console-producer --bootstrap-server kafka1:9092 --topic flink-iceberg-topic
     KafkaSource<String> source =
         KafkaSource.<String>builder()
             .setBootstrapServers("kafka1:9092")
@@ -101,8 +102,13 @@ public class IcebergClient {
     dataStream.print();
 
     // 5.将流式结果写出Iceberg表中
-    FlinkSink.Builder builder = FlinkSink.forRowData(dataStream).table(table).tableLoader(tableLoader).overwrite(false);
-
+    FlinkSink.forRowData(dataStream)
+        .table(table)
+        .tableLoader(tableLoader)
+        // 什么都不开，是append
+//         .overwrite(true) // 覆盖写开启
+//        .upsert(true) // upsert 开启，必须是'format-version'='2' 且 有主键的表才支持
+        .append();
 
     env.execute("DataStream API Write Iceberg Table");
   }
