@@ -1,6 +1,8 @@
 package com.enhui.datanode.iceberg;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+import java.util.Arrays;
 import java.util.Map;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -45,7 +47,7 @@ public class IcebergClient {
         KafkaSource.<String>builder()
             .setBootstrapServers("kafka1:9092")
             .setTopics("flink-iceberg-topic") // 1,zs,18,bj
-            .setGroupId("my-group-id")
+            .setGroupId("my-group-id1")
             .setValueOnlyDeserializer(new SimpleStringSchema())
             .setStartingOffsets(OffsetsInitializer.earliest())
             .build();
@@ -68,6 +70,8 @@ public class IcebergClient {
               }
             });
 
+    dataStream.print();
+
     // 4.创建Hadoop配置、Catalog配置和表的Schema，方便后续向路径写数据时可以找到对应的表
     Configuration hadoopConf = new Configuration();
     Catalog catalog = new HadoopCatalog(hadoopConf, "hdfs://cdh1:8020/user/heh/iceberg");
@@ -76,18 +80,27 @@ public class IcebergClient {
     // 创建Icebeng表Schema
     Schema schema =
         new Schema(
-            Types.NestedField.required(1, "id", Types.IntegerType.get()),
-            Types.NestedField.required(2, "nane", Types.StringType.get()),
-            Types.NestedField.required(3, "age", Types.IntegerType.get()),
-            Types.NestedField.required(4, "loc", Types.StringType.get()));
+            Arrays.asList(
+                Types.NestedField.required(1, "id", Types.IntegerType.get()),
+                Types.NestedField.required(2, "name", Types.StringType.get()),
+                Types.NestedField.required(3, "age", Types.IntegerType.get()),
+                Types.NestedField.required(4, "loc", Types.StringType.get())),
+            Sets.newHashSet(4, 1));
 
     // 如果有分区指定对应分区，这里“loc”列为分区列，可以指定unpartitioned 方法不设置表分区
-    // PartitionSpec spec = PartitionSpec.unpartitioned();
+    //     PartitionSpec spec = PartitionSpec.unpartitioned();
     PartitionSpec spec = PartitionSpec.builderFor(schema).identity("loc").build();
     // 指定Iceberg表数据格式化为Parquet存储
     Map<String, String> props =
-        ImmutableMap.of(TableProperties.DEFAULT_FILE_FORMAT, FileFormat.PARQUET.name());
+        ImmutableMap.of(
+            TableProperties.DEFAULT_FILE_FORMAT,
+            FileFormat.PARQUET.name(),
+            TableProperties.FORMAT_VERSION,
+            "2",
+            TableProperties.UPSERT_ENABLED,
+            "true");
     Table table = null;
+    catalog.dropTable(name);
     // 通过catalog判断表是否存在，不存在就创建，存在就加载
     if (!catalog.tableExists(name)) {
       table = catalog.createTable(name, schema, spec, props);
@@ -99,15 +112,13 @@ public class IcebergClient {
         TableLoader.fromHadoopTable(
             "hdfs://cdh1:8020/user/heh/iceberg/icebergdb/flink_iceberg_tbl", hadoopConf);
 
-    dataStream.print();
-
     // 5.将流式结果写出Iceberg表中
     FlinkSink.forRowData(dataStream)
         .table(table)
         .tableLoader(tableLoader)
         // 什么都不开，是append
-//         .overwrite(true) // 覆盖写开启
-//        .upsert(true) // upsert 开启，必须是'format-version'='2' 且 有主键的表才支持
+        //         .overwrite(true) // 覆盖写开启
+        .upsert(true) // upsert 开启，必须是'format-version'='2' 且 有主键的表才支持
         .append();
 
     env.execute("DataStream API Write Iceberg Table");
