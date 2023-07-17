@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -80,7 +81,7 @@ public class IcebergClient {
     catalog.dropTable(name);
 
     // 创建或加载表
-    Table table = createOrLoadTable(catalog, name, false);
+    Table table = createOrLoadTable(catalog, name, false, false);
 
     DataFile dataFile = getDataFileWithRecords(table, table.schema(), 2);
     table.newAppend().appendFile(dataFile).commit();
@@ -154,17 +155,20 @@ public class IcebergClient {
   }
 
   public static Table createOrLoadTable(
-      HadoopCatalog catalog, TableIdentifier name, boolean isPartition) {
+      HadoopCatalog catalog, TableIdentifier name, boolean isPartition, boolean isDelta) {
     Table table = null;
     // 创建或加载现有的Iceberg表
     if (!catalog.tableExists(name)) {
       System.out.println("创建新表,是否有分区:" + isPartition);
+
       // 创建Iceberg表的schema
       Schema schema =
           new Schema(
-              Types.NestedField.required(1, "id", Types.IntegerType.get()),
-              Types.NestedField.required(2, "name", Types.StringType.get()),
-              Types.NestedField.required(3, "loc", Types.StringType.get()));
+              Arrays.asList(
+                  Types.NestedField.required(1, "id", Types.IntegerType.get()),
+                  Types.NestedField.required(2, "name", Types.StringType.get()),
+                  Types.NestedField.required(3, "loc", Types.StringType.get())),
+              isDelta ? Sets.newHashSet(1) : null);
       PartitionSpec spec = null;
       if (isPartition) {
         spec = PartitionSpec.builderFor(schema).identity("loc").build();
@@ -174,7 +178,13 @@ public class IcebergClient {
       }
       // 指定iceberg表数据格式化为parquet
       ImmutableMap<String, String> props =
-          ImmutableMap.of(TableProperties.DEFAULT_FILE_FORMAT, FileFormat.PARQUET.name());
+          ImmutableMap.of(
+              TableProperties.DEFAULT_FILE_FORMAT,
+              FileFormat.PARQUET.name(),
+              TableProperties.FORMAT_VERSION,
+              "2",
+              TableProperties.UPSERT_ENABLED,
+              "true");
       table = catalog.createTable(name, schema, spec, props);
     } else {
       System.out.println("加载已有表");
