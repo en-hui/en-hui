@@ -1,5 +1,7 @@
 package com.enhui;
 
+import static org.apache.iceberg.data.parquet.GenericParquetReaders.buildReader;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
@@ -41,8 +43,6 @@ import org.apache.iceberg.parquet.Parquet;
 import org.apache.iceberg.types.TypeUtil;
 import org.apache.iceberg.types.Types;
 import org.apache.iceberg.util.PartitionUtil;
-
-import static org.apache.iceberg.data.parquet.GenericParquetReaders.buildReader;
 
 public class IcebergClient {
 
@@ -112,7 +112,6 @@ public class IcebergClient {
     selectAndPrint(table);
 
     try {
-      // 需要用flink做：IcebergSmallFileHandle
       System.out.println("持续写入生成诸多小文件");
       // 测试持续写入后，生成很多data file。合并data file并清理snapshot
       for (int i = 0; i < 10; i++) {
@@ -120,13 +119,14 @@ public class IcebergClient {
         table.newAppend().appendFile(dataFile).commit();
       }
 
-      table = catalog.loadTable(name);
-      System.out.println("合并小文件");
+      System.out.println("合并小文件 compact data file");
       // 合并data file小文件；指定合并后文件为5MB。依赖flink或spark
       Actions.forTable(table).rewriteDataFiles().targetSizeInBytes(536870912L).execute();
-      System.out.println("清理历史快照");
-      // 删除历史快照
-      table.expireSnapshots().expireOlderThan(System.currentTimeMillis()).commit();
+
+      System.out.println("清理历史快照 snap文件");
+      long tsToExpire = System.currentTimeMillis() - (1000); // 1 second
+      table.expireSnapshots().expireOlderThan(tsToExpire).commit();
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -203,10 +203,16 @@ public class IcebergClient {
           ImmutableMap.of(
               TableProperties.DEFAULT_FILE_FORMAT,
               FileFormat.PARQUET.name(),
+              // upsert用的
               TableProperties.FORMAT_VERSION,
               "2",
               TableProperties.UPSERT_ENABLED,
-              "true");
+              "true",
+              // 清理json元数据文件用的
+              TableProperties.METADATA_DELETE_AFTER_COMMIT_ENABLED,
+              "true",
+              TableProperties.METADATA_PREVIOUS_VERSIONS_MAX,
+              "5");
       table = catalog.createTable(name, schema, spec, props);
     } else {
       System.out.println("加载已有表");
@@ -273,9 +279,7 @@ public class IcebergClient {
             Parquet.read(input)
                 .caseSensitive(caseSensitive)
                 .project(fileProjection)
-                .createReaderFunc(
-                    fileSchema ->
-                        buildReader(fileProjection, fileSchema, partition))
+                .createReaderFunc(fileSchema -> buildReader(fileProjection, fileSchema, partition))
                 .split(task.start(), task.length())
                 .filter(task.residual());
         if (reuseContainers) {
