@@ -27,8 +27,8 @@ import org.apache.iceberg.data.IdentityPartitionConverters;
 import org.apache.iceberg.data.Record;
 import org.apache.iceberg.data.avro.DataReader;
 import org.apache.iceberg.data.orc.GenericOrcReader;
-import org.apache.iceberg.data.parquet.GenericParquetReaders;
 import org.apache.iceberg.data.parquet.GenericParquetWriter;
+import org.apache.iceberg.flink.actions.Actions;
 import org.apache.iceberg.hadoop.HadoopCatalog;
 import org.apache.iceberg.io.CloseableIterable;
 import org.apache.iceberg.io.CloseableIterator;
@@ -41,6 +41,8 @@ import org.apache.iceberg.parquet.Parquet;
 import org.apache.iceberg.types.TypeUtil;
 import org.apache.iceberg.types.Types;
 import org.apache.iceberg.util.PartitionUtil;
+
+import static org.apache.iceberg.data.parquet.GenericParquetReaders.buildReader;
 
 public class IcebergClient {
 
@@ -108,6 +110,26 @@ public class IcebergClient {
     table.updateSchema().deleteColumn("operate_column").commit();
     System.out.println("删除列");
     selectAndPrint(table);
+
+    try {
+      // 需要用flink做：IcebergSmallFileHandle
+      System.out.println("持续写入生成诸多小文件");
+      // 测试持续写入后，生成很多data file。合并data file并清理snapshot
+      for (int i = 0; i < 10; i++) {
+        dataFile = getDataFileWithRecords(table, table.schema(), 3 * i);
+        table.newAppend().appendFile(dataFile).commit();
+      }
+
+      table = catalog.loadTable(name);
+      System.out.println("合并小文件");
+      // 合并data file小文件；指定合并后文件为5MB。依赖flink或spark
+      Actions.forTable(table).rewriteDataFiles().targetSizeInBytes(536870912L).execute();
+      System.out.println("清理历史快照");
+      // 删除历史快照
+      table.expireSnapshots().expireOlderThan(System.currentTimeMillis()).commit();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public static GenericRecord getRecord(Schema schema, int num) {
@@ -205,7 +227,12 @@ public class IcebergClient {
     TableScan scan = table.newScan();
     CloseableIterable<FileScanTask> fileScanTasks = scan.planFiles();
     for (FileScanTask fileScanTask : fileScanTasks) {
-      System.out.println("数据文件：" + fileScanTask);
+      System.out.println(
+          "数据文件："
+              + (fileScanTask.deletes().size() > 0
+                  ? fileScanTask.deletes().size() + " 已删除文件  "
+                  : " ")
+              + fileScanTask);
       try (final FileIO io = table.io()) {
         final CloseableIterable<Record> records = openFile(io, fileScanTask, table.schema());
         final CloseableIterator<Record> iterator = records.iterator();
@@ -248,7 +275,7 @@ public class IcebergClient {
                 .project(fileProjection)
                 .createReaderFunc(
                     fileSchema ->
-                        GenericParquetReaders.buildReader(fileProjection, fileSchema, partition))
+                        buildReader(fileProjection, fileSchema, partition))
                 .split(task.start(), task.length())
                 .filter(task.residual());
         if (reuseContainers) {
