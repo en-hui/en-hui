@@ -33,7 +33,7 @@ import org.apache.iceberg.types.Types;
  * -Dfile=/Users/huenhui/Downloads/iceberg-flink-runtime-1.16-1.3.0.jar -DgroupId=org.apache.iceberg
  * -DartifactId=iceberg-flink-runtime-1.16 -Dversion=1.3.0 -Dpackaging=jar
  */
-public class IcebergClient {
+public class IcebergFlinkClient {
   public static void main(String[] args) throws Exception {
     // 1.创建Flink环境
     StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -103,8 +103,10 @@ public class IcebergClient {
     catalog.dropTable(name);
     // 通过catalog判断表是否存在，不存在就创建，存在就加载
     if (!catalog.tableExists(name)) {
+      System.out.println("创建新表");
       table = catalog.createTable(name, schema, spec, props);
     } else {
+      System.out.println("加载已有表");
       table = catalog.loadTable(name);
     }
 

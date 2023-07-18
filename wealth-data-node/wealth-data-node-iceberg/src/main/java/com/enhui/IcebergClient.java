@@ -201,7 +201,7 @@ public class IcebergClient {
       System.out.println("查询到的数据：" + record);
     }
 
-    System.out.println("文件级别查询");
+    System.out.println("文件级别查询, 参考即可，不结合元数据，被删除的数据还能被看到");
     TableScan scan = table.newScan();
     CloseableIterable<FileScanTask> fileScanTasks = scan.planFiles();
     for (FileScanTask fileScanTask : fileScanTasks) {
