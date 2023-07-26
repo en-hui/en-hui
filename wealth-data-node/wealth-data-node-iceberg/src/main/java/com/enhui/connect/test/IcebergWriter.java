@@ -1,8 +1,10 @@
 package com.enhui.connect.test;
 
 import com.enhui.IcebergClient;
+import com.enhui.connect.Operation;
 import com.enhui.connect.PartitionedAppendWriter;
 import com.enhui.connect.PartitionedDeltaWriter;
+import com.enhui.connect.RecordWrapper;
 import com.enhui.connect.UnpartitionedDeltaWriter;
 import com.google.common.primitives.Ints;
 import java.io.IOException;
@@ -31,8 +33,8 @@ import org.apache.iceberg.types.Types;
 
 public class IcebergWriter {
 
-  static boolean isPartition = true;
-  static boolean isDelta = true;
+  static boolean isPartition;
+  static boolean isDelta;
 
   public static void main(String[] args) throws IOException {
     IcebergWriter icebergWriter = new IcebergWriter();
@@ -42,40 +44,64 @@ public class IcebergWriter {
     conf.set("dfs.client.use.datanode.hostname", "true");
     String warehousePath = "hdfs://cdh1:8020/user/heh/iceberg";
     HadoopCatalog catalog = new HadoopCatalog(conf, warehousePath);
-
     String namespace = "icebergdb";
+
+    // 无分区、非增量 ==> 仅支持插入
+    isPartition = false;
+    isDelta = false;
     String tableName = "writer_test_" + isPartition + "_" + isDelta;
     TableIdentifier name = TableIdentifier.of(namespace, tableName);
-    boolean isUpdate = true;
-    if (!isUpdate) {
-      catalog.dropTable(name);
-    }
-
+    catalog.dropTable(name);
     Table table = IcebergClient.createOrLoadTable(catalog, name, isPartition, isDelta);
-
-    TaskWriter<Record> taskWriter =
-        icebergWriter.getUnpartitionedWriter(table, FileFormat.PARQUET, isPartition, isDelta);
-    taskWriter.write(icebergWriter.getRecord(table, 1, isUpdate));
-    taskWriter.write(icebergWriter.getRecord(table, 2, isUpdate));
-    taskWriter.write(icebergWriter.getRecord(table, 1, isUpdate));
-    taskWriter.close();
-    final WriteResult complete = taskWriter.complete();
-    System.out.println("\nreferencedDataFiles：" + Arrays.toString(complete.referencedDataFiles()));
-    System.out.println("\ndeleteFiles：" + Arrays.toString(complete.deleteFiles()));
-    System.out.println("\ndataFiles：" + Arrays.toString(complete.dataFiles()));
-
-    final Transaction transaction = table.newTransaction();
-    for (DataFile dataFile : complete.dataFiles()) {
-      AppendFiles appendFiles = transaction.newAppend();
-      appendFiles.appendFile(dataFile).commit();
-    }
-    for (DeleteFile deleteFile : complete.deleteFiles()) {
-      RowDelta rowDelta = transaction.newRowDelta();
-      rowDelta.addDeletes(deleteFile).commit();
-    }
-    transaction.commitTransaction();
-
+    TaskWriter<Record> allUnPartitionTaskWriter =
+            icebergWriter.getUnpartitionedWriter(table, FileFormat.PARQUET, isPartition, isDelta);
+    allUnPartitionTaskWriter.write(icebergWriter.getRecord(table, 1, false));
+    allUnPartitionTaskWriter.complete();
     IcebergClient.selectAndPrint(table);
+
+
+    // 有分区、增量 ==> 插入、删除
+    isPartition = true;
+    isDelta = true;
+    tableName = "writer_test_" + isPartition + "_" + isDelta;
+    name = TableIdentifier.of(namespace, tableName);
+    catalog.dropTable(name);
+    table = IcebergClient.createOrLoadTable(catalog, name, isPartition, isDelta);
+    TaskWriter<Record> deltaPartitionTaskWriter =
+            icebergWriter.getUnpartitionedWriter(table, FileFormat.PARQUET, isPartition, isDelta);
+    deltaPartitionTaskWriter.write(new RecordWrapper(icebergWriter.getRecord(table, 1, false), Operation.INSERT));
+    deltaPartitionTaskWriter.write(new RecordWrapper(icebergWriter.getRecord(table, 2, false), Operation.INSERT));
+    deltaPartitionTaskWriter.write(new RecordWrapper(icebergWriter.getRecord(table, 3, false), Operation.INSERT));
+    deltaPartitionTaskWriter.complete();
+    IcebergClient.selectAndPrint(table);
+
+    deltaPartitionTaskWriter.write(new RecordWrapper(icebergWriter.getRecord(table, 2, true), Operation.UPDATE));
+    IcebergClient.selectAndPrint(table);
+
+    deltaPartitionTaskWriter.write(new RecordWrapper(icebergWriter.getRecord(table, 3, false), Operation.DELETE));
+    IcebergClient.selectAndPrint(table);
+
+//    taskWriter.write(icebergWriter.getRecord(table, 1, isUpdate));
+//    taskWriter.write(icebergWriter.getRecord(table, 2, isUpdate));
+//    taskWriter.write(icebergWriter.getRecord(table, 1, isUpdate));
+//    taskWriter.close();
+//    final WriteResult complete = taskWriter.complete();
+//    System.out.println("\nreferencedDataFiles：" + Arrays.toString(complete.referencedDataFiles()));
+//    System.out.println("\ndeleteFiles：" + Arrays.toString(complete.deleteFiles()));
+//    System.out.println("\ndataFiles：" + Arrays.toString(complete.dataFiles()));
+//
+//    final Transaction transaction = table.newTransaction();
+//    for (DataFile dataFile : complete.dataFiles()) {
+//      AppendFiles appendFiles = transaction.newAppend();
+//      appendFiles.appendFile(dataFile).commit();
+//    }
+//    for (DeleteFile deleteFile : complete.deleteFiles()) {
+//      RowDelta rowDelta = transaction.newRowDelta();
+//      rowDelta.addDeletes(deleteFile).commit();
+//    }
+//    transaction.commitTransaction();
+//
+//    IcebergClient.selectAndPrint(table);
   }
 
   public Record getRecord(Table table, int i, boolean idUpdate) {

@@ -15,6 +15,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
+import org.apache.flink.types.RowKind;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.iceberg.FileFormat;
 import org.apache.iceberg.PartitionSpec;
@@ -42,11 +43,15 @@ public class IcebergFlinkClient {
 
     System.setProperty("HADOOP_USER_NAME", "hdfs");
     // 3.Flink 读取Kafka 中数据
+    // kafka-topics --bootstrap-server kafka1:9092 --topic flink-iceberg-topic --delete
     // kafka-console-producer --bootstrap-server kafka1:9092 --topic flink-iceberg-topic
+    // kafka-topics  --bootstrap-server kafka1:9092 --topic flink-iceberg-topic --create
+    // 1,zs,18,bj,I
+    // 1,zs,18,bj,D
     KafkaSource<String> source =
         KafkaSource.<String>builder()
             .setBootstrapServers("kafka1:9092")
-            .setTopics("flink-iceberg-topic") // 1,zs,18,bj
+            .setTopics("flink-iceberg-topic")
             .setGroupId("my-group-id1")
             .setValueOnlyDeserializer(new SimpleStringSchema())
             .setStartingOffsets(OffsetsInitializer.earliest())
@@ -61,11 +66,24 @@ public class IcebergFlinkClient {
               @Override
               public RowData map(String line) throws Exception {
                 String[] split = line.split(",");
+                if (split.length == 0) {
+                  return null;
+                }
                 GenericRowData row = new GenericRowData(4);
                 row.setField(0, Integer.valueOf(split[0]));
                 row.setField(1, StringData.fromString(split[1]));
                 row.setField(2, Integer.valueOf(split[2]));
                 row.setField(3, StringData.fromString(split[3]));
+                if (split.length > 4) {
+                  switch (split[4]) {
+                    case "D":
+                      row.setRowKind(RowKind.DELETE);
+                      break;
+                    case "I":
+                    default:
+                      row.setRowKind(RowKind.INSERT);
+                  }
+                }
                 return row;
               }
             });
