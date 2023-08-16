@@ -1,4 +1,4 @@
-package com.enhui;
+package com.enhui.mppdb;
 
 import java.nio.ByteBuffer;
 import java.sql.DriverManager;
@@ -15,7 +15,7 @@ import org.postgresql.replication.LogSequenceNumber;
 import org.postgresql.replication.PGReplicationStream;
 import org.postgresql.replication.fluent.logical.ChainedLogicalStreamBuilder;
 
-public class SlotReadTest {
+public class SlotReadMain {
 
   private static PgConnection soltConn = null;
   private static PgConnection conn = null;
@@ -51,7 +51,7 @@ public class SlotReadTest {
 
   @Test
   public void readSolt() throws SQLException, InterruptedException {
-    LogSequenceNumber startLsn = LogSequenceNumber.valueOf("0/10585440");
+    LogSequenceNumber startLsn = LogSequenceNumber.valueOf("0/1314A758");
     ChainedLogicalStreamBuilder streamBuilder =
         soltConn
             .getReplicationAPI()
@@ -62,28 +62,53 @@ public class SlotReadTest {
             .withSlotOption("include-xids", true)
             .withSlotOption("include-timestamp", true)
             .withSlotOption("skip-empty-xacts", true)
-            .withSlotOption("parallel-decode-num", 3) // 解码线程并发度
             .withSlotOption("white-table-list", "public.cqtest") // 白名单列表
             .withSlotOption("standby-connection", false); // 强制备机解码
 
-    streamBuilder.withSlotOption("decode-style", "b").withSlotOption("sending-batch", 1);
+    // 是否支持并行解析
+    boolean isParaller = true;
+//    boolean isParaller = false;
+    if (isParaller) {
+      streamBuilder
+          .withSlotOption("decode-style", "b")
+          // 解码线程并发度
+          .withSlotOption("parallel-decode-num", 3)
+          // 批量发送解码结果
+          .withSlotOption("sending-batch", 1);
+    }
 
     PGReplicationStream stream = streamBuilder.start();
-
     final MppdbDecoder mppdbDecoder = new MppdbDecoder();
+    final DefaultMessageDecoder defaultMppdbDecoder = new DefaultMessageDecoder();
     while (true) {
       ByteBuffer byteBuffer = stream.readPending();
-      LogSequenceNumber lastReceiveLsn = stream.getLastReceiveLSN();
-      NonRecursiveHelper helper =
-          new NonRecursiveHelper(
-              true, null, startLsn.asLong(), lastReceiveLsn.asLong(), byteBuffer);
-      while (helper.isContinue()) {
-        helper =
-            mppdbDecoder.processMessage(
-                helper.getStartLsn(),
-                helper.getCommitTime(),
-                helper.getLastReceiveLsn(),
-                helper.getByteBuffer());
+      if (byteBuffer == null) {
+        continue;
+      }
+
+      if (!isParaller) {
+        LogSequenceNumber lastReceiveLsn = stream.getLastReceiveLSN();
+        NonRecursiveHelper helper =
+            new NonRecursiveHelper(
+                true, null, startLsn.asLong(), lastReceiveLsn.asLong(), byteBuffer);
+        while (helper != null && helper.isContinue()) {
+          helper =
+              defaultMppdbDecoder.processMessage(
+                  helper.getLastReceiveLsn(), helper.getByteBuffer());
+        }
+      } else {
+        LogSequenceNumber lastReceiveLsn = stream.getLastReceiveLSN();
+        NonRecursiveHelper helper =
+            new NonRecursiveHelper(
+                true, null, startLsn.asLong(), lastReceiveLsn.asLong(), byteBuffer);
+        while (helper.isContinue()) {
+          helper =
+              mppdbDecoder.processMessage(
+                  helper.getStartLsn(),
+                  helper.getCommitTime(),
+                  helper.getLastReceiveLsn(),
+                  helper.getByteBuffer());
+        }
       }
     }
   }
