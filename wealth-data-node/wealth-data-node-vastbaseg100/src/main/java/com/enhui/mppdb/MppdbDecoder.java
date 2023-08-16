@@ -36,7 +36,7 @@ public class MppdbDecoder {
       }
       long lsn = byteBuffer.getLong();
       String type = new String(new byte[] {byteBuffer.get()});
-      System.out.println("mppdb handle type : {}" + type);
+      System.out.println("mppdb handle type : " + type);
       switch (type) {
           // begin
         case "B":
@@ -79,17 +79,17 @@ public class MppdbDecoder {
             builder
                 .append("schame:")
                 .append(schemaName)
-                .append("tableName:")
+                .append(", tableName:")
                 .append(tableName)
-                .append("lsn:")
+                .append(", lsn:")
                 .append(lsn)
-                .append("type:")
+                .append(", type:")
                 .append(type);
 
             if (commitTime != null) {
               // 使用B事件中拿到的时间作为kafka中每个消息的ts_sec
               builder
-                  .append("commitTime:")
+                  .append(", commitTime:")
                   .append(Instant.from(TIMESTAMP_FORMAT.parse(commitTime)).toEpochMilli());
             }
 
@@ -133,7 +133,14 @@ public class MppdbDecoder {
         byteBuffer.get(valueBytes);
         value = valueBytes;
       }
-      System.out.println(colName + "--" + oid + "--" + value);
+      System.out.println(
+          (before ? "before" : "after")
+              + "--"
+              + colName
+              + "--"
+              + oid
+              + "--"
+              + (value != null ? new String(value) : null));
     }
   }
 

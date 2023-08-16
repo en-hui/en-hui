@@ -56,17 +56,17 @@ public class SlotReadMain {
             .replicationStream()
             .logical()
             .withSlotName("replication_slot")
-            .withStartPosition(startLsn)
+//            .withStartPosition(startLsn)
             .withSlotOption("include-xids", true)
             .withSlotOption("include-timestamp", true)
             .withSlotOption("skip-empty-xacts", true)
-            .withSlotOption("white-table-list", "public.cqtest") // 白名单列表
+            .withSlotOption("white-table-list", "public.heh_test") // 白名单列表
             .withSlotOption("standby-connection", false); // 强制备机解码
 
     // 是否支持并行解析
     int parallerNum;
-    //    parallerNum = 3;
-    parallerNum = 1;
+        parallerNum = 3;
+//    parallerNum = 1;
     if (parallerNum > 1) {
       streamBuilder
           .withSlotOption("decode-style", "b")
@@ -85,7 +85,8 @@ public class SlotReadMain {
         continue;
       }
 
-      if (parallerNum > 1) {
+      if (parallerNum == 1) {
+        System.out.println("非并行解析");
         LogSequenceNumber lastReceiveLsn = stream.getLastReceiveLSN();
         NonRecursiveHelper helper =
             new NonRecursiveHelper(
@@ -96,11 +97,12 @@ public class SlotReadMain {
                   helper.getLastReceiveLsn(), helper.getByteBuffer());
         }
       } else {
+        System.out.println("并行解析");
         LogSequenceNumber lastReceiveLsn = stream.getLastReceiveLSN();
         NonRecursiveHelper helper =
             new NonRecursiveHelper(
                 true, null, startLsn.asLong(), lastReceiveLsn.asLong(), byteBuffer);
-        while (helper.isContinue()) {
+        while (helper != null && helper.isContinue()) {
           helper =
               mppdbDecoder.processMessage(
                   helper.getStartLsn(),
@@ -115,8 +117,8 @@ public class SlotReadMain {
   @BeforeEach
   public void before() {
     try {
-      conn = NodeService.getSingleConn();
-      soltConn = NodeService.getSingleSoltConn();
+      conn = NodeService.getSlaveConn();
+      soltConn = NodeService.getSlaveSoltConn();
       System.out.println("connection success!");
     } catch (Exception e) {
       e.printStackTrace();
