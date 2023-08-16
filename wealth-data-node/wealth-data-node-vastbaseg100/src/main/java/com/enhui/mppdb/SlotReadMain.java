@@ -1,15 +1,13 @@
 package com.enhui.mppdb;
 
+import com.enhui.NodeService;
 import java.nio.ByteBuffer;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.postgresql.PGProperty;
 import org.postgresql.jdbc.PgConnection;
 import org.postgresql.replication.LogSequenceNumber;
 import org.postgresql.replication.PGReplicationStream;
@@ -66,13 +64,14 @@ public class SlotReadMain {
             .withSlotOption("standby-connection", false); // 强制备机解码
 
     // 是否支持并行解析
-    boolean isParaller = true;
-//    boolean isParaller = false;
-    if (isParaller) {
+    int parallerNum;
+    //    parallerNum = 3;
+    parallerNum = 1;
+    if (parallerNum > 1) {
       streamBuilder
           .withSlotOption("decode-style", "b")
           // 解码线程并发度
-          .withSlotOption("parallel-decode-num", 3)
+          .withSlotOption("parallel-decode-num", parallerNum)
           // 批量发送解码结果
           .withSlotOption("sending-batch", 1);
     }
@@ -86,7 +85,7 @@ public class SlotReadMain {
         continue;
       }
 
-      if (!isParaller) {
+      if (parallerNum > 1) {
         LogSequenceNumber lastReceiveLsn = stream.getLastReceiveLSN();
         NonRecursiveHelper helper =
             new NonRecursiveHelper(
@@ -115,25 +114,9 @@ public class SlotReadMain {
 
   @BeforeEach
   public void before() {
-    String driver = "org.postgresql.Driver";
-    // 此处配置数据库IP以及端口，这里的端口为haPort，通常默认是所连接DN的port+1端口
-    String masterIp = "152.136.37.221";
-    int port = 5432;
-    int soltPort = 5433;
-    String url = String.format("jdbc:postgresql://%s:%s/dp_test", masterIp, port);
-    String soltUrl = String.format("jdbc:postgresql://%s:%s/dp_test", masterIp, soltPort);
-
     try {
-      Class.forName(driver);
-      Properties properties = new Properties();
-      PGProperty.USER.set(properties, "dp_test");
-      PGProperty.PASSWORD.set(properties, "Datapipeline123");
-      conn = (PgConnection) DriverManager.getConnection(url, properties);
-      // 对于逻辑复制，以下三个属性是必须配置项
-      PGProperty.ASSUME_MIN_SERVER_VERSION.set(properties, "9.4");
-      PGProperty.REPLICATION.set(properties, "database");
-      PGProperty.PREFER_QUERY_MODE.set(properties, "simple");
-      soltConn = (PgConnection) DriverManager.getConnection(soltUrl, properties);
+      conn = NodeService.getSingleConn();
+      soltConn = NodeService.getSingleSoltConn();
       System.out.println("connection success!");
     } catch (Exception e) {
       e.printStackTrace();
