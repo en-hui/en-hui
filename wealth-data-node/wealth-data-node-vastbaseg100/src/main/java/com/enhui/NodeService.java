@@ -12,7 +12,6 @@ public class NodeService {
   private static int singlePort = 5432;
   private static int singleSoltPort = 5433;
 
-
   // root/Datapipeline123     vastbase/Vb@admin123
 
   // 主库：49.232.250.134（192.168.32.2）
@@ -21,32 +20,72 @@ public class NodeService {
   // 备库：62.234.26.175（192.168.32.12）
   private static String slaveIp = "62.234.26.175";
 
-  public static PgConnection getMasterSslConn() throws ClassNotFoundException, SQLException {
-    return getConn(masterIp, singlePort, "certtest", "Test@123", "vastbase", false, true);
+  public static PgConnection getMasterSslConn(String database)
+      throws ClassNotFoundException, SQLException {
+    return getConn(
+        masterIp,
+        singlePort,
+        "certtest",
+        "Test@123",
+        database == null ? "vastbase" : database,
+        false,
+        true);
   }
 
-  public static PgConnection getMasterConn() throws ClassNotFoundException, SQLException {
-    return getConn(masterIp, singlePort, "tpcc", "tpcc@123", "vastbase", false);
+  public static PgConnection getMasterConn(String database)
+      throws ClassNotFoundException, SQLException {
+    return getConn(
+        masterIp, singlePort, "tpcc", "tpcc@123", database == null ? "vastbase" : database, false);
   }
 
-  public static PgConnection getMasterSoltConn() throws ClassNotFoundException, SQLException {
-    return getConn(masterIp, singleSoltPort, "tpcc", "tpcc@123", "vastbase", true);
+  public static PgConnection getMasterSoltConn(String database)
+      throws ClassNotFoundException, SQLException {
+    return getConn(
+        masterIp,
+        singleSoltPort,
+        "tpcc",
+        "tpcc@123",
+        database == null ? "vastbase" : database,
+        true);
   }
 
-  public static PgConnection getSlaveConn() throws ClassNotFoundException, SQLException {
-    return getConn(slaveIp, singlePort, "tpcc", "tpcc@123", "vastbase", false);
+  public static PgConnection getSlaveConn(String database)
+      throws ClassNotFoundException, SQLException {
+    return getConn(
+        slaveIp, singlePort, "tpcc", "tpcc@123", database == null ? "vastbase" : database, false);
   }
 
-  public static PgConnection getSlaveSoltConn() throws ClassNotFoundException, SQLException {
-    return getConn(slaveIp, singleSoltPort, "tpcc", "tpcc@123", "vastbase", true);
+  public static PgConnection getSlaveSoltConn(String database)
+      throws ClassNotFoundException, SQLException {
+    return getConn(
+        slaveIp,
+        singleSoltPort,
+        "tpcc",
+        "tpcc@123",
+        database == null ? "vastbase" : database,
+        true);
   }
 
-  public static PgConnection getSingleConn() throws ClassNotFoundException, SQLException {
-    return getConn(singleIp, singlePort, "dp_test", "Datapipeline123", "dp_test", false);
+  public static PgConnection getSingleConn(String database)
+      throws ClassNotFoundException, SQLException {
+    return getConn(
+        singleIp,
+        singlePort,
+        "dp_test",
+        "Datapipeline123",
+        database == null ? "dp_test" : database,
+        false);
   }
 
-  public static PgConnection getSingleSoltConn() throws ClassNotFoundException, SQLException {
-    return getConn(singleIp, singleSoltPort, "dp_test", "Datapipeline123", "dp_test", true);
+  public static PgConnection getSingleSoltConn(String database)
+      throws ClassNotFoundException, SQLException {
+    return getConn(
+        singleIp,
+        singleSoltPort,
+        "dp_test",
+        "Datapipeline123",
+        database == null ? "dp_test" : database,
+        true);
   }
 
   public static PgConnection getConn(

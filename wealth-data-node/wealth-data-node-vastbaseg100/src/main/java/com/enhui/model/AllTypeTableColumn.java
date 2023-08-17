@@ -1,6 +1,7 @@
 package com.enhui.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
@@ -8,10 +9,22 @@ import lombok.Data;
 @Data
 @Builder
 public class AllTypeTableColumn {
+  public static String ORACLE_DATABASE = "oracle_base";
+  public static String MYSQL_DATABASE = "mysql_base";
+  public static String TERADATA_DATABASE = "teradata_base";
+  public static String PG_DATABASE = "pg_base";
+
+  public enum NotSupportedType {
+    ORACLE,
+    MYSQL,
+    TERADATA,
+    PG
+  }
 
   String name;
   String type;
   Object value;
+  List<NotSupportedType> notSupportedTypes;
 
   /** 全类型表 */
   public static List<AllTypeTableColumn> ALL_COLUMN_TYPE = new ArrayList<>();
@@ -48,7 +61,13 @@ public class AllTypeTableColumn {
     ALL_COLUMN_TYPE.add(
         AllTypeTableColumn.builder().name("col").type("BINARY_INTEGER").value("").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("BIGINT").value("").build());
-    ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("int16").value("").build());
+    ALL_COLUMN_TYPE.add(
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("int16")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
+            .build());
     ALL_COLUMN_TYPE.add(
         AllTypeTableColumn.builder().name("col").type("NUMERIC(10,5)").value("").build());
     ALL_COLUMN_TYPE.add(
@@ -112,21 +131,39 @@ public class AllTypeTableColumn {
             .name("col")
             .type("BYTEAWITHOUTORDERWITHEQUALCOL")
             .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
             .build());
     ALL_COLUMN_TYPE.add(
-        AllTypeTableColumn.builder().name("col").type("BYTEAWITHOUTORDERCOL").value("").build());
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("BYTEAWITHOUTORDERCOL")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
+            .build());
     ALL_COLUMN_TYPE.add(
         AllTypeTableColumn.builder()
             .name("col")
             .type("_BYTEAWITHOUTORDERWITHEQUALCOL")
             .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
             .build());
     ALL_COLUMN_TYPE.add(
-        AllTypeTableColumn.builder().name("col").type("_BYTEAWITHOUTORDERCOL").value("").build());
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("_BYTEAWITHOUTORDERCOL")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
+            .build());
 
     // 几何类型
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("point").value("").build());
-    ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("line").value("").build());
+    ALL_COLUMN_TYPE.add(
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("line")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
+            .build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("lseg").value("").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("box").value("").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("path").value("").build());

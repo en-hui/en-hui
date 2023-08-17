@@ -56,7 +56,7 @@ public class SlotReadMain {
             .replicationStream()
             .logical()
             .withSlotName("replication_slot")
-//            .withStartPosition(startLsn)
+            //            .withStartPosition(startLsn)
             .withSlotOption("include-xids", true)
             .withSlotOption("include-timestamp", true)
             .withSlotOption("skip-empty-xacts", true)
@@ -65,8 +65,8 @@ public class SlotReadMain {
 
     // 是否支持并行解析
     int parallerNum;
-        parallerNum = 3;
-//    parallerNum = 1;
+    parallerNum = 3;
+    //    parallerNum = 1;
     if (parallerNum > 1) {
       streamBuilder
           .withSlotOption("decode-style", "b")
@@ -117,8 +117,8 @@ public class SlotReadMain {
   @BeforeEach
   public void before() {
     try {
-      conn = NodeService.getSlaveConn();
-      soltConn = NodeService.getSlaveSoltConn();
+      conn = NodeService.getSlaveConn(null);
+      soltConn = NodeService.getSlaveSoltConn(null);
       System.out.println("connection success!");
     } catch (Exception e) {
       e.printStackTrace();
