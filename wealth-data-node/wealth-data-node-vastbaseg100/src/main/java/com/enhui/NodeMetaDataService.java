@@ -19,14 +19,21 @@ public class NodeMetaDataService {
   public void createAllTypeTable() throws SQLException, ClassNotFoundException {
     initDatabase();
 
-    createOracleAllTypeTable();
+    //    createOracleAllTypeTable(
+    //        AllTypeTableColumn.ORACLE_DATABASE,
+    //        AllTypeTableColumn.NotSupportedType.ORACLE,
+    //        "heh_oracle_all_type1");
 
-    // oracle兼容模式 创建表
-    createOracleAllTypeTable();
+    createOracleAllTypeTable(
+        AllTypeTableColumn.MYSQL_DATABASE,
+        AllTypeTableColumn.NotSupportedType.MYSQL,
+        "heh_oracle_all_type1");
   }
 
-  private void createOracleAllTypeTable() throws SQLException, ClassNotFoundException {
-    try (PgConnection conn = NodeService.getSlaveConn(AllTypeTableColumn.ORACLE_DATABASE);
+  private void createOracleAllTypeTable(
+      String connType, AllTypeTableColumn.NotSupportedType notSupportedType, String tableName)
+      throws SQLException, ClassNotFoundException {
+    try (PgConnection conn = NodeService.getSlaveConn(connType);
         Statement statement = conn.createStatement()) {
       AtomicInteger i = new AtomicInteger(1);
       final List<AllTypeTableColumn> supportedList =
@@ -34,8 +41,7 @@ public class NodeMetaDataService {
               .filter(
                   t ->
                       t.getNotSupportedTypes() == null
-                          || !t.getNotSupportedTypes()
-                              .contains(AllTypeTableColumn.NotSupportedType.ORACLE))
+                          || !t.getNotSupportedTypes().contains(notSupportedType))
               .collect(Collectors.toList());
 
       final List<String> notSupportedList =
@@ -43,11 +49,10 @@ public class NodeMetaDataService {
               .filter(
                   t ->
                       t.getNotSupportedTypes() != null
-                          && t.getNotSupportedTypes()
-                              .contains(AllTypeTableColumn.NotSupportedType.ORACLE))
+                          && t.getNotSupportedTypes().contains(notSupportedType))
               .map(AllTypeTableColumn::getType)
               .collect(Collectors.toList());
-      System.out.println("vastbase g100的oracle兼容模式 不支持的类型：" + notSupportedList);
+      System.out.println("vastbase g100的" + notSupportedType + "兼容模式 不支持的类型：" + notSupportedList);
       String columnSql =
           supportedList.stream()
               .map(
@@ -55,9 +60,12 @@ public class NodeMetaDataService {
                       String.format("%s %s", colu.getName() + i.getAndIncrement(), colu.getType()))
               .collect(Collectors.joining(",\n"));
 
-      String createSql = String.format("CREATE TABLE public.heh_all_type1_oracle(%s);", columnSql);
-      System.out.println("vastbase g100的oracle兼容模式 全类型建表语句：" + createSql);
-      statement.execute("drop table public.heh_all_type1_oracle");
+      String createSql = String.format("CREATE TABLE public." + tableName + "(%s);", columnSql);
+      //      System.out.println("vastbase g100的" + notSupportedType + "兼容模式 全类型建表语句：" + createSql);
+      try {
+        statement.execute("drop table public." + tableName);
+      } catch (Exception ignore) {
+      }
       statement.execute(createSql);
     }
   }
@@ -75,7 +83,7 @@ public class NodeMetaDataService {
       ResultSet resultSet = statement.executeQuery("select * from pg_database");
       while (resultSet.next()) {
         final String s = resultSet.getString(1) + "--" + resultSet.getString(12);
-        //        System.out.println(s);
+        //                System.out.println(s);
         databases.add(s);
       }
       // DBCOMPATIBILITY [ = ] compatibility_type
