@@ -66,7 +66,7 @@ public class AllTypeTableColumn {
             .name("col")
             .type("int16")
             .value("")
-            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE, NotSupportedType.MYSQL, NotSupportedType.TERADATA, NotSupportedType.PG))
             .build());
     ALL_COLUMN_TYPE.add(
         AllTypeTableColumn.builder().name("col").type("NUMERIC(10,5)").value("").build());
@@ -74,13 +74,32 @@ public class AllTypeTableColumn {
         AllTypeTableColumn.builder().name("col").type("DECIMAL(10,5)").value("").build());
     ALL_COLUMN_TYPE.add(
         AllTypeTableColumn.builder().name("col").type("NUMBER(10,5)").value("").build());
+
+    // mysql 模式下，只能有一个递增列
     ALL_COLUMN_TYPE.add(
-        AllTypeTableColumn.builder().name("col").type("SMALLSERIAL").value("").build());
-    ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("SERIAL").value("").build());
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("SMALLSERIAL")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.MYSQL))
+            .build());
     ALL_COLUMN_TYPE.add(
-        AllTypeTableColumn.builder().name("col").type("BIGSERIAL").value("").build());
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("SERIAL")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.MYSQL))
+            .build());
+    ALL_COLUMN_TYPE.add(
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("BIGSERIAL")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.MYSQL))
+            .build());
     ALL_COLUMN_TYPE.add(
         AllTypeTableColumn.builder().name("col").type("LARGESERIAL").value("").build());
+
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("REAL").value("").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("FLOAT4").value("").build());
     ALL_COLUMN_TYPE.add(
@@ -131,28 +150,28 @@ public class AllTypeTableColumn {
             .name("col")
             .type("BYTEAWITHOUTORDERWITHEQUALCOL")
             .value("")
-            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE, NotSupportedType.MYSQL, NotSupportedType.TERADATA, NotSupportedType.PG))
             .build());
     ALL_COLUMN_TYPE.add(
         AllTypeTableColumn.builder()
             .name("col")
             .type("BYTEAWITHOUTORDERCOL")
             .value("")
-            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE, NotSupportedType.MYSQL, NotSupportedType.TERADATA, NotSupportedType.PG))
             .build());
     ALL_COLUMN_TYPE.add(
         AllTypeTableColumn.builder()
             .name("col")
             .type("_BYTEAWITHOUTORDERWITHEQUALCOL")
             .value("")
-            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE, NotSupportedType.MYSQL, NotSupportedType.TERADATA, NotSupportedType.PG))
             .build());
     ALL_COLUMN_TYPE.add(
         AllTypeTableColumn.builder()
             .name("col")
             .type("_BYTEAWITHOUTORDERCOL")
             .value("")
-            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE, NotSupportedType.MYSQL, NotSupportedType.TERADATA, NotSupportedType.PG))
             .build());
 
     // 几何类型
@@ -162,11 +181,10 @@ public class AllTypeTableColumn {
             .name("col")
             .type("line")
             .value("")
-            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE))
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE, NotSupportedType.MYSQL, NotSupportedType.TERADATA, NotSupportedType.PG))
             .build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("lseg").value("").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("box").value("").build());
-    ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("path").value("").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("path").value("").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("polygon").value("").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("circle").value("").build());
@@ -223,5 +241,46 @@ public class AllTypeTableColumn {
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("JSON").value("").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("JSONB").value("").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("bfile").value("").build());
+
+    // mysql兼容类型
+    ALL_COLUMN_TYPE.add(
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("binary(255)")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE, NotSupportedType.TERADATA, NotSupportedType.PG))
+            .build());
+    ALL_COLUMN_TYPE.add(
+        AllTypeTableColumn.builder().name("col").type("longtext").value("").build());
+    ALL_COLUMN_TYPE.add(
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("datetime")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE, NotSupportedType.TERADATA, NotSupportedType.PG))
+            .build());
+    ALL_COLUMN_TYPE.add(
+        AllTypeTableColumn.builder().name("col").type("longblob").value("").build());
+    ALL_COLUMN_TYPE.add(
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("int")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE, NotSupportedType.TERADATA))
+            .build());
+    ALL_COLUMN_TYPE.add(
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("tinyint")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE, NotSupportedType.TERADATA))
+            .build());
+    ALL_COLUMN_TYPE.add(
+        AllTypeTableColumn.builder()
+            .name("col")
+            .type("bigint")
+            .value("")
+            .notSupportedTypes(Arrays.asList(NotSupportedType.ORACLE, NotSupportedType.TERADATA))
+            .build());
   }
 }

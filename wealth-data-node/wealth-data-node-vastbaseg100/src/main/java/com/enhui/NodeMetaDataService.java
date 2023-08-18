@@ -19,21 +19,29 @@ public class NodeMetaDataService {
   public void createAllTypeTable() throws SQLException, ClassNotFoundException {
     initDatabase();
 
-    //    createOracleAllTypeTable(
-    //        AllTypeTableColumn.ORACLE_DATABASE,
-    //        AllTypeTableColumn.NotSupportedType.ORACLE,
-    //        "heh_oracle_all_type1");
+    createAllTypeTable(
+        AllTypeTableColumn.ORACLE_DATABASE,
+        AllTypeTableColumn.NotSupportedType.ORACLE,
+        "heh_oracle_all_type1");
 
-    createOracleAllTypeTable(
+    createAllTypeTable(
         AllTypeTableColumn.MYSQL_DATABASE,
         AllTypeTableColumn.NotSupportedType.MYSQL,
-        "heh_oracle_all_type1");
+        "heh_mysql_all_type1");
+
+    createAllTypeTable(
+        AllTypeTableColumn.TERADATA_DATABASE,
+        AllTypeTableColumn.NotSupportedType.TERADATA,
+        "heh_teradata_all_type1");
+
+    createAllTypeTable(
+        AllTypeTableColumn.PG_DATABASE, AllTypeTableColumn.NotSupportedType.PG, "heh_pg_all_type1");
   }
 
-  private void createOracleAllTypeTable(
-      String connType, AllTypeTableColumn.NotSupportedType notSupportedType, String tableName)
+  private void createAllTypeTable(
+      String database, AllTypeTableColumn.NotSupportedType notSupportedType, String tableName)
       throws SQLException, ClassNotFoundException {
-    try (PgConnection conn = NodeService.getSlaveConn(connType);
+    try (PgConnection conn = NodeService.getSlaveConn(database);
         Statement statement = conn.createStatement()) {
       AtomicInteger i = new AtomicInteger(1);
       final List<AllTypeTableColumn> supportedList =
