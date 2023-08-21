@@ -20,6 +20,10 @@ public class SlotReadMain {
   private static PgConnection soltConn = null;
   private static PgConnection conn = null;
 
+  // replication_slot_pg 、
+  // replication_slot_teradata 、
+  // replication_slot_mysql 、
+  // replication_slot_oracle
   String slotName = "replication_slot_teradata";
   String database = "teradata_base";
 
