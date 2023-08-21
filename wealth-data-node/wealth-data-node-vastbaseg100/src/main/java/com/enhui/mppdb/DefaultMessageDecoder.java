@@ -1,6 +1,7 @@
 package com.enhui.mppdb;
 
 import java.nio.ByteBuffer;
+import java.util.Map;
 
 public class DefaultMessageDecoder {
 
@@ -15,7 +16,7 @@ public class DefaultMessageDecoder {
    * {"table_name":"public.test0426","op_type":"DELETE","columns_name":[],"columns_type":[],"columns_val":[],"old_keys_name":["col1","col2","col3"],"old_keys_type":["integer","integer","integer"],"old_keys_val":["1","1","1"]}
    * COMMIT (at 2023-05-05 14:33:55.930686+08) CSN 536576096 <br>
    */
-  public NonRecursiveHelper processMessage(long lastReceiveLsn, ByteBuffer byteBuffer) {
+  public NonRecursiveHelper processMessage(Map<Integer,String> typeNameOidMap, long lastReceiveLsn, ByteBuffer byteBuffer) {
     try {
       if (!byteBuffer.hasArray()) {
         throw new IllegalStateException(

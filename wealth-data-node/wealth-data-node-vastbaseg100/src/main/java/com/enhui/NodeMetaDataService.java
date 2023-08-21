@@ -43,7 +43,7 @@ public class NodeMetaDataService {
       throws SQLException, ClassNotFoundException {
     try (PgConnection conn = NodeService.getSlaveConn(database);
         Statement statement = conn.createStatement()) {
-      AtomicInteger i = new AtomicInteger(1);
+      AtomicInteger nameI = new AtomicInteger(1);
       final List<AllTypeTableColumn> supportedList =
           ALL_COLUMN_TYPE.stream()
               .filter(
@@ -61,20 +61,41 @@ public class NodeMetaDataService {
               .map(AllTypeTableColumn::getType)
               .collect(Collectors.toList());
       System.out.println("vastbase g100的" + notSupportedType + "兼容模式 不支持的类型：" + notSupportedList);
+      final AtomicInteger finalNameI = nameI;
       String columnSql =
           supportedList.stream()
               .map(
                   colu ->
-                      String.format("%s %s", colu.getName() + i.getAndIncrement(), colu.getType()))
+                      String.format(
+                          "%s %s", colu.getName() + finalNameI.getAndIncrement(), colu.getType()))
               .collect(Collectors.joining(",\n"));
 
       String createSql = String.format("CREATE TABLE public." + tableName + "(%s);", columnSql);
-      //      System.out.println("vastbase g100的" + notSupportedType + "兼容模式 全类型建表语句：" + createSql);
+//      System.out.println("vastbase g100的" + notSupportedType + "兼容模式 全类型建表语句：" + createSql);
       try {
         statement.execute("drop table public." + tableName);
       } catch (Exception ignore) {
       }
       statement.execute(createSql);
+
+      // 插入数据
+      nameI = new AtomicInteger(1);
+      AtomicInteger finalNameI1 = nameI;
+      final String names =
+          supportedList.stream()
+              .map(colu -> colu.getName() + finalNameI1.getAndIncrement())
+              .collect(Collectors.joining(","));
+
+      final AtomicInteger valueI = new AtomicInteger(1);
+      final String values =
+          supportedList.stream()
+              .map(
+                  o -> "".equals(o.getValue()) ? "'" + valueI.get() + "'" : o.getValue().toString())
+              .collect(Collectors.joining(","));
+      String insertSql =
+          String.format("INSERT INTO public.%s (%s) VALUES (%s)", tableName, names, values);
+//      System.out.println(insertSql);
+      statement.execute(insertSql);
     }
   }
 

@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.postgresql.jdbc.PgConnection;
@@ -18,20 +20,23 @@ public class SlotReadMain {
   private static PgConnection soltConn = null;
   private static PgConnection conn = null;
 
+  String slotName = "replication_slot_teradata";
+  String database = "teradata_base";
+
   @Test
   public void createSolt() throws SQLException {
     soltConn
         .getReplicationAPI()
         .createReplicationSlot()
         .logical()
-        .withSlotName("replication_slot") // 这里字符串如包含大写字母则会自动转化为小写字母
+        .withSlotName(slotName) // 这里字符串如包含大写字母则会自动转化为小写字母
         .withOutputPlugin("mppdb_decoding")
         .make();
   }
 
   @Test
   public void dropSolt() throws SQLException {
-    soltConn.getReplicationAPI().dropReplicationSlot("replication_slot");
+    soltConn.getReplicationAPI().dropReplicationSlot(slotName);
   }
 
   @Test
@@ -55,12 +60,14 @@ public class SlotReadMain {
             .getReplicationAPI()
             .replicationStream()
             .logical()
-            .withSlotName("replication_slot")
+            .withSlotName(slotName)
             //            .withStartPosition(startLsn)
             .withSlotOption("include-xids", true)
             .withSlotOption("include-timestamp", true)
             .withSlotOption("skip-empty-xacts", true)
-            .withSlotOption("white-table-list", "public.heh_test") // 白名单列表
+            .withSlotOption(
+                "white-table-list",
+                "public.heh_oracle_all_type1,public.heh_mysql_all_type1,public.heh_teradata_all_type1,public.heh_pg_all_type1") // 白名单列表
             .withSlotOption("standby-connection", false); // 强制备机解码
 
     // 是否支持并行解析
@@ -94,7 +101,7 @@ public class SlotReadMain {
         while (helper != null && helper.isContinue()) {
           helper =
               defaultMppdbDecoder.processMessage(
-                  helper.getLastReceiveLsn(), helper.getByteBuffer());
+                  typeNameOidMap, helper.getLastReceiveLsn(), helper.getByteBuffer());
         }
       } else {
         System.out.println("并行解析");
@@ -105,6 +112,7 @@ public class SlotReadMain {
         while (helper != null && helper.isContinue()) {
           helper =
               mppdbDecoder.processMessage(
+                  typeNameOidMap,
                   helper.getStartLsn(),
                   helper.getCommitTime(),
                   helper.getLastReceiveLsn(),
@@ -117,11 +125,34 @@ public class SlotReadMain {
   @BeforeEach
   public void before() {
     try {
-      conn = NodeService.getSlaveConn(null);
-      soltConn = NodeService.getSlaveSoltConn(null);
+      conn = NodeService.getSlaveConn(database);
+      soltConn = NodeService.getSlaveSoltConn(database);
       System.out.println("connection success!");
+      initTypeOidMap();
     } catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  Map<Integer, String> typeNameOidMap = new HashMap<>();
+
+  private void initTypeOidMap() {
+    try (Statement statement = conn.createStatement();
+        ResultSet rs =
+            statement.executeQuery(
+                "SELECT t.oid AS oid, t.typname AS name\n"
+                    + "FROM pg_catalog.pg_type t\n"
+                    + "         JOIN\n"
+                    + "     pg_catalog.pg_namespace n ON (t.typnamespace = n.oid)\n"
+                    + "WHERE n.nspname != 'pg_toast'\n"
+                    + "  AND (t.typrelid = 0 OR (SELECT c.relkind = 'c'\n"
+                    + "                          FROM pg_catalog.pg_class c\n"
+                    + "                          WHERE c.oid = t.typrelid));")) {
+      while (rs.next()) {
+        typeNameOidMap.put(rs.getInt("oid"), rs.getString("name"));
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 }

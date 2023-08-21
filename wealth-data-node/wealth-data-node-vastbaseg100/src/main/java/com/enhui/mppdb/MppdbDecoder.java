@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.Map;
 
 public class MppdbDecoder {
 
@@ -24,7 +25,11 @@ public class MppdbDecoder {
           .toFormatter();
 
   public NonRecursiveHelper processMessage(
-      Long startLsn, String commitTime, long lastReceiveLsn, ByteBuffer byteBuffer) {
+      Map<Integer, String> typeNameOidMap,
+      Long startLsn,
+      String commitTime,
+      long lastReceiveLsn,
+      ByteBuffer byteBuffer) {
     try {
       if (!byteBuffer.hasArray()) {
         throw new IllegalStateException(
@@ -96,11 +101,11 @@ public class MppdbDecoder {
             System.out.println(builder);
             String flag = getFlag(byteBuffer);
             if ("N".equals(flag)) {
-              parseRecord(byteBuffer, builder, false);
+              parseRecord(typeNameOidMap, byteBuffer, builder, false);
               flag = getFlag(byteBuffer);
             }
             if ("O".equals(flag)) {
-              parseRecord(byteBuffer, builder, true);
+              parseRecord(typeNameOidMap, byteBuffer, builder, true);
               flag = getFlag(byteBuffer);
             }
             return new NonRecursiveHelper(
@@ -113,7 +118,11 @@ public class MppdbDecoder {
     return null;
   }
 
-  private void parseRecord(ByteBuffer byteBuffer, StringBuilder builder, boolean before)
+  private void parseRecord(
+      Map<Integer, String> typeNameOidMap,
+      ByteBuffer byteBuffer,
+      StringBuilder builder,
+      boolean before)
       throws Exception {
     int attrnum = byteBuffer.getShort();
     for (int i = 0; i < attrnum; i++) {
@@ -138,7 +147,7 @@ public class MppdbDecoder {
               + "--"
               + colName
               + "--"
-              + oid
+              + typeNameOidMap.get(oid)
               + "--"
               + (value != null ? new String(value) : null));
     }
