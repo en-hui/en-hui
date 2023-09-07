@@ -22,6 +22,7 @@
         <module>wealth-component-zk</module>
         <module>wealth-util</module>
         <module>wealth-data-node</module>
+        <module>wealth-bigdata-beam</module>
     </modules>
 
     <properties>
