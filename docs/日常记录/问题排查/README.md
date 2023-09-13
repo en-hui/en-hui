@@ -27,6 +27,9 @@ kafka-console-consumer --bootstrap-server kafka1:9092 --topic offset_connect_sou
 > 2、可以根据握手和挥手的细节，分析网络相关报错，由谁发起的断连，从而分析网络报错是否有客户端编码导致      
 
 ### 在线debug（尽量不要在生产环境使用）
+
+使用java -jar 如何开启debug：java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -jar YourApp.jar
+
 > jdb:    
 1.修改compose文件，打开debug：KAFKA_DEBUG=true(和开发机使用一样，source、sink、manager是kafka_debug。web是debug)    
 2.重启容器，让debug配置生效    
