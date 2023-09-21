@@ -44,3 +44,66 @@ kafka-console-consumer --bootstrap-server kafka1:9092 --topic offset_connect_sou
 11.查看有哪些断点：clear     
 12.执行到下一个断点：run    
 13.查看当前局部变量：locals
+
+
+### 内存相关
+#### jvm
+> 使用arthas 利用dashboard监控内存使用变化
+>  
+> 使用jmap: jmap -dump:live,format=b,file=/home/dump.hprof java进程id   
+>  
+> 
+
+
+#### top 命令
+![top命令](img/top使用技巧.png)
+
+#### 每隔一段时间记录 free -h 和 docker stats 的脚本
+``` 
+#!/bin/bash
+
+# 定义日志文件路径
+LOG_FILE="/root/monitor/docker_stats.log"
+
+# 每分钟执行一次循环
+while true; do
+  # 获取当前日期和时间
+  CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+
+  # 获取 Docker 容器的状态并将其附加到日志文件
+  docker stats --no-stream >> "$LOG_FILE"
+
+  # 获取系统内存使用情况并将其附加到日志文件
+  free -h >> "$LOG_FILE"
+
+  # 在日志中添加时间戳
+  echo "----------------------------------------" >> "$LOG_FILE"
+  echo "Timestamp: $CURRENT_TIME" >> "$LOG_FILE"
+  echo "----------------------------------------" >> "$LOG_FILE"
+
+  # 等待 1 分钟
+  sleep 60
+done
+```
+#### 每隔一段时间记录top按内存排序的脚本
+``` 
+#!/bin/bash
+
+# 定义日志文件路径
+log_file="/root/monitor/top_memory.log"
+
+# 运行top命令并将结果追加到日志文件
+while true; do
+  # 获取当前日期和时间
+  CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+
+    # 获取top 按内存排序，前30行
+    top -b -n 1 -o +%MEM | head -n 30 >> "$log_file"
+
+  # 在日志中添加时间戳
+  echo "----------------------------------------" >> "$log_file"
+  echo "Timestamp: $CURRENT_TIME" >> "$log_file"
+  echo "----------------------------------------" >> "$log_file"
+    sleep 600  # 休眠10分钟
+done
+```
