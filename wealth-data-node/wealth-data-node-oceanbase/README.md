@@ -47,9 +47,10 @@ TARGET_LINK_LIBRARIES(oblogAgentValidate liboblog.so)
 
 ### c++使用kafka案例
 
-类库使用说明：https://github.com/confluentinc/librdkafka
-头文件下载：https://github.com/confluentinc/librdkafka/blob/master/src-cpp/rdkafkacpp.h
+类库使用说明：https://github.com/confluentinc/librdkafka   
+头文件下载：https://github.com/confluentinc/librdkafka/blob/master/src-cpp/rdkafkacpp.h   
 
-> mac os 上面安装库：brew install librdkafka   
-> 在CMakeList中设置头文件路径头（头文件下载放到工程目录下）：INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include) 
-> 在CMakeList中链接librdkafka库：target_link_libraries(kafkaTest PRIVATE rdkafka++)
+> 1、mac os 上面安装库：brew install librdkafka      
+> 2、在CMakeList中设置头文件路径头（头文件下载放到工程目录下）：INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)     
+> 3、在CMakeList中配置库的路径：link_directories(/usr/local/lib)   
+> 4、在CMakeList中链接librdkafka库：target_link_libraries(kafkaTest PRIVATE rdkafka++)     
