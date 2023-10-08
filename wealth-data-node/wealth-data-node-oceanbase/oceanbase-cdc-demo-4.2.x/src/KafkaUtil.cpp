@@ -5,10 +5,8 @@
 #include <iostream>
 #include <librdkafka/rdkafkacpp.h>
 
-using std::string;
-
 int main() {
-    string err_str;
+    std::string err_str;
     // 创建Kafka配置
     RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
     conf->set("bootstrap.servers", "kafka1:9092", err_str);
@@ -21,7 +19,7 @@ int main() {
     std::cout << "create producer" << std::endl;
 
     // 创建Topic
-    RdKafka::Topic *topic = RdKafka::Topic::create(producer, "cpp_topic", conf, err_str);
+    RdKafka::Topic *topic = RdKafka::Topic::create(producer, "cpp_topic", NULL, err_str);
 
     std::cout << "create topic" << std::endl;
 
