@@ -23,6 +23,7 @@
         <module>wealth-util</module>
         <module>wealth-data-node</module>
         <module>wealth-bigdata-beam</module>
+        <module>wealth-data-node/wealth-data-node-oceanbase</module>
     </modules>
 
     <properties>
