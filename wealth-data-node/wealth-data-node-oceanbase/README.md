@@ -45,7 +45,7 @@ TARGET_LINK_LIBRARIES(oblogAgent ssl crypto pthread rdkafka++ liboblog.so)
 TARGET_LINK_LIBRARIES(oblogAgentValidate liboblog.so)
 ```
 
-### c++使用kafka案例
+### c++使用kafka案例(kafka-cpp)
 
 类库使用说明：https://github.com/confluentinc/librdkafka   
 头文件下载：https://github.com/confluentinc/librdkafka/blob/master/src-cpp/rdkafkacpp.h   
@@ -54,3 +54,24 @@ TARGET_LINK_LIBRARIES(oblogAgentValidate liboblog.so)
 > 2、在CMakeList中设置头文件路径头（头文件下载放到工程目录下）：INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)     
 > 3、在CMakeList中配置库的路径：link_directories(/usr/local/lib)   
 > 4、在CMakeList中链接librdkafka库：target_link_libraries(kafkaTest PRIVATE rdkafka++)     
+
+
+### oceanbase cdc(oceanbase-cdc-4.2.x)
+#### 对ob3使用的liboblog请教
+1. demo的zip哪里下载的？
+官方提供的，问下官方的人
+
+2. 如何知道容器需要安装哪些东西？
+自己需要的 + 程序编译报错需要的
+
+3. 启动liboblog的时候是怎么指定从哪里开始消费的？
+第一次按照启动时间；之后按照schedule文件存储的(schedule文件存储进度)
+
+
+
+> 3.x版本的liboblog：https://www.oceanbase.com/docs/community-observer-cn-10000000000012974    
+> 4.2版本的cdc：https://www.oceanbase.com/docs/common-oceanbase-database-cn-1000000000035820    
+> 
+> 4.2版本demo下载：开源版本 https://github.com/oceanbase/oceanbase/releases/tag/v4.2.0_CE
+
+
