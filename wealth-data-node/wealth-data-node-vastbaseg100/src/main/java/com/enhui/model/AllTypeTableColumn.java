@@ -174,7 +174,7 @@ public class AllTypeTableColumn {
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("char").value("").build());
 
     // 二进制类型
-    ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("BLOB").value("").build());
+    ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("BLOB").value("decode('1234','hex')").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("RAW").value("").build());
     ALL_COLUMN_TYPE.add(AllTypeTableColumn.builder().name("col").type("BYTEA").value("").build());
     ALL_COLUMN_TYPE.add(
@@ -392,7 +392,7 @@ public class AllTypeTableColumn {
                     NotSupportedType.ORACLE, NotSupportedType.TERADATA, NotSupportedType.PG))
             .build());
     ALL_COLUMN_TYPE.add(
-        AllTypeTableColumn.builder().name("col").type("longblob").value("").build());
+        AllTypeTableColumn.builder().name("col").type("longblob").value("decode('1234','hex')").build());
     ALL_COLUMN_TYPE.add(
         AllTypeTableColumn.builder()
             .name("col")

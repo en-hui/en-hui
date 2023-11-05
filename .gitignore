@@ -6,4 +6,6 @@ target
 *.html
 *.txt.crc
 
+cmake-build-debug
+
 application-ali.yml
