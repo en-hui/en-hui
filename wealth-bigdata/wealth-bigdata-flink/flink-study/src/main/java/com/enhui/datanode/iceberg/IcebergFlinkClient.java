@@ -29,11 +29,6 @@ import org.apache.iceberg.flink.sink.FlinkSink;
 import org.apache.iceberg.hadoop.HadoopCatalog;
 import org.apache.iceberg.types.Types;
 
-/**
- * 安装pom到本地： mvn install:install-file
- * -Dfile=/Users/huenhui/Downloads/iceberg-flink-runtime-1.16-1.3.0.jar -DgroupId=org.apache.iceberg
- * -DartifactId=iceberg-flink-runtime-1.16 -Dversion=1.3.0 -Dpackaging=jar
- */
 public class IcebergFlinkClient {
   public static void main(String[] args) throws Exception {
     // 1.创建Flink环境

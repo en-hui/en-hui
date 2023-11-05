@@ -39,10 +39,7 @@
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.driver.version}</version>
             </dependency>
-            <!--
-            将jar安装到本地maven仓库
-            mvn install:install-file -Dfile=/Users/huenhui/Documents/tdsql-mysql-connector-java8-1.5.0.jar -DgroupId=com.tencentcloud.tdsql -DartifactId=tdsql-mysql-connector-java8 -Dversion=1.5.0 -Dpackaging=jar
-            -->
+
             <dependency>
                 <groupId>com.tencentcloud.tdsql</groupId>
                 <artifactId>tdsql-mysql-connector-java8</artifactId>
