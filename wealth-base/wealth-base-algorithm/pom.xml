@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>wealth</artifactId>
+        <artifactId>wealth-base</artifactId>
         <groupId>com.enhui</groupId>
         <version>1.0.0</version>
     </parent>

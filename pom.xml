@@ -24,12 +24,11 @@
         <model.version>4.0.0</model.version>
     </properties>
 
-
     <repositories>
         <repository>
             <id>alimaven</id>
             <name>aliyun maven</name>
-            <url>https://maven.aliyun.com/nexus/content/repositories/central/</url>
+            <url>https://maven.aliyun.com/repository/public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -42,7 +41,7 @@
         <pluginRepository>
             <id>alimaven</id>
             <name>aliyun maven</name>
-            <url>https://maven.aliyun.com/nexus/content/repositories/central/</url>
+            <url>https://maven.aliyun.com/repository/public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
