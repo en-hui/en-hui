@@ -1,5 +1,0 @@
-id,nodeId,transmissionMode,desc
-1,5,IBM_CDC,oracle ibm
-2,5,ORACLE_AGENT,oracle旧版agent
-3,5,ORAGENT,oracle新版agent
-4,6,IBM_CDC,db2的agent

@@ -9,7 +9,7 @@
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.datapipeline</groupId>
+    <groupId>com.enhui</groupId>
     <artifactId>wealth-bigdata-beam</artifactId>
 
     <properties>

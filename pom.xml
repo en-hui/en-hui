@@ -10,19 +10,11 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>wealth-auto-test</module>
-        <module>wealth-base-algorithm</module>
-        <module>wealth-base-design</module>
-        <module>wealth-base-io</module>
-        <module>wealth-bigdata-flink</module>
-        <module>wealth-bigdata-hadoop</module>
-        <module>wealth-component-kafka</module>
-        <module>wealth-component-kafka-connector</module>
-        <module>wealth-component-kafka-move-topic</module>
-        <module>wealth-component-zk</module>
         <module>wealth-util</module>
         <module>wealth-data-node</module>
-        <module>wealth-bigdata-beam</module>
+        <module>wealth-base</module>
+        <module>wealth-component</module>
+        <module>wealth-bigdata</module>
     </modules>
 
     <properties>
