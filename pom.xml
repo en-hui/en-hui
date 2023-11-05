@@ -25,6 +25,7 @@
     </properties>
 
     <repositories>
+        <!-- https://developer.aliyun.com/mvn/guide -->
         <repository>
             <id>alimaven</id>
             <name>aliyun maven</name>
