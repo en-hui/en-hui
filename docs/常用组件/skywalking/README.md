@@ -29,6 +29,11 @@ services:
 
 ```
 ### 单机环境（使用mysql）
+1、需要自己下载mysql驱动，放到对应目录，并设置目录挂载    
+2、下载驱动: wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-8.2.0.tar.gz    
+3、解压: tar -zxvf mysql-connector-j-8.2.0.tar.gz    
+4、将jar移动: mv mysql-connector-j-8.2.0/mysql-connector-j-8.2.0.jar /data/skywalking/ext-libs/
+
 ``` 
 version: '3'
 services:
@@ -43,7 +48,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - /data/mysql:/var/lib/mysql
+      - /data/skywalking/mysql:/var/lib/mysql
 
   skywalking-oap:
     image: apache/skywalking-oap-server:9.2.0
@@ -61,7 +66,9 @@ services:
     ports:
       - "11800:11800"
       - "12800:12800"
-
+    volumes:
+      - /data/skywalking/ext-libs:/skywalking/ext-libs
+      
   skywalking-ui:
     image: apache/skywalking-ui
     container_name: skywalking-ui
@@ -84,7 +91,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     volumes:
-      - /data/es:/usr/share/elasticsearch/data
+      - /data/skywalking/es:/usr/share/elasticsearch/data
 
   skywalking-oap:
     image: apache/skywalking-oap-server:9.2.0
