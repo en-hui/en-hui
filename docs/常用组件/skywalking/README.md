@@ -10,7 +10,7 @@
 version: '3'
 services:
   skywalking-oap:
-    image: apache/skywalking-oap-server:9.2.0
+    image: apache/skywalking-oap-server:9.6.0
     container_name: skywalking-oap
     environment:
       - SW_STORAGE=h2
@@ -20,12 +20,14 @@ services:
       - "12800:12800"
 
   skywalking-ui:
-    image: apache/skywalking-ui
+    image: apache/skywalking-ui:9.6.0
     container_name: skywalking-ui
     depends_on:
       - skywalking-oap
     ports:
       - "8080:8080"
+    environment:
+      - SW_OAP_ADDRESS=http://skywalking-oap:12800
 
 ```
 ### 单机环境（使用mysql）
@@ -51,7 +53,7 @@ services:
       - /data/skywalking/mysql:/var/lib/mysql
 
   skywalking-oap:
-    image: apache/skywalking-oap-server:9.2.0
+    image: apache/skywalking-oap-server:9.6.0
     container_name: skywalking-oap
     depends_on:
       - mysql
@@ -70,12 +72,14 @@ services:
       - /data/skywalking/ext-libs:/skywalking/ext-libs
       
   skywalking-ui:
-    image: apache/skywalking-ui
+    image: apache/skywalking-ui:9.6.0
     container_name: skywalking-ui
     depends_on:
       - skywalking-oap
     ports:
       - "8080:8080"
+    environment:
+      - SW_OAP_ADDRESS=http://skywalking-oap:12800
 ```
 ### 单机环境（使用es）
 ``` 
@@ -94,7 +98,7 @@ services:
       - /data/skywalking/es:/usr/share/elasticsearch/data
 
   skywalking-oap:
-    image: apache/skywalking-oap-server:9.2.0
+    image: apache/skywalking-oap-server:9.6.0
     container_name: skywalking-oap
     depends_on:
       - elasticsearch
@@ -109,7 +113,7 @@ services:
       - "12800:12800"
 
   skywalking-ui:
-    image: apache/skywalking-ui
+    image: apache/skywalking-ui:9.6.0
     container_name: skywalking-ui
     depends_on:
       - skywalking-oap
@@ -117,7 +121,8 @@ services:
       - skywalking-oap
     ports:
       - "8080:8080"
-
+    environment:
+      - SW_OAP_ADDRESS=http://skywalking-oap:12800
 ```
 
 ## 应用服务接入
