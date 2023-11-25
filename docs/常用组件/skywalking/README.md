@@ -121,3 +121,30 @@ services:
 ```
 
 ## 应用服务接入
+
+> agent下载：https://skywalking.apache.org/downloads/#Agents   
+> 
+> 例如：https://www.apache.org/dyn/closer.cgi/skywalking/java-agent/9.0.0/apache-skywalking-java-agent-9.0.0.tgz
+> 
+> 下载后解压，根目录有skywalking-agent.jar，还有几个目录   
+> 
+> 常用的都在plugins目录    
+> 如果plugins中没有的时候，需要将optional-plugins中对应的jar放入plugins    
+> 比如gateway    
+
+``` 
+# skywalking-agent.jar 的路径
+-javaagent:/root/sykwalking/skywalking-agent/skywalking-agent.jar
+# 在skywalking中显示的服务名称
+-DSW_AGENT_NAME=test-skywalking-service-test01
+# skywalking的地址
+-DSW_AGENT_COLLECTOR_BACKEND_SERVICES=heh-node02:11800
+
+
+# 完整使用
+-javaagent:/root/sykwalking/skywalking-agent/skywalking-agent.jar
+-DSW_AGENT_NAME=test-skywalking-service-test01
+-DSW_AGENT_COLLECTOR_BACKEND_SERVICES=heh-node02:11800
+```
+
+
