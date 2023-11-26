@@ -136,6 +136,10 @@ services:
 > 常用的都在plugins目录    
 > 如果plugins中没有的时候，需要将optional-plugins中对应的jar放入plugins    
 > 比如gateway    
+>  
+> 设置host映射
+> extra_hosts:
+> - "heh-node02:10.0.24.17"
 
 ``` 
 # skywalking-agent.jar 的路径
