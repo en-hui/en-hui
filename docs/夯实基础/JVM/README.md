@@ -1,5 +1,11 @@
 # JVM
 
+- Oracle JDK 文档：https://docs.oracle.com/en/java/javase/
+    - java8的虚拟机规范：https://docs.oracle.com/javase/specs/jvms/se8/html/index.html
+    - java8的gc：https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/
+        - g1垃圾回收:https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc.html#garbage_first_garbage_collection
+        - g1垃圾回收调优：https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc_tuning.html#g1_gc_tuning
+- OpenJDK 文档：https://openjdk.java.net/
 - [常用参数](夯实基础/JVM/常用参数.md)
 - [jstat](夯实基础/JVM/jstat.md)
 
