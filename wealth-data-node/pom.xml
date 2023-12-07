@@ -18,6 +18,7 @@
         <module>wealth-data-node-iceberg</module>
         <module>wealth-data-node-vastbaseg100</module>
         <module>wealth-data-node-rocksdb</module>
+        <module>wealth-data-node-postgresql</module>
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

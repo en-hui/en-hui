@@ -1,9 +1,16 @@
 ## jstat使用
 
-```
 使用 jstat 或 jstat -help 可以查看帮助
-使用 jstat -options 可以查看所有options
 
+- option:参数选项
+- -t: 可以在打印的列加上Timestamp列，用于显示系统运行的时间
+- -h: 可以在周期性数据数据的时候，可以在指定输出多少行以后输出一次表头
+- vmid: Virtual Machine ID（ 进程的 pid）
+- interval: 执行每次的间隔时间，单位为毫秒
+- count: 用于指定输出多少次记录，缺省则会一直打印
+
+使用 jstat -options 可以查看所有options, option有如下选项：
+```
 -class : 显示ClassLoad的相关信息
 -compiler : 显示JIT编译的相关信息
 -gc : 显示和gc相关的堆信息
