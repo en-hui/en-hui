@@ -9,6 +9,9 @@
         <version>1.0.0</version>
     </parent>
     <packaging>pom</packaging>
+    <modules>
+        <module>wealth-component-redis</module>
+    </modules>
     <artifactId>wealth-component</artifactId>
 
 </project>
