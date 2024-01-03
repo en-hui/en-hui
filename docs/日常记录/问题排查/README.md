@@ -19,6 +19,9 @@ kafka-console-consumer --bootstrap-server kafka1:9092 --topic offset_connect_sou
 ```
 
 ### 网络抓包相关
+
+> 查看网络状态的表格：netstat -natp
+> 
 > 抓本机与某ip的网络交互，以明文展示：tcpdump net xx_ip_xx -A     
 > 
 > 使用场景 ：    
