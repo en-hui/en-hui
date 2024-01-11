@@ -2,18 +2,20 @@
 
 ``` 
 FROM postgres:14.2
- 
-# Install wal2json extension
+
+# Install wal2json and decoderbufs extensions
 RUN apt-get update && \
-apt-get install -y postgresql-14-wal2json && \
-apt-get clean && \
-rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
- 
+    apt-get install -y postgresql-14-wal2json && \
+    # Install decoderbufs
+    apt-get install -y postgresql-14-decoderbufs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 # Expose the PostgreSQL port
 EXPOSE 5432
- 
-# Start the PostgreSQL server
-CMD ["postgres", "-c", "shared_preload_libraries=wal2json"]
+
+# Start the PostgreSQL server with both extensions
+CMD ["postgres", "-c", "shared_preload_libraries=wal2json,decoderbufs"]
 ```
 
 打镜像：    

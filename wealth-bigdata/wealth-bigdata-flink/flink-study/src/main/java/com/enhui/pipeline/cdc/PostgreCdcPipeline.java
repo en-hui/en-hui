@@ -50,6 +50,6 @@ public class PostgreCdcPipeline {
         String pluginName1 = "pgoutput";
         String pluginName2 = "wal2json";
         String pluginName3 = "decoderbufs";
-        return pluginName1;
+        return pluginName3;
     }
 }
