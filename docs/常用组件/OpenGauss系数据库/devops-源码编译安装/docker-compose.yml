@@ -1,0 +1,7 @@
+version: '3'
+services:
+  opengauss:
+    image: opengauss:5.0.0
+    container_name: opengauss
+    ports:
+      - "5432:5432"
