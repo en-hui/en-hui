@@ -23,4 +23,4 @@
 做完以上准备工作，使用Dockerfile打镜像
 docker build -t opengauss:5.0.0 .
 
-docker 
+
