@@ -1,0 +1,11 @@
+version: '3'
+services:
+  opengauss:
+    image: opengauss/opengauss:5.0.0
+    container_name: opengauss
+    ports:
+      - "5454:5432"
+    environment:
+      - GS_PASSWORD=openGauss@123
+    volumes:
+      - ./data:/var/lib/opengauss/data
