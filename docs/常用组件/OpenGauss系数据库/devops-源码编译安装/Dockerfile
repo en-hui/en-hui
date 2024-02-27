@@ -6,7 +6,9 @@ ENV INIT_HOME=/app/opengauss \
     GAUSSLOG=/home/omm/log \
     GAUSSHOME=/app/opengauss/openGauss-server/mppdb_temp_install \
     GS_CLUSTER_NAME=GS_CLUSTER_NAME \
-    GAUSS_WARNING_TYPE=GAUSS_WARNING_TYPE
+    GAUSS_WARNING_TYPE=GAUSS_WARNING_TYPE \
+    LD_LIBRARY_PATH=$GAUSSHOME/lib:$LD_LIBRARY_PATH \
+    PATH=$GAUSSHOME/bin:$PATH
 
 WORKDIR ${INIT_HOME}
 
@@ -31,15 +33,14 @@ RUN groupadd dbgrp &&\
     # 分割
     chown -R omm:dbgrp ${INIT_HOME}/openGauss-server
 
-RUN su - omm &&\
-    mkdir -p ${DATA_HOME} &&\
+USER omm
+
+RUN mkdir -p ${DATA_HOME} &&\
     mkdir -p ${LOG_HOME} &&\
     export LD_LIBRARY_PATH=$GAUSSHOME/lib:$LD_LIBRARY_PATH &&\
     export PATH=$GAUSSHOME/bin:$PATH &&\
     gs_initdb -D ${DATA_HOME} --nodename=db1
 
-EXPOSE 5432
-
-# CMD ["gs_ctl", "start", "-D", "${DATA_HOME}", "-Z", "single_node", "-l", "${LOG_HOME}/opengauss.log"]
+CMD ["gs_ctl", "start", "-D", "${DATA_HOME}", "-Z", "single_node", "-l", "${LOG_HOME}/opengauss.log"]
 # gs_ctl start -D ${DATA_HOME} -Z single_node -l ${LOG_HOME}/opengauss.log
-CMD ["tail", "-f", "/dev/null"]
+# CMD ["tail", "-f", "/dev/null"]
