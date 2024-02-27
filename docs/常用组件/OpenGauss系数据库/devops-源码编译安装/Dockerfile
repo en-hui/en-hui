@@ -1,14 +1,14 @@
 FROM lambdaexpression/centos7.6.1810
 
-ENV INIT_HOME=/app/opengauss \
-    DATA_HOME=/home/omm/data \
-    LOG_HOME=/home/omm/log \
-    GAUSSLOG=/home/omm/log \
-    GAUSSHOME=/app/opengauss/openGauss-server/mppdb_temp_install \
-    GS_CLUSTER_NAME=GS_CLUSTER_NAME \
-    GAUSS_WARNING_TYPE=GAUSS_WARNING_TYPE \
-    LD_LIBRARY_PATH=$GAUSSHOME/lib:$LD_LIBRARY_PATH \
-    PATH=$GAUSSHOME/bin:$PATH
+ENV INIT_HOME=/app/opengauss
+ENV DATA_HOME=/home/omm/data
+ENV LOG_HOME=/home/omm/log
+ENV GAUSSLOG=/home/omm/log
+ENV GAUSSHOME=${INIT_HOME}/openGauss-server/mppdb_temp_install
+ENV GS_CLUSTER_NAME=GS_CLUSTER_NAME
+ENV GAUSS_WARNING_TYPE=GAUSS_WARNING_TYPE
+ENV LD_LIBRARY_PATH=$GAUSSHOME/lib:$LD_LIBRARY_PATH
+ENV PATH=$GAUSSHOME/bin:$PATH
 
 WORKDIR ${INIT_HOME}
 
@@ -37,10 +37,8 @@ USER omm
 
 RUN mkdir -p ${DATA_HOME} &&\
     mkdir -p ${LOG_HOME} &&\
-    export LD_LIBRARY_PATH=$GAUSSHOME/lib:$LD_LIBRARY_PATH &&\
-    export PATH=$GAUSSHOME/bin:$PATH &&\
     gs_initdb -D ${DATA_HOME} --nodename=db1
 
-CMD ["gs_ctl", "start", "-D", "${DATA_HOME}", "-Z", "single_node", "-l", "${LOG_HOME}/opengauss.log"]
-# gs_ctl start -D ${DATA_HOME} -Z single_node -l ${LOG_HOME}/opengauss.log
+CMD ["gs_ctl", "start", "-D", "/home/omm/data", "-Z", "single_node", "-l", "/home/omm/log/opengauss.log"]
+# gs_ctl start -D /home/omm/data -Z single_node -l /home/omm/log/opengauss.log/opengauss.log
 # CMD ["tail", "-f", "/dev/null"]
