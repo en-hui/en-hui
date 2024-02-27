@@ -40,5 +40,5 @@ RUN mkdir -p ${DATA_HOME} &&\
     gs_initdb -D ${DATA_HOME} --nodename=db1
 
 CMD ["gs_ctl", "start", "-D", "/home/omm/data", "-Z", "single_node", "-l", "/home/omm/log/opengauss.log"]
-# gs_ctl start -D /home/omm/data -Z single_node -l /home/omm/log/opengauss.log/opengauss.log
+# gs_ctl start -D /home/omm/data -Z single_node -l /home/omm/log/opengauss.log
 # CMD ["tail", "-f", "/dev/null"]
