@@ -44,3 +44,11 @@ select pg_drop_replication_slot('slot_name');
 
 读取复制槽slot1解码结果，解码条数为4096   
 SELECT * FROM pg_logical_slot_peek_changes('slot_name', NULL, 4096);
+
+## 调试、阅读源码
+
+> 需要使用root用户操作。      
+> 进入容器后，su - root    
+> 密码为 openGauss123 (Dockerfile中指定的)    
+
+![gdb调试数据库.png](gdb调试数据库.png)

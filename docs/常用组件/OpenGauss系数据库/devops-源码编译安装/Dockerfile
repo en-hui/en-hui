@@ -14,6 +14,7 @@ WORKDIR ${INIT_HOME}
 
 RUN yum -y update && \
     yum -y install libaio-devel flex bison ncurses-devel glibc-devel patch readline-devel && \
+    yum -y install gdb sudo && \
     yum clean all && \
     rm -rf /var/cache/yum
 
@@ -23,7 +24,9 @@ COPY openGauss-OM ${INIT_HOME}/openGauss-OM
 COPY start.sh /start.sh
 
 RUN groupadd dbgrp &&\
-    useradd omm -g dbgrp -p openGauss123 &&\
+    useradd omm -g dbgrp &&\
+    echo 'openGauss123' | passwd --stdin omm &&\
+    echo 'openGauss123' | passwd --stdin root &&\
     # 分割
     cd ${INIT_HOME}/openGauss-server &&\
     sh build.sh -m debug -3rd ${INIT_HOME}/binarylibs &&\
