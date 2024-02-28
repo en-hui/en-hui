@@ -40,8 +40,9 @@ USER omm
 RUN mkdir -p ${DATA_HOME} &&\
     mkdir -p ${LOG_HOME} &&\
     chmod +x /start.sh &&\
-    gs_initdb -D ${DATA_HOME} --nodename=db1
+    gs_initdb -D ${DATA_HOME} --nodename=gaussdb --username=omm --pwpasswd=openGauss@123
 
+EXPOSE 5432
 
 CMD ["/start.sh"]
 

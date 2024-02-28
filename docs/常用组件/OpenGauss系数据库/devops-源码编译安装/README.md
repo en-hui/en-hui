@@ -20,7 +20,27 @@
 > git clone https://gitee.com/opengauss/openGauss-OM.git -b 5.0.0
 
 
-做完以上准备工作，使用Dockerfile打镜像
-docker build -t opengauss:5.0.0 .
+> 做完以上准备工作，使用 docker-compose.yml   
+> 打镜像: docker-compose up -d     
+> 或者手动打镜像: docker build --no-cache -t opengauss:debug .
+> 
+> 安装后检查：    
+> ps ux | grep gaussdb    
+> gs_ctl query -D /home/omm/data      
 
+> 容器启动后，进入容器: docker exec -it opengauss bash        
+> 连接数据库：gsql -d postgres -U omm -r   
+>  
+> gsql -d opengauss -U opengauss -W openGauss@123
 
+-- 创建复制槽   
+select * from pg_create_logical_replication_slot('slot_name', 'mppdb_decoding');
+
+-- 查询复制槽   
+select * from pg_replication_slots;
+
+-- 删除复制槽   
+select pg_drop_replication_slot('slot_name');
+
+读取复制槽slot1解码结果，解码条数为4096   
+SELECT * FROM pg_logical_slot_peek_changes('slot_name', NULL, 4096);
