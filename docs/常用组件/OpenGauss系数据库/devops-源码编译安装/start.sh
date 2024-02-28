@@ -22,7 +22,7 @@ gsql -d postgres -c "grant select on pg_user to opengauss;"
 
 # 初始化数据
 gsql -h localhost -p 5432 -d opengauss -U opengauss -W openGauss@123 -c "select * from pg_create_logical_replication_slot('slot_name', 'mppdb_decoding');"
-gsql -h localhost -p 5432 -d opengauss -U opengauss -W openGauss@123 -c "create table public.small_table1 (column_1 int,id serial constraint small_table_pk1 primary key);"
+gsql -h localhost -p 5432 -d opengauss -U opengauss -W openGauss@123 -c "create table public.small_table (column_1 int,id serial constraint small_table_pk primary key);"
 gsql -h localhost -p 5432 -d opengauss -U opengauss -W openGauss@123 -c "INSERT INTO public.small_table (column_1, id) VALUES (1, 1);"
 
 # 跟踪日志文件以保持脚本运行
