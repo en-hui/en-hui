@@ -14,7 +14,7 @@ gs_ctl start -D ${DATA_HOME} -Z single_node -l ${LOG_HOME}/opengauss.log
 # 创建新的数据库和用户
 gsql -d postgres -c "CREATE DATABASE opengauss;"
 gsql -d postgres -c "CREATE USER opengauss WITH PASSWORD 'openGauss@123';"
-gsql -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE opengauss TO opengauss;"
+gsql -d postgres -c "GRANT ALL PRIVILEGES TO opengauss;"
 # 特殊需要的权限
 gsql -d postgres -c "ALTER USER opengauss REPLICATION;"
 gsql -d postgres -c "grant select on pg_user to opengauss;"
