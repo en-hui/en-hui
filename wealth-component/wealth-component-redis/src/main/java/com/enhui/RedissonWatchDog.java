@@ -3,32 +3,11 @@ package com.enhui;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.redisson.Redisson;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
 
 public class RedissonWatchDog {
   private static RedissonClient redissonClient;
-
-  public static void initRedisson() {
-    // 配置 Redisson 客户端
-    Config config = new Config();
-    config
-        .useSingleServer()
-        .setAddress("redis://dp-redis:6379")
-        .setPassword("Datapipeline123"); // Redis 服务器地址
-
-    // 创建 Redisson 客户端
-    redissonClient = Redisson.create(config);
-    System.out.println("创建 Redisson 客户端");
-  }
-
-  public static void killRedisson() {
-    // 关闭 Redisson 客户端
-    redissonClient.shutdown();
-    System.out.println("关闭 Redisson 客户端");
-  }
 
   public static void lockBusiness(CountDownLatch countDownLatch) {
     // 获取锁对象
@@ -50,14 +29,16 @@ public class RedissonWatchDog {
       Thread.currentThread().interrupt();
     } finally {
       // 释放锁
-//      lock.unlock();
+      //      lock.unlock();
       countDownLatch.countDown();
       System.out.println("业务执行完毕，理论上应该此时释放锁");
     }
   }
 
   public static void main(String[] args) throws InterruptedException {
-    initRedisson();
+    WealthRedissonClient client =
+        new WealthRedissonClient();
+    redissonClient = client.getRedissonClient();
 
     CountDownLatch countDownLatch = new CountDownLatch(2);
     ExecutorService service = Executors.newFixedThreadPool(2);
@@ -69,7 +50,7 @@ public class RedissonWatchDog {
     }
 
     countDownLatch.await();
-    killRedisson();
+    client.close();
     System.exit(0);
   }
 }
