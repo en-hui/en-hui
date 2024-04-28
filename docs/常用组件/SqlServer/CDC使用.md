@@ -1,5 +1,7 @@
-# Sql Server CDC
+# Sql Server CDC(Change Data Capture)
 
+> SQL Server 2016 Enterprise(腾讯云RDS)   
+> 
 > DBMS: Microsoft SQL Server (ver. 13.00.6300)     
 > Case sensitivity: plain=mixed, delimited=mixed     
 > Driver: Microsoft JDBC Driver 12.2 for SQL Server (ver. 12.2.0.0, JDBC4.2)     
@@ -55,10 +57,11 @@ SELECT MAX(__$start_lsn) from [heh_cdc].[cdc].[test_cdc_instance_CT];
 SELECT sys.fn_cdc_map_time_to_lsn ('largest less than or equal',CURRENT_TIMESTAMP);
 
 -- ddl 捕获（object_id是查出来的）
-SELECT * FROM [heh_cdc].[cdc].[ddl_history] WHERE object_id = '380085386' ORDER BY ddl_lsn ASC
+SELECT * FROM [heh_cdc].[cdc].[ddl_history] WHERE object_id = '380085386' ORDER BY ddl_lsn ASC;
 
 -- 从上次读到的lsn开始 查询操作类型、lsn 以及 数据 
--- __$operation：1=DELETE、2=INSERT、4=UPDATE-after、3=UPDATE-before(only when the row filter option 'all update old' is specified.)
+-- __$operation：(主键变更是D+I)
+-- 1=DELETE、2=INSERT、4=UPDATE-after、3=UPDATE-before(only when the row filter option 'all update old' is specified.)
 SELECT __$operation, __$start_lsn,id,col1,col2 FROM [heh_cdc].[cdc].[test_cdc_instance_CT] 
         WHERE __$start_lsn > 0x0000258D000001580005 AND __$operation != 3 ORDER BY __$start_lsn ASC;
 ```
