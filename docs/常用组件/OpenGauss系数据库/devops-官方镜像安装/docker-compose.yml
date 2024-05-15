@@ -1,13 +1,30 @@
 version: '3'
 services:
   opengauss:
-    image: opengauss/opengauss:5.0.0
+    image: enmotech/opengauss:5.0.1
     container_name: opengauss
     privileged: true
     ports:
-      - "5452:5432"
-      - "5453:5433"
+      - "5432:5432"
+      - "5433:5433"
     environment:
       - GS_PASSWORD=openGauss@123
     volumes:
       - ./data:/var/lib/opengauss/data
+# https://github.com/enmotech/enmotech-docker-opengauss
+# 创建docker-compose.yml文件后，直接docker-compose up -d启动
+# 进入容器后操作：
+# 切换到安装数据库的用户   su - omm
+# 进入数据库   gsql
+# 查看数据库列表   \l
+# 默认只有postgres数据库，默认用户是gaussdb
+
+# CREATE DATABASE opengauss;
+# CREATE USER opengauss WITH PASSWORD 'openGauss@123';
+# GRANT ALL PRIVILEGES TO opengauss;
+# ALTER USER opengauss REPLICATION;
+# grant select on pg_user to opengauss;
+
+# 执行结束后，退出容器，修改持久化目录中data/pg_hba.conf，最后一行添加
+# host replication opengauss 0.0.0.0/0 md5
+# 重启容器：docker-compose down  然后  docker-compose up -d
