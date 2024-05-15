@@ -61,6 +61,21 @@ kafka-console-consumer --bootstrap-server kafka1:9092 --topic offset_connect_sou
 #### top 命令
 ![top命令](img/top使用技巧.png)
 
+> top 后按h，可进入帮助页面查看参数    
+> 常用参数说明：    
+> d : 监控内容刷新的时间间隔。   
+> p : 只监控指定PID的进程。   
+> H : 显示进程下的线程，一般结合p参数使用，查看某个进程下的线程，例如: top -Hp 8080。    
+> i : 不显示任何闲置或无用的进程，也可以理解成只显示正在执行的进程。    
+> n : 限定监控内容刷新的次数，完成后将会退出 top 视图。例如 top -n 5，默认3秒刷新一次，那么在15s后，自动退出top视图。   
+> 
+> cpu飙高排查步骤    
+> 1、top 找到cpu占用最高的进程pid: 12246        
+> 2、使用 top -Hp pid 找到进程中，使用cpu最多的线程id：12274     
+> 3、printf "0x%x" 42122: 0x2ff2    
+> 4、jstack 12246 | grep 0x2ff2 -A 10 查看线程堆栈的后10行,就可以定位到代码位置了   
+
+
 #### 每隔一段时间记录 free -h 和 docker stats 的脚本
 ``` 
 #!/bin/bash
