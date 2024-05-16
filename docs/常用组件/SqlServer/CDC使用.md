@@ -10,6 +10,8 @@
 
 https://learn.microsoft.com/zh-cn/sql/relational-databases/system-stored-procedures/sys-sp-cdc-disable-table-transact-sql?view=sql-server-ver16&redirectedfrom=MSDN
 
+![img.png](img.png)
+
 ```sql
 -- 创建数据库
 create database heh_cdc
@@ -50,7 +52,7 @@ EXECUTE sys.sp_cdc_disable_table
 
 
 
--- 查询全增量衔接位点
+-- 全量查询前，先查询全增量衔接位点
 -- 1、数据库.cdc.instanceName_CT
 SELECT MAX(__$start_lsn) from [heh_cdc].[cdc].[test_cdc_instance_CT];
 -- 2、如果方案1查不到，使用方案2
