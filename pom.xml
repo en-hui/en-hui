@@ -15,6 +15,7 @@
         <module>wealth-base</module>
         <module>wealth-component</module>
         <module>wealth-bigdata</module>
+        <module>wealth-java17</module>
     </modules>
 
     <properties>

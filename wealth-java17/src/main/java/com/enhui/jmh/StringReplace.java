@@ -1,30 +1,11 @@
-package com.enhui;
+package com.enhui.jmh;
 
 import lombok.extern.slf4j.Slf4j;
-import org.openjdk.jmh.annotations.*;
 
 import java.nio.charset.StandardCharsets;
 
-// todo jmh 测试
 @Slf4j
-public class JMHStringReplace {
-
-    @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @Measurement(iterations = 1, time = 3)
-    public void testReplace() {
-        String txt = "我是字符串，aodoand zsqweas " +
-                " asd";
-        removeNullChar(txt, true);
-    }
-
-    @Benchmark
-    public void testReplaceNew() {
-        String txt = "我是字符串，aodoand zsqweas " +
-                " asd";
-        removeNullCharNew(txt, true);
-
-    }
+public class StringReplace {
 
     public static Object removeNullChar(Object value, boolean isRemove) {
         if (isRemove) {
@@ -81,5 +62,4 @@ public class JMHStringReplace {
         }
         return value;
     }
-
 }

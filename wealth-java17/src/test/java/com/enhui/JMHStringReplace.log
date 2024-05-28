@@ -1,0 +1,61 @@
+# JMH version: 1.23
+# VM version: JDK 17.0.3.1, Java HotSpot(TM) 64-Bit Server VM, 17.0.3.1+2-LTS-6
+# VM invoker: /Library/Java/JavaVirtualMachines/jdk-17.0.3.1.jdk/Contents/Home/bin/java
+# VM options: -Dvisualvm.id=288893946479500 -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=61704:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8
+# Warmup: 1 iterations, 10 s each
+# Measurement: 3 iterations, 3 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.enhui.JMHStringReplace.testReplace
+
+# Run progress: 0.00% complete, ETA 00:00:59
+# Fork: 1 of 1
+# Warmup Iteration   1: 90906860.151 ops/s
+Iteration   1: 91386211.250 ops/s
+Iteration   2: 104710079.954 ops/s
+Iteration   3: 104349632.339 ops/s
+
+
+Result "com.enhui.JMHStringReplace.testReplace":
+  100148641.181 ±(99.9%) 138481289.151 ops/s [Average]
+  (min, avg, max) = (91386211.250, 100148641.181, 104710079.954), stdev = 7590626.743
+  CI (99.9%): [≈ 0, 238629930.332] (assumes normal distribution)
+
+
+# JMH version: 1.23
+# VM version: JDK 17.0.3.1, Java HotSpot(TM) 64-Bit Server VM, 17.0.3.1+2-LTS-6
+# VM invoker: /Library/Java/JavaVirtualMachines/jdk-17.0.3.1.jdk/Contents/Home/bin/java
+# VM options: -Dvisualvm.id=288893946479500 -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=61704:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8
+# Warmup: 1 iterations, 10 s each
+# Measurement: 3 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.enhui.JMHStringReplace.testReplaceNew
+
+# Run progress: 32.20% complete, ETA 00:00:41
+# Fork: 1 of 1
+# Warmup Iteration   1: 91089486.489 ops/s
+Iteration   1: 92025759.271 ops/s
+Iteration   2: 103923266.322 ops/s
+Iteration   3: 104590909.011 ops/s
+
+
+Result "com.enhui.JMHStringReplace.testReplaceNew":
+  100179978.202 ±(99.9%) 128976669.869 ops/s [Average]
+  (min, avg, max) = (92025759.271, 100179978.202, 104590909.011), stdev = 7069646.488
+  CI (99.9%): [≈ 0, 229156648.070] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:01:00
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+Benchmark                         Mode  Cnt          Score           Error  Units
+JMHStringReplace.testReplace     thrpt    3  100148641.181 ± 138481289.151  ops/s
+JMHStringReplace.testReplaceNew  thrpt    3  100179978.202 ± 128976669.869  ops/s
