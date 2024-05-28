@@ -152,4 +152,63 @@ public class TestGroup {
       throw new RuntimeException(e);
     }
   }
+
+  @Test
+  public void testProfiler() {
+    String createTableSql =
+        "create table if not exists public.test_profile\n"
+            + "(\n"
+            + "    id   integer\n"
+            + "        constraint test_profile_pk\n"
+            + "            primary key,\n"
+            + "    col1 integer,\n"
+            + "    col2 integer,\n"
+            + "    col3 varchar,\n"
+            + "    col4 varchar,\n"
+            + "    col5 varchar,\n"
+            + "    col6 varchar,\n"
+            + "    col7 varchar,\n"
+            + "    col8 varchar,\n"
+            + "    col9 varchar\n"
+            + ");\n"
+            + "\n";
+
+    // 建表
+    try (final Statement statement = conn.createStatement()) {
+      statement.addBatch(createTableSql);
+      statement.executeBatch();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    System.out.println("执行建表完毕");
+
+    String insertSql =
+        String.format(
+            "INSERT INTO public.test_profile VALUES (%s);",
+            String.join(",", Collections.nCopies(10, "?")));
+    final String strData = String.join(",", Collections.nCopies(10, "我是字符串"));
+    try (final PreparedStatement pst = conn.prepareStatement(insertSql)) {
+      int no = 1;
+      for (int i = 0; i < 100; i++) {
+        for (int j = 1; j <= 5000; j++) {
+          pst.setInt(1, no++);
+          pst.setInt(2, no++);
+          pst.setInt(3, no++);
+          pst.setString(4, strData);
+          pst.setString(5, strData);
+          pst.setString(6, strData);
+          pst.setString(7, strData);
+          pst.setString(8, strData);
+          pst.setString(9, strData);
+          pst.setString(10, strData);
+          pst.addBatch();
+        }
+        pst.executeBatch();
+        System.out.println("插入数据阶段性执行完毕: " + no);
+      }
+
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }
