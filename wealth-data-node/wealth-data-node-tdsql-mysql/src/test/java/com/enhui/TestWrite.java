@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.openjdk.jmh.annotations.Benchmark;
 
 @Slf4j
 public class TestWrite {
@@ -21,7 +20,6 @@ public class TestWrite {
    * @throws SQLException
    */
   @Test
-  @Benchmark
   public void testPerformance() throws SQLException, InterruptedException {
     String dbName = "heh_test";
     String tableName = "heh_table";
