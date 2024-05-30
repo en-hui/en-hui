@@ -20,6 +20,7 @@
         <module>wealth-data-node-rocksdb</module>
         <module>wealth-data-node-postgresql</module>
         <module>wealth-data-node-opengauss</module>
+        <module>wealth-data-node-sqlserver</module>
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
