@@ -8,7 +8,13 @@
 > Ping: 24 ms     
 > SSL: yes    
 
+cdc开启关闭等操作：   
 https://learn.microsoft.com/zh-cn/sql/relational-databases/system-stored-procedures/sys-sp-cdc-disable-table-transact-sql?view=sql-server-ver16&redirectedfrom=MSDN
+
+数据变更捕获查询：   
+https://learn.microsoft.com/zh-cn/sql/relational-databases/system-tables/cdc-capture-instance-ct-transact-sql?redirectedfrom=MSDN&view=sql-server-ver16
+![img_1.png](cdc表字段说明.png)
+
 
 ![img.png](img.png)
 
@@ -64,8 +70,13 @@ SELECT * FROM [heh_cdc].[cdc].[ddl_history] WHERE object_id = '380085386' ORDER 
 -- 从上次读到的lsn开始 查询操作类型、lsn 以及 数据 
 -- __$operation：(主键变更是D+I)
 -- 1=DELETE、2=INSERT、4=UPDATE-after、3=UPDATE-before(only when the row filter option 'all update old' is specified.)
+-- 注意事项：同一事务的start_lsn相同，大事务处理过程中，任务中断会导致丢数。
 SELECT __$operation, __$start_lsn,id,col1,col2 FROM [heh_cdc].[cdc].[test_cdc_instance_CT] 
         WHERE __$start_lsn > 0x0000258D000001580005 AND __$operation != 3 ORDER BY __$start_lsn ASC;
+-- 考虑持久化__$command_id，用于记录同一事务中的处理进度，并将>改为>=
+-- 全增量衔接那一次，__$command_id为空，应该认为为空时，本事务无需处理，有值时判断事务id相同比较command_id
+SELECT __$operation, __$start_lsn, __$command_id, id,col1,col2 FROM [heh_cdc].[cdc].[test_cdc_instance_CT]
+WHERE __$start_lsn >= 0x0000258D000001580005 AND __$operation != 3 ORDER BY __$start_lsn ASC;
 ```
 
 ``` 
