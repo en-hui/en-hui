@@ -22,4 +22,13 @@ public class TestLoadData {
       client.close();
     }
   }
+
+  @Test
+  public void testGetConnection() throws SQLException {
+    SqlServerClient client = SqlServerClient.getInstance();
+    client.getConnection();
+
+    // 一个实例多次获取
+    client.getConnection();
+  }
 }
