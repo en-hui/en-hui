@@ -31,7 +31,11 @@ kafka-console-consumer --bootstrap-server kafka1:9092 --topic offset_connect_sou
 
 ### 在线debug（尽量不要在生产环境使用）
 
-使用java -jar 如何开启debug：java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -jar YourApp.jar
+使用java -jar 如何开启debug：   
+- java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -jar YourApp.jar   
+
+优先使用如上命令，假设配置后，出现本机能debug，其他机器不能，则修改为：   
+- java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar YourApp.jar   
 
 > jdb:    
 1.修改compose文件，打开debug：KAFKA_DEBUG=true(和开发机使用一样，source、sink、manager是kafka_debug。web是debug)    
