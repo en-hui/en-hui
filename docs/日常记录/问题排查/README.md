@@ -20,7 +20,17 @@ kafka-console-consumer --bootstrap-server kafka1:9092 --topic offset_connect_sou
 
 ### 网络抓包相关
 
-> 查看网络状态的表格：netstat -natp
+> 开启一个 socket监听9999端口，可以造数据用    
+> nc -lk 9999   
+> 
+> 命令行连接 上面 这个9999服务    
+> nc localhost 9999    
+> 
+> 查看all的网络连接的表格   
+> netstat -natp   
+> 
+> 查看listening的网络连接      
+> netstat -nltp
 > 
 > 抓本机与某ip的网络交互，以明文展示：tcpdump net xx_ip_xx -A     
 > 
