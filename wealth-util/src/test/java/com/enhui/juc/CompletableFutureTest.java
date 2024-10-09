@@ -14,17 +14,21 @@ public class CompletableFutureTest {
     ExecutorService executorService =
         Executors.newSingleThreadExecutor(r -> new Thread(r, "test-" + integer.getAndIncrement()));
     ExecutorService pool = Executors.newSingleThreadExecutor();
-    checkProducerFailure();
+    try {
+      checkProducerFailure();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     CompletableFuture.runAsync(
             () -> {
               System.out.println("first--" + Thread.currentThread().getName());
-              try {
-                // sleep 执行耗时会影响异常处理的线程
-                Thread.sleep(3000);
-              } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-              }
-              //                            throw new RuntimeException("error");
+              //              try {
+              //                // sleep 执行耗时会影响异常处理的线程
+              //                Thread.sleep(3000);
+              //              } catch (InterruptedException e) {
+              //                throw new RuntimeException(e);
+              //              }
+              throw new RuntimeException("error");
             },
             executorService)
         .thenRun(
@@ -44,17 +48,17 @@ public class CompletableFutureTest {
             })
         .exceptionally(
             e -> {
-              System.out.println("exception1--" + Thread.currentThread().getName());
+              producerFailure = e;
+
+              try {
+                Thread.sleep(1000);
+              } catch (InterruptedException e1) {
+                throw new RuntimeException(e1);
+              }
               executorService.shutdownNow();
               pool.shutdownNow();
               System.out.println("shut down--" + Thread.currentThread().getName());
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e1) {
-                    throw new RuntimeException(e1);
-                }
-              producerFailure = e;
-              System.out.println("exception2--" + Thread.currentThread().getName());
+
               return null;
             });
 
