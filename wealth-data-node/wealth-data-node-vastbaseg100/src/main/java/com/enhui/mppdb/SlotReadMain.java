@@ -24,8 +24,8 @@ public class SlotReadMain {
   // replication_slot_teradata 、
   // replication_slot_mysql 、
   // replication_slot_oracle
-  String slotName = "replication_slot_teradata";
-  String database = "teradata_base";
+  String slotName = "dptask_1543_dpselfnodename";
+  String database = "py_oracle_database";
 
   @Test
   public void createSolt() throws SQLException {
@@ -58,7 +58,7 @@ public class SlotReadMain {
 
   @Test
   public void readSolt() throws SQLException, InterruptedException {
-    LogSequenceNumber startLsn = LogSequenceNumber.valueOf("0/1314A758");
+    LogSequenceNumber startLsn = LogSequenceNumber.valueOf("7F/7F0770C8");
     ChainedLogicalStreamBuilder streamBuilder =
         soltConn
             .getReplicationAPI()
@@ -69,15 +69,15 @@ public class SlotReadMain {
             .withSlotOption("include-xids", true)
             .withSlotOption("include-timestamp", true)
             .withSlotOption("skip-empty-xacts", true)
-            .withSlotOption(
-                "white-table-list",
-                "public.heh_oracle_all_type1,public.heh_mysql_all_type1,public.heh_teradata_all_type1,public.heh_pg_all_type1") // 白名单列表
+//            .withSlotOption(
+//                "white-table-list",
+//                "public.src_alltype_0_241226143424934") // 白名单列表
             .withSlotOption("standby-connection", false); // 强制备机解码
 
     // 是否支持并行解析
     int parallerNum;
     parallerNum = 3;
-    //    parallerNum = 1;
+//        parallerNum = 1;
     if (parallerNum > 1) {
       streamBuilder
           .withSlotOption("decode-style", "b")

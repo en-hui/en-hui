@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Map;
+import org.postgresql.replication.LogSequenceNumber;
 
 public class MppdbDecoder {
 
@@ -88,6 +89,8 @@ public class MppdbDecoder {
                 .append(tableName)
                 .append(", lsn:")
                 .append(lsn)
+                .append(" - ")
+                .append(LogSequenceNumber.valueOf(lsn))
                 .append(", type:")
                 .append(type);
 

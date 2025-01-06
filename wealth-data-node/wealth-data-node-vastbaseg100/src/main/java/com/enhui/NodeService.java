@@ -52,13 +52,13 @@ public class NodeService {
   public static PgConnection getSlaveConn(String database)
       throws ClassNotFoundException, SQLException {
     return getConn(
-        slaveIp, singlePort, "tpcc", "tpcc@123", database == null ? "vastbase" : database, false);
+        "172.16.2.140", singlePort, "tpcc", "tpcc@123", database == null ? "vastbase" : database, false);
   }
 
   public static PgConnection getSlaveSoltConn(String database)
       throws ClassNotFoundException, SQLException {
     return getConn(
-        slaveIp,
+        "172.16.2.140",
         singleSoltPort,
         "tpcc",
         "tpcc@123",
