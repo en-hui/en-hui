@@ -3,7 +3,6 @@
 > **世界上并没有完美的程序，但我们并不因此而沮丧，**   
 > **因为写程序本来就是一个不断追求完美的过程。**
 > 
-> Gitee:http://huenhui.gitee.io/wealth    
 > GitHub:https://en-hui.github.io/en-hui/#/   
 > csdn:https://blog.csdn.net/weixin_38503726?spm=1010.2135.3001.5421
 
