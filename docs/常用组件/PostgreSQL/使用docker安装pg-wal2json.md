@@ -19,11 +19,11 @@ CMD ["postgres", "-c", "shared_preload_libraries=wal2json,decoderbufs"]
 ```
 
 打镜像：    
-docker build -t my-postgres .   
+docker build -t postgres-wal2json .   
 启动前，先创建目录：mkdir -p /home/postgresql/pgdata    
 
 启动容器：   
-docker run --name postgres-cdc -e POSTGRES_PASSWORD=123456 -p 5432:5432 -v /home/postgresql/pgdata:/var/lib/postgresql/data -d my-postgres
+docker run --name postgres-cdc -e POSTGRES_PASSWORD=123456 -p 5455:5432 -v /home/postgresql/pgdata:/var/lib/postgresql/data -d postgres-wal2json
 
 
 修改/home/postgresql/pgdata目录下的配置文件，逻辑复制相关的配置   
