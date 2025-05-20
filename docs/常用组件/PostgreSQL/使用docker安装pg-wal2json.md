@@ -20,10 +20,10 @@ CMD ["postgres", "-c", "shared_preload_libraries=wal2json,decoderbufs"]
 
 打镜像：    
 docker build -t postgres-wal2json .   
-启动前，先创建目录：mkdir -p /home/postgresql/pgdata    
+启动前，先创建目录：mkdir -p ./pgdata    
 
 启动容器：   
-docker run --name postgres-cdc -e POSTGRES_PASSWORD=123456 -p 5455:5432 -v /home/postgresql/pgdata:/var/lib/postgresql/data -d postgres-wal2json
+docker run --name postgres-cdc -e POSTGRES_PASSWORD=123456 -p 5455:5432 -v ./pgdata:/var/lib/postgresql/data -d postgres-wal2json
 
 
 修改/home/postgresql/pgdata目录下的配置文件，逻辑复制相关的配置   
@@ -46,3 +46,28 @@ host    replication     all             0.0.0.0/0               md5
 进入容器：docker exec -it postgres-cdc bash
 
 进入容器后，可以进行pg命令行：psql -U postgres
+
+# 使用pg-vector插件
+docker run --name pgvector -e POSTGRES_PASSWORD=123456 -p 5456:5432 -v ./pgdata:/var/lib/postgresql/data -d pgvector/pgvector:pg17
+
+```Dockerfile
+FROM pgvector/pgvector:pg17
+
+RUN apt-get update && \
+    apt-get install -y postgresql-17-wal2json && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+EXPOSE 5432
+
+CMD ["postgres", "-c", "shared_preload_libraries=wal2json"]
+
+# 添加初始化脚本（如果pgvector需要显式启用）
+COPY init.sql /docker-entrypoint-initdb.d/
+
+CMD ["postgres","-c", "shared_preload_libraries=vector,wal2json"]
+```
+
+```init.sql
+CREATE EXTENSION IF NOT EXISTS vector;
+```
