@@ -25,3 +25,4 @@ docker exec pg-master psql -U postgres -d postgres -c \
   "CREATE TABLE test (id SERIAL, data TEXT); INSERT INTO test (data) VALUES ('sync_test');"
 docker exec pg-slave psql -U postgres -d postgres -c "SELECT * FROM test;" 
 ```
+
