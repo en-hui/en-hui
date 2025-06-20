@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  pg-master:
+    image: pgvector/pgvector:pg17
+    container_name: pg-master
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./master_data:/var/lib/postgresql/data
+    networks:
+      - pg-net
+
+  pg-slave:
+    image: pgvector/pgvector:pg17
+    container_name: pg-slave
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: postgres
+    volumes:
+      - ./slave_data:/var/lib/postgresql/data
+    networks:
+      - pg-net
+
+networks:
+  pg-net:
+    driver: bridge
