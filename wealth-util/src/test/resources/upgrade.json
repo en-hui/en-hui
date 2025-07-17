@@ -1,0 +1,6 @@
+{
+"upgrades":[{"connector":"com.datapipeline.source.gbase8s88.GBase8sSourceConnector",
+"timestamp":1752664124000,
+"version":"5.55",
+"path":"connector-gbase8s88/gbase8s88-client-0.34.6.jar"}]
+}

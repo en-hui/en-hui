@@ -1,0 +1,1081 @@
+{
+  "root": "/opt/plugins",
+  "classpaths" : [
+    "/opt/framework"
+  ],
+  "plugins": [
+    
+
+  {
+    "paths": [
+      "connector-gbase8s88/gbase8s88-client-0.34.6.jar",
+      "connector-gbase8s88/gbase8s88-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.gbase8s88.GBase8sSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-iceberg-base/iceberg-base-client-0.34.6.jar",
+      "connector-iceberg-base/iceberg-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.iceberg.IcebergSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-telepg-base/telepg-base-client-0.34.6.jar",
+      "connector-telepg-base/telepg-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.telepg.TelePostgresSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-opengauss-opengauss1/opengauss-opengauss1-client-0.34.6.jar",
+      "connector-opengauss-opengauss1/opengauss-opengauss1-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.opengauss.OpenGaussSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-rocketmq-base/rocketmq-5-client-0.34.6.jar",
+      "connector-rocketmq-base/rocketmq-5-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.rocketmq.RocketMQSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-rocketmq-pc3/rocketmq-pc3-client-0.34.6.jar",
+      "connector-rocketmq-pc3/rocketmq-pc3-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.rocketmqpc3.RocketMQSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-starrocks-base/starrocks-base-client-0.34.6.jar",
+      "connector-starrocks-base/starrocks-base-sink-0.34.6.jar",
+      "connector-starrocks-base/starrocks-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.starrock.StarRockConnector",
+      "com.datapipeline.source.starrocks.StarrocksSourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-hashdata-base/hashdata-base-client-0.34.6.jar",
+      "connector-hashdata-base/hashdata-base-source-0.34.6.jar",
+      "connector-hashdata-base/hashdata-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hashdata.HashDataSinkConnector",
+      "com.datapipeline.source.hashdata.HashDataSourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-hive-hive110/hive-hive110-client-0.34.6.jar",
+      "connector-hive-hive110/hive-hive110-sink-0.34.6.jar",
+      "connector-hive-hive110/hive-hive110-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.connector.hive1.Hive110SourceConnector",
+      "com.datapipeline.sink.connector.hive1.Hive110MetastoreConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-clickhouse-base/clickhouse-base-client-0.34.6.jar",
+      "connector-clickhouse-base/clickhouse-base-sink-0.34.6.jar",
+      "connector-clickhouse-base/clickhouse-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.clickhouse.ClickhouseSinkConnector",
+      "com.datapipeline.source.connector.clickhouse.ClickhouseSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-argo-base/argo-base-client-0.34.6.jar",
+      "connector-argo-base/argo-base-sink-0.34.6.jar",
+      "connector-argo-base/argo-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.argo.ArgoSinkConnector",
+      "com.datapipeline.source.connector.argo.ArgoDbSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-inceptor-base/inceptor-base-client-0.34.6.jar",
+      "connector-inceptor-base/inceptor-base-sink-0.34.6.jar",
+      "connector-inceptor-base/inceptor-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.inceptor.InceptorJdbcConnector",
+      "com.datapipeline.sink.connector.inceptor.InceptorMetastoreConnector",
+      "com.datapipeline.source.inceptor.InceptorSourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-alioss-base/alioss-base-client-0.34.6.jar",
+      "connector-alioss-base/alioss-base-sink-0.34.6.jar",
+      "connector-alioss-base/alioss-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.alioss.AliOssSourceConnector",
+      "com.datapipeline.sink.connector.alioss.AliOssSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-kingbase-base/kingbase-base-client-0.34.6.jar",
+      "connector-kingbase-base/kingbase-base-sink-0.34.6.jar",
+      "connector-kingbase-base/kingbase-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.kingbase.KingBaseSourceConnector",
+      "com.datapipeline.sink.connector.kingbase.KingBaseSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-data-validator-base/data-validator-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.validator.DataValidatorConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-mongodb-base/mongodb-base-client-0.34.6.jar",
+      "connector-mongodb-base/mongodb-base-sink-0.34.6.jar",
+      "connector-mongodb-base/mongodb-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.mongodb.MongoDbSourceConnector",
+      "com.datapipeline.sink.connector.mongodb.MongoDbSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-hive-hive3/hive-hive3-client-0.34.6.jar",
+      "connector-hive-hive3/hive-hive3-sink-0.34.6.jar",
+      "connector-hive-hive3/hive-hive3-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hive3.Hive3JdbcConnector",
+      "com.datapipeline.sink.connector.hive3.Hive3MetastoreConnector",
+      "com.datapipeline.source.connector.hive3.Hive3SourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-newmysql-base/newmysql-base-client-0.34.6.jar",
+      "connector-newmysql-base/newmysql-base-sink-0.34.6.jar",
+      "connector-newmysql-base/newmysql-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.connector.newmysql.NewMysqlSourceConnector",
+      "com.datapipeline.sink.connector.newmysql.NewMySQLSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-maxcompute-maxcompute2/maxcompute-maxcompute2-client-0.34.6.jar",
+      "connector-maxcompute-maxcompute2/maxcompute-maxcompute2-sink-0.34.6.jar",
+      "connector-maxcompute-maxcompute2/maxcompute-maxcompute2-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.maxcompute2.MaxCompute2SinkConnector",
+      "com.datapipeline.source.maxcompute2.MaxComputeSourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-greenplum-base/greenplum-base-client-0.34.6.jar",
+      "connector-greenplum-base/greenplum-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.greenplum.GreenplumSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-vastbaseg100-base/vastbaseg100-base-client-0.34.6.jar",
+      "connector-vastbaseg100-base/vastbaseg100-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.vastbaseg100.VastbaseG100SourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-obsharding/obsharding-base-client-0.34.6.jar",
+      "connector-obsharding/obsharding-base-source-0.34.6.jar",
+      "connector-obsharding/obsharding-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.obsharding.ObShardingSourceConnector",
+      "com.datapipeline.sink.connector.obsharding.ObShardingSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-ftp-base/ftp-base-client-0.34.6.jar",
+      "connector-ftp-base/ftp-base-sink-0.34.6.jar",
+      "connector-ftp-base/ftp-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.ftp.FtpSinkConnector",
+      "com.datapipeline.source.ftp.FtpSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-paimon-base/paimon-base-client-0.34.6.jar",
+      "connector-paimon-base/paimon-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.paimon.PaimonSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-gbase8s87/gbase8s87-client-0.34.6.jar",
+      "connector-gbase8s87/gbase8s87-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.gbase8s.GBase8sSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-kafka-mrs/kafka-kafka-mrs-client-0.34.6.jar",
+      "connector-kafka-mrs/kafka-kafka-mrs-sink-0.34.6.jar",
+      "connector-kafka-mrs/kafka-kafka-mrs-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.kafka.KafkaMrsSinkConnector",
+      "com.datapipeline.source.kafka.KafkaMrsSourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-oceanbase3/oceanbase3-client-0.34.6.jar",
+      "connector-oceanbase3/oceanbase3-sink-0.34.6.jar",
+      "connector-oceanbase3/oceanbase3-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.oceanbase3.OceanBase3SinkConnector",
+      "com.datapipeline.source.oceanbase3.OceanBase3SourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-hbase-hbase1/hbase-hbase1-client-0.34.6.jar",
+      "connector-hbase-hbase1/hbase-hbase1-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hbase1.HBase1SinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-mogdb-base/mogdb-base-client-0.34.6.jar",
+      "connector-mogdb-base/mogdb-base-source-0.34.6.jar",
+      "connector-mogdb-base/mogdb-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.mogdb.MogDbSourceConnector",
+      "com.datapipeline.sink.connector.mogdb.MogDbSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-gauss200-base/gauss200-base-client-0.34.6.jar",
+      "connector-gauss200-base/gauss200-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.gauss200.Gauss200SinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-hyperbase-base/hyperbase-base-client-0.34.6.jar",
+      "connector-hyperbase-base/hyperbase-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hyperbase.HyperbaseSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-hive-hive2/hive-hive2-client-0.34.6.jar",
+      "connector-hive-hive2/hive-hive2-sink-0.34.6.jar",
+      "connector-hive-hive2/hive-hive2-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hive.HiveMetastoreConnector",
+      "com.datapipeline.sink.connector.hive.HiveJdbcConnector",
+      "com.datapipeline.source.hive.HiveSourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-hudi11-base/hudi-hudi11-client-0.34.6.jar",
+      "connector-hudi11-base/hudi-hudi11-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hudi.Hoodie11SinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-db2-base/db2-base-client-0.34.6.jar",
+      "connector-db2-base/db2-base-sink-0.34.6.jar",
+      "connector-db2-base/db2-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.db2.Db2SinkConnector",
+      "com.datapipeline.source.db2.Db2SourceConnector",
+      "com.datapipeline.source.cdcdb2.CdcDb2SourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-analyticdbmysql-base/analyticdbmysql-base-client-0.34.6.jar",
+      "connector-analyticdbmysql-base/analyticdbmysql-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.analyticdbmysql.AnalyticDbMySQLSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-mysql-base/mysql-base-client-0.34.6.jar",
+      "connector-mysql-base/mysql-base-sink-0.34.6.jar",
+      "connector-mysql-base/mysql-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.jdbc.mysql.MysqlBatchSourceConnector",
+      "com.datapipeline.binlog.connector.mysql.MySqlConnector",
+      "com.datapipeline.sink.connector.mysql.MySQLConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-doris-base/doris-base-client-0.34.6.jar",
+      "connector-doris-base/doris-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.doris.DorisConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-hologres-base/hologres-base-client-0.34.6.jar",
+      "connector-hologres-base/hologres-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hologres.HologresSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-elk-base/elk-base-client-0.34.6.jar",
+      "connector-elk/elk-base-source-0.34.6.jar",
+      "connector-elk-base/elk-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.elk.ElkSinkConnector",
+      "com.datapipeline.source.elk.ElkSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-polardb-base/polardb-base-client-0.34.6.jar",
+      "connector-polardb-base/polardb-base-source-0.34.6.jar",
+      "connector-polardb-base/polardb-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.polardb.PolarDbSourceConnector",
+      "com.datapipeline.sink.connector.polardb.PolarDbSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-milvus-base/milvus-base-client-0.34.6.jar",
+      "connector-milvus-base/milvus-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.milvus.MilvusSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-hdfs-hdfs2/hdfs-hdfs2-client-0.34.6.jar",
+      "connector-hdfs-hdfs2/hdfs-hdfs2-sink-0.34.6.jar",
+      "connector-hdfs-hdfs2/hdfs-hdfs2-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hdfs.HdfsSinkConnector",
+      "com.datapipeline.source.hdfs.HdfsSourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-tdsqlpostgres-base/tdsqlpostgres-base-client-0.34.6.jar",
+      "connector-tdsqlpostgres-base/tdsqlpostgres-base-sink-0.34.6.jar",
+      "connector-tdsqlpostgres-base/tdsqlpostgres-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.tdsqlpostgres.TdsqlPostgresSourceConnector",
+      "com.datapipeline.sink.connector.tdsqlpostgres.TdsqlPostgresSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-awspg-base/awsrdspg-base-client-0.34.6.jar",
+      "connector-awspg-base/awsrdspg-base-sink-0.34.6.jar",
+      "connector-awspg-base/awsrdspg-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.jdbc.awspg.AwsRdsPostgresSourceConnector",
+      "com.datapipeline.wal2json.connector.awspg.AwsRdsPostgresConnector",
+      "com.datapipeline.sink.connector.awspg.AwsRdsPostgresSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-goldendb-base/goldendb-base-client-0.34.6.jar",
+      "connector-goldendb-base/goldendb-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.goldendb.GoldenDbSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-tdsqlmysql-base/tdsqlmysql-base-client-0.34.6.jar",
+      "connector-tdsqlmysql-base/tdsqlmysql-base-sink-0.34.6.jar",
+      "connector-tdsqlmysql-base/tdsqlmysql-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.tdsqlmysql.TdsqlMysqlSinkConnector",
+      "com.datapipeline.source.connector.tdsqlmysql.TdsqlMysqlSourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-postgres-base/postgres-base-client-0.34.6.jar",
+      "connector-postgres-base/postgres-base-sink-0.34.6.jar",
+      "connector-postgres-base/postgres-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.jdbc.postgres.PostgresSourceConnector",
+      "com.datapipeline.wal2json.connector.postgresql.PostgresConnector",
+      "com.datapipeline.sink.connector.postgres.PostgresSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-sequoiadb-base/sequoiadb-base-client-0.34.6.jar",
+      "connector-sequoiadb-base/sequoiadb-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.sequoiadb.SequoiaDbSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-gaussdbforopengauss-base/gaussdbforopengauss-base-client-0.34.6.jar",
+      "connector-gaussdbforopengauss-base/gaussdbforopengauss-base-source-0.34.6.jar",
+      "connector-gaussdbforopengauss-base/gaussdbforopengauss-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.gaussdb.GaussDbForOpenGaussSourceConnector",
+      "com.datapipeline.sink.connector.gaussdb.GaussDbForOpenGaussSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-hive-hiveMrs/hive-hiveMrs-client-0.34.6.jar",
+      "connector-hive-hiveMrs/hive-hiveMrs-sink-0.34.6.jar",
+      "connector-hive-hiveMrs/hive-hiveMrs-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hiveMrs.HiveMrsJdbcConnector",
+      "com.datapipeline.sink.connector.hiveMrs.HiveMrsMetastoreConnector",
+      "com.datapipeline.source.connector.hiveMrs.HiveMrsSourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-kafka0-2/kafka-kafka0-2-client-0.34.6.jar",
+      "connector-kafka0-2/kafka-kafka0-2-sink-0.34.6.jar",
+      "connector-kafka0-2/kafka-kafka0-2-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.kafka.Kafka08SinkConnector",
+      "com.datapipeline.source.kafka.KafkaSourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-oracle-base/oracle-base-client-0.34.6.jar",
+      "connector-oracle-base/oracle-base-sink-0.34.6.jar",
+      "connector-oracle-base/oracle-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.oracle.OracleSourceConnector",
+      "com.datapipeline.sink.connector.oracle.OracleSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-starterkit-base/starterkit-base-sink-0.34.6.jar",
+      "connector-starterkit-base/starterkit-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.starterkit.StarterKitSourceConnector",
+      "com.datapipeline.sink.connector.starterkit.StarterKitSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-maxcompute-maxcompute1/maxcompute-maxcompute1-client-0.34.6.jar",
+      "connector-maxcompute-maxcompute1/maxcompute-maxcompute1-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.maxcompute.MaxComputeSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-tidb-base/tidb-base-client-0.34.6.jar",
+      "connector-tidb-base/tidb-base-sink-0.34.6.jar",
+      "connector-tidb-base/tidb-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.tidb.TiDbSourceConnector",
+      "com.datapipeline.sink.connector.tidb.TidbConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-api-base/api-base-client-0.34.6.jar",
+      "connector-api-base/api-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.api.ApiSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-oceanbase4/oceanbase4-client-0.34.6.jar",
+      "connector-oceanbase4/oceanbase4-sink-0.34.6.jar",
+      "connector-oceanbase4/oceanbase4-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.oceanbase4.OceanBase4SinkConnector",
+      "com.datapipeline.source.oceanbase4.OceanBase4SourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-sqlserver-base/sqlserver-base-client-0.34.6.jar",
+      "connector-sqlserver-base/sqlserver-base-sink-0.34.6.jar",
+      "connector-sqlserver-base/sqlserver-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.sqlserver.SqlServerSinkConnector",
+      "com.datapipeline.source.sqlserver.SqlServerSourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-adbpostgres-base/adbpostgres-base-client-0.34.6.jar",
+      "connector-adbpostgres-base/adbpostgres-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.adbpg.AnalyticDbPostgresSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-goldendb6102/goldendb6102-client-0.34.6.jar",
+      "connector-goldendb6102/goldendb6102-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.connector.golden.Golden6102SourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-dameng-base/dameng-base-client-0.34.6.jar",
+      "connector-dameng-base/dameng-base-sink-0.34.6.jar",
+      "connector-dameng-base/dameng-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.dameng.DaMengSinkConnector",
+      "com.datapipeline.source.dameng.DaMengSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-datahub-base/datahub-base-client-0.34.6.jar",
+      "connector-datahub-base/datahub-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.datahub.DatahubSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-gbase8c-base/gbase8c-base-client-0.34.6.jar",
+      "connector-gbase8c-base/gbase8c-base-source-0.34.6.jar",
+      "connector-gbase8c-base/gbase8c-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.gbase8c.Gbase8cSourceConnector",
+      "com.datapipeline.sink.connector.gbase8c.Gbase8cSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-as400-base/as400-base-client-0.34.6.jar",
+      "connector-as400-base/as400-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.as400.cdc.As400IbmCdcSourceConnector",
+      "com.datapipeline.source.as400.jdbc.As400JdbcSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-teledb-base/telemysql-base-client-0.34.6.jar",
+      "connector-teledb-base/telemysql-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.jdbc.teledb.MysqlBatchSourceConnector",
+      "com.datapipeline.binlog.connector.teledb.MySqlConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-redshift-base/redshift-base-client-0.34.6.jar",
+      "connector-redshift-base/redshift-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.redshift.RedshiftSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-selectdb-base/selectdb-base-client-0.34.6.jar",
+      "connector-selectdb-base/selectdb-base-sink-0.34.6.jar",
+      "connector-selectdb-base/selectdb-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.selectdb.SelectdbConnector",
+      "com.datapipeline.source.selectdb.SelectdbSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-hudi-base/hudi-base-client-0.34.6.jar",
+      "connector-hudi-base/hudi-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hudi.HoodieSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-newpostgres-base/newpostgres-base-client-0.34.6.jar",
+      "connector-newpostgres-base/newpostgres-base-sink-0.34.6.jar",
+      "connector-newpostgres-base/newpostgres-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.source.newpostgres.PostgresSourceConnector",
+      "com.datapipeline.sink.connector.newpostgres.PostgresSinkConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-elasticsearch-base/elasticsearch-base-client-0.34.6.jar",
+      "connector-elasticsearch-base/elasticsearch-base-sink-0.34.6.jar",
+      "connector-elasticsearch-base/elasticsearch-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.elasticsearch.ElasticsearchSinkConnector",
+      "com.datapipeline.source.elasticsearch.ElasticsearchSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-hbase-hbase2/hbase-hbase2-client-0.34.6.jar",
+      "connector-hbase-hbase2/hbase-hbase2-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hbase.HBaseSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-gbase8a-base/gbase8a-base-client-0.34.6.jar",
+      "connector-gbase8a-base/gbase8a-base-sink-0.34.6.jar",
+      "connector-gbase8a-base/gbase8a-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.gbase8a.Gbase8aSinkConnector",
+      "com.datapipeline.source.gbase8a.Gbase8aSourceConnector"
+    ]
+  }
+
+,
+
+  {
+    "paths": [
+      "connector-oceanbase2/oceanbase2-client-0.34.6.jar",
+      "connector-oceanbase2/oceanbase2-sink-0.34.6.jar",
+      "connector-oceanbase2/oceanbase2-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.oceanbase2.OceanBase2SinkConnector",
+      "com.datapipeline.source.oceanbase2.OceanBase2SourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-kafka3/kafka-kafka3-client-0.34.6.jar",
+      "connector-kafka3/kafka-kafka3-sink-0.34.6.jar",
+      "connector-kafka3/kafka-kafka3-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.kafka.Kafka3SinkConnector",
+      "com.datapipeline.source.kafka.Kafka3SourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-opengauss-opengauss2/opengauss-opengauss2-client-0.34.6.jar",
+      "connector-opengauss-opengauss2/opengauss-opengauss2-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.opengauss.OpenGauss2SinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-redis-base/redis-base-client-0.34.6.jar",
+      "connector-redis-base/redis-base-sink-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.redis.RedisSinkConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-hive-hive1/hive-hive1-client-0.34.6.jar",
+      "connector-hive-hive1/hive-hive1-sink-0.34.6.jar",
+      "connector-hive-hive1/hive-hive1-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.hive1.Hive1JdbcConnector",
+      "com.datapipeline.sink.connector.hive1.Hive1MetastoreConnector",
+      "com.datapipeline.source.hive1.Hive1SourceConnector"
+    ]
+  }
+
+
+,
+
+  {
+    "paths": [
+      "connector-sftp-base/sftp-base-client-0.34.6.jar",
+      "connector-sftp-base/sftp-base-sink-0.34.6.jar",
+      "connector-sftp-base/sftp-base-source-0.34.6.jar"
+    ],
+    "connectors": [
+      "com.datapipeline.sink.connector.sftp.SftpSinkConnector",
+      "com.datapipeline.source.sftp.SftpSourceConnector"
+    ]
+  }
+
+
+
+  ]
+}
