@@ -11,4 +11,10 @@
     <packaging>pom</packaging>
     <artifactId>wealth-base</artifactId>
 
+    <modules>
+        <module>wealth-base-algorithm</module>
+        <module>wealth-base-design</module>
+        <module>wealth-base-io</module>
+    </modules>
+
 </project>

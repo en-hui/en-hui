@@ -12,4 +12,10 @@
 
     <artifactId>wealth-bigdata</artifactId>
 
+    <modules>
+        <module>wealth-bigdata-flink</module>
+        <module>wealth-bigdata-hbase</module>
+        <module>wealth-bigdata-hdfs</module>
+        <module>wealth-bigdata-hive</module>
+    </modules>
 </project>

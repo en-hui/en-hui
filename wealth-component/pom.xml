@@ -10,7 +10,9 @@
     </parent>
     <packaging>pom</packaging>
     <modules>
+        <module>wealth-component-kafka</module>
         <module>wealth-component-redis</module>
+        <module>wealth-component-zk</module>
     </modules>
     <artifactId>wealth-component</artifactId>
 
