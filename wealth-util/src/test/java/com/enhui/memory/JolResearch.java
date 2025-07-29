@@ -111,6 +111,8 @@ public class JolResearch {
 
     for (SourceRecord sourceRecord : poll) {
       System.out.println(ClassLayout.parseInstance(sourceRecord).toPrintable());
+      System.out.println(GraphLayout.parseInstance(sourceRecord).totalSize());
+      System.out.println("========");
     }
   }
 
@@ -129,52 +131,8 @@ public class JolResearch {
     Map<String, Object> linkedMap = new LinkedHashMap<>();
     List<Object> arrayList = new ArrayList<>();
     List<Object> linkedList = new LinkedList<>();
+    putMap(linkedMap);
 
-    linkedMap.put("id", 1575824);
-    linkedMap.put("order_no", "DataTestPe");
-    linkedMap.put("order_type", 12345);
-    linkedMap.put("order_status", 12345);
-    linkedMap.put("customer_id", 1234567890123456L);
-    linkedMap.put("customer_name", "DataTestPe");
-    linkedMap.put("customer_phone", "DataTestPe");
-    linkedMap.put("customer_email", "DataTestPe");
-    linkedMap.put("shipping_name", "DataTestPe");
-    linkedMap.put("shipping_phone", "DataTestPe");
-    linkedMap.put("shipping_province", "DataTestPe");
-    linkedMap.put("shipping_city", "DataTestPe");
-    linkedMap.put("shipping_district", "DataTestPe");
-    linkedMap.put("shipping_address", "DataTestPe");
-    linkedMap.put("shipping_zip", "DataTestPe");
-    linkedMap.put("product_count", 123456789);
-    linkedMap.put("product_amount", "09");
-    linkedMap.put("shipping_amount", "09");
-    linkedMap.put("discount_amount", "09");
-    linkedMap.put("tax_amount", "09");
-    linkedMap.put("total_amount", "09");
-    linkedMap.put("payment_type", 12345);
-    linkedMap.put("payment_status", 12345);
-    linkedMap.put("payment_time", "2024-01-01 12:00:00");
-    linkedMap.put("payment_no", "DataTestPe");
-    linkedMap.put("refund_status", 12345);
-    linkedMap.put("refund_amount", "09");
-    linkedMap.put("refund_time", "2024-01-01 12:00:00");
-    linkedMap.put("shipping_company", "DataTestPe");
-    linkedMap.put("shipping_no", "DataTestPe");
-    linkedMap.put("shipping_time", "2024-01-01 12:00:00");
-    linkedMap.put("receive_time", "2024-01-01 12:00:00");
-    linkedMap.put("order_source", 12345);
-    linkedMap.put("device_type", 12345);
-    linkedMap.put("ip_address", "DataTestPe");
-    linkedMap.put("buyer_message", "DataTestPe");
-    linkedMap.put("seller_message", "DataTestPe");
-    linkedMap.put("buyer_deleted", true);
-    linkedMap.put("seller_deleted", true);
-    linkedMap.put("version", 123456789);
-    linkedMap.put("remark", "DataTestPe");
-    linkedMap.put("operator_id", 1234567890123456L);
-    linkedMap.put("operator_name", "DataTestPe");
-    linkedMap.put("created_at", "2024-01-01 12:00:00");
-    linkedMap.put("updated_at", "2024-01-01 12:00:00");
     int keyBytes = 0;
     int valueBytes = 0;
     for (String s : linkedMap.keySet()) {
@@ -200,5 +158,53 @@ public class JolResearch {
     System.out.println("value内存占用：" + valueBytes);
 
     System.out.println("内存占用明细：" + GraphLayout.parseInstance(linkedMap).toFootprint());
+  }
+
+  public static void putMap(Map<String,Object> map) {
+    map.put("id", 1575824);
+    map.put("order_no", "DataTestPe");
+    map.put("order_type", 12345);
+    map.put("order_status", 12345);
+    map.put("customer_id", 1234567890123456L);
+    map.put("customer_name", "DataTestPe");
+    map.put("customer_phone", "DataTestPe");
+    map.put("customer_email", "DataTestPe");
+    map.put("shipping_name", "DataTestPe");
+    map.put("shipping_phone", "DataTestPe");
+    map.put("shipping_province", "DataTestPe");
+    map.put("shipping_city", "DataTestPe");
+    map.put("shipping_district", "DataTestPe");
+    map.put("shipping_address", "DataTestPe");
+    map.put("shipping_zip", "DataTestPe");
+    map.put("product_count", 123456789);
+    map.put("product_amount", "09");
+    map.put("shipping_amount", "09");
+    map.put("discount_amount", "09");
+    map.put("tax_amount", "09");
+    map.put("total_amount", "09");
+    map.put("payment_type", 12345);
+    map.put("payment_status", 12345);
+    map.put("payment_time", "2024-01-01 12:00:00");
+    map.put("payment_no", "DataTestPe");
+    map.put("refund_status", 12345);
+    map.put("refund_amount", "09");
+    map.put("refund_time", "2024-01-01 12:00:00");
+    map.put("shipping_company", "DataTestPe");
+    map.put("shipping_no", "DataTestPe");
+    map.put("shipping_time", "2024-01-01 12:00:00");
+    map.put("receive_time", "2024-01-01 12:00:00");
+    map.put("order_source", 12345);
+    map.put("device_type", 12345);
+    map.put("ip_address", "DataTestPe");
+    map.put("buyer_message", "DataTestPe");
+    map.put("seller_message", "DataTestPe");
+    map.put("buyer_deleted", true);
+    map.put("seller_deleted", true);
+    map.put("version", 123456789);
+    map.put("remark", "DataTestPe");
+    map.put("operator_id", 1234567890123456L);
+    map.put("operator_name", "DataTestPe");
+    map.put("created_at", "2024-01-01 12:00:00");
+    map.put("updated_at", "2024-01-01 12:00:00");
   }
 }
