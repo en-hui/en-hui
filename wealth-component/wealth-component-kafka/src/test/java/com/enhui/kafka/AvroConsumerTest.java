@@ -3,6 +3,7 @@ package com.enhui.kafka;
 import io.confluent.connect.avro.AvroConverter;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -10,6 +11,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.SchemaAndValue;
 import org.apache.kafka.connect.storage.Converter;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +21,7 @@ public class AvroConsumerTest {
 
   KafkaConsumer<byte[], byte[]> consumer;
   Properties properties = new Properties();
-  String topic = "v2_dptask_2.orcl.LIUKANG.LKTEST01.5625";
+  String topic = "v2_dptask_54.PY_AUTO.AA1.1426";
 
   Converter taskKeyConverter = new AvroConverter();
   Converter taskValueConverter = new AvroConverter();
@@ -62,10 +64,12 @@ public class AvroConsumerTest {
   public void consume() {
     consumer.assign(Collections.singleton(new TopicPartition(topic, 0)));
 
+    int i = 0;
+    Schema valueSchema = null;
     while (true) {
       ConsumerRecords<byte[], byte[]> records = consumer.poll(Duration.ofMillis(1000));
       for (ConsumerRecord<byte[], byte[]> record : records) {
-
+        i++;
         SchemaAndValue key =
             taskKeyConverter.toConnectData(record.topic(), record.headers(), record.key());
         SchemaAndValue value =
@@ -73,6 +77,11 @@ public class AvroConsumerTest {
         System.out.println("=======================start=====================");
         System.out.println("key: " + key);
         System.out.println("value: " + value);
+        if (!Objects.equals(valueSchema, value.schema())) {
+          Schema schema = value.schema();
+          System.out.println(i + "-----valueSchema: " + schema.fields());
+          valueSchema = schema;
+        }
         System.out.println("=======================end=====================");
       }
     }
