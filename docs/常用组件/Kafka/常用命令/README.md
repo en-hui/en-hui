@@ -1,32 +1,5 @@
 # 常用命令
 
-## schema_registry常用接口（avro序列化器时使用）
-```text
--- 列出所有主题
-curl http://schema_registry:8081/subjects
-
--- 列出指定主题下所有已注册的 Schema 版本
-curl http://schema_registry:8081/subjects/{subject-name}/versions
-eg:
-curl http://schema_registry:8081/subjects/v2_dptask_54.PY_AUTO.AA1.1426-key/versions
-curl http://schema_registry:8081/subjects/v2_dptask_54.PY_AUTO.AA1.1426-value/versions
-
--- 获取指定主题和指定版本的Schema定义
-curl http://schema_registry:8081/subjects/{subject-name}/versions/{version-number}
-eg:
-curl http://schema_registry:8081/subjects/v2_dptask_54.PY_AUTO.AA1.1426-key/versions/1
-
--- 获取指定主题的最新版本 Schema 定义
-curl http://schema_registry:8081/subjects/{subject-name}/versions/latest
-eg:
-curl http://schema_registry:8081/subjects/v2_dptask_54.PY_AUTO.AA1.1426-key/versions/latest
-
--- 根据全局唯一的 Schema ID 获取 Schema 定义（Schema定义中的id就是schema_id）
-curl http://schema_registry:8081/schemas/ids/{schema-id}
-eg:
-curl http://schema_registry:8081/schemas/ids/1
-```
-
 ## topic
 ```
 -- 查所有的topic
