@@ -1,6 +1,7 @@
 - [封面](/README.md)
 - **日常记录**
   - [问题排查](日常记录/问题排查/)
+  - [数据同步-seatunnel_flink](日常记录/数据同步/seatunnel_flink.md)
   - [数据同步-datax](日常记录/数据同步/datax.md)
 - **大数据技术栈**
   - [Hadoop](大数据技术栈/Hadoop/)
