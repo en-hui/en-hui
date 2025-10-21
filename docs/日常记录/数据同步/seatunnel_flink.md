@@ -1,7 +1,7 @@
 # Seatunnel & Flink
 > 版本说明：2.3.13-SNAPSHOT 和 flink-2.1.0不兼容
 
-## seatunnel 提交flink脚本开启开启debug
+## seatunnel 提交flink脚本开启debug
 
 vim apache-seatunnel-2.3.13-SNAPSHOT/bin/start-seatunnel-flink-15-connector-v2.sh
 ```text
