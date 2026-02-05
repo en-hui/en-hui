@@ -39,8 +39,14 @@ BACKWARD：严格。新 Schema 必须能读取旧数据。禁止会破坏旧消�
 -- 查看某个subject的配置
 （没有可能报错{"error_code":40408,"message":"Subject 'TEST1-value' does not have subject-level compatibility configured"}）
 curl -X GET http://schema_registry:8081/config/{subject-name}
-```
 
+-- 修改某个subject的兼容级别
+curl -X PUT -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+  --data '{"compatibility": "BACKWARD"}' \
+  http://localhost:8081/config/{subject-name}
+
+```
+![img.png](img/schema_registry兼容级别.png)
 ### kafka相关命令
 ``` 
 # 查看topic列表
