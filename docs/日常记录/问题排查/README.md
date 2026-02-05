@@ -27,6 +27,18 @@ curl http://schema_registry:8081/subjects/v2_dptask_54.PY_AUTO.AA1.1426-key/vers
 curl http://schema_registry:8081/schemas/ids/{schema-id}
 eg:
 curl http://schema_registry:8081/schemas/ids/1
+
+-- 查看全局的配置
+curl -X GET http://schema_registry:8081/config
+（兼容性级别）：
+NONE：宽松。完全禁用兼容性检查，允许任何形式的变更
+{"compatibilityLevel":"NONE"}
+BACKWARD：严格。新 Schema 必须能读取旧数据。禁止会破坏旧消费者的变更（如修改字段类型）
+{"compatibilityLevel":"BACKWARD"}
+
+-- 查看某个subject的配置
+（没有可能报错{"error_code":40408,"message":"Subject 'TEST1-value' does not have subject-level compatibility configured"}）
+curl -X GET http://schema_registry:8081/config/{subject-name}
 ```
 
 ### kafka相关命令
